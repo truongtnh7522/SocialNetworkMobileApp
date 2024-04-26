@@ -11,18 +11,35 @@ import CreatePostforScreen from './src/containers/CreatePost/CreatePost';
 import RegisterScreen from './src/containers/LoginAndSignUp/RegisterScreen';
 import BottomTabNav from './src/containers/Test/BottomTabNav';
 import VertifyPinScreen from "./src/containers/LoginAndSignUp/VertifyPinScreen"
-import  Profile  from './src/containers/Test/Profile';
+import Profile from './src/containers/Test/Profile';
 import CreateInfoScreen from './src/containers/CreateInfo/CreateInfo';
 import ChatMessagesScreen from "./src/components/ChatMessagesScreen/ChatMessagesScreen";
-
+import * as ZIM from 'zego-zim-react-native';
+import * as ZPNs from 'zego-zpns-react-native';
+import ZegoUIKitPrebuiltCallService, {
+  ZegoCallInvitationDialog,
+  ZegoUIKitPrebuiltCallWaitingScreen,
+  ZegoUIKitPrebuiltCallInCallScreen,
+  ZegoSendCallInvitationButton,
+  ZegoMenuBarButtonName,
+  ZegoUIKitPrebuiltCallFloatingMinimizedView,
+  ZegoCountdownLabel,
+} from '@zegocloud/zego-uikit-prebuilt-call-rn';
 const Stack = createStackNavigator();
+
+
+
+const onUserLogout = async () => {
+  return ZegoUIKitPrebuiltCallService.uninit()
+}
 
 const App = () => {
   return (
-      <ChatContextProvider>
-    <RecoilRoot>
+    <ChatContextProvider>
+      <RecoilRoot>
 
         <NavigationContainer>
+          <ZegoCallInvitationDialog />
           <Stack.Navigator initialRouteName="Login">
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
             <Stack.Screen name="BottomTabNavigation" component={BottomTabNav} options={{ headerShown: false }} />
@@ -34,11 +51,24 @@ const App = () => {
             <Stack.Screen name="VertifyPinScreen" component={VertifyPinScreen} options={{ headerShown: false }} />
             <Stack.Screen name="ChatMessagesScreen" component={ChatMessagesScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
+
+            <Stack.Screen
+              options={{ headerShown: false }}
+              // DO NOT change the name 
+              name="ZegoUIKitPrebuiltCallWaitingScreen"
+              component={ZegoUIKitPrebuiltCallWaitingScreen}
+            />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              // DO NOT change the name
+              name="ZegoUIKitPrebuiltCallInCallScreen"
+              component={ZegoUIKitPrebuiltCallInCallScreen}
+            />
           </Stack.Navigator>
         </NavigationContainer>
-    </RecoilRoot>
+      </RecoilRoot>
 
-      </ChatContextProvider>
+    </ChatContextProvider>
   );
 };
 
@@ -46,7 +76,7 @@ const Root = () => {
   return (
     <RecoilRoot>
       <Suspense fallback={console.log("load")}>
-      <App />
+        <App />
 
       </Suspense>
     </RecoilRoot>
