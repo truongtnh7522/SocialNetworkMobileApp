@@ -40,7 +40,22 @@ import { db } from "../../firebase";
 import {colors} from '../../utils/configs/Colors';
 import { MaterialIcons } from "react-native-vector-icons/MaterialIcons";
 import { COLORS, FONTS } from "../../constants";
+
+import * as ZIM from 'zego-zim-react-native';
+import * as ZPNs from 'zego-zpns-react-native';
+import ZegoUIKitPrebuiltCallService, {
+  ZegoCallInvitationDialog,
+  ZegoUIKitPrebuiltCallWaitingScreen,
+  ZegoUIKitPrebuiltCallInCallScreen,
+  ZegoSendCallInvitationButton,
+  ZegoMenuBarButtonName,
+  ZegoUIKitPrebuiltCallFloatingMinimizedView,
+  ZegoCountdownLabel,
+} from '@zegocloud/zego-uikit-prebuilt-call-rn';
+
   const ChatMessagesScreen = () => {
+  const [invitees, setInvitees] = useState([]);
+
     const [showEmojiSelector, setShowEmojiSelector] = useState(false);
     const [selectedMessages, setSelectedMessages] = useState([]);
 
@@ -114,6 +129,20 @@ import { COLORS, FONTS } from "../../constants";
         headerRight: () =>
           selectedMessages.length > 0 ? (
             <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <ZegoSendCallInvitationButton
+            invitees={invitees.map((inviteeID) => {
+              return { userID: inviteeID, userName:  inviteeID };
+            })}
+            isVideoCall={false}
+            resourceID={"zego_data"}
+          />
+          <ZegoSendCallInvitationButton
+            invitees={invitees.map((inviteeID) => {
+              return { userID: inviteeID, userName:  inviteeID };
+            })}
+            isVideoCall={true}
+            resourceID={"zegouikit_call"}
+          />
               <Ionicons name="redo-variant" size={24} color="black" />
               <Ionicons name="undo-variant" size={24} color="black" />
               <FontAwesome name="star" size={24} color="black" />
@@ -150,7 +179,18 @@ import { COLORS, FONTS } from "../../constants";
         setAuthToken(to)
        
       try {
-     
+        const fullName = data.user?.displayName;
+        const responseInfo = await api.get(
+          "https://www.socialnetwork.somee.com/api/infor/searchuser",
+          {
+            params: { fullname: fullName },
+          }
+        );
+        const firstUserFullName = responseInfo.data.data?.[0]?.fullName;
+        if (firstUserFullName) {
+          setInvitees([firstUserFullName]); 
+        }
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",invitees)
         const response = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
         //  console.log(response.data)
         setDataInfo(response.data.data.firebaseData);
@@ -274,6 +314,20 @@ import { COLORS, FONTS } from "../../constants";
         
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <ZegoSendCallInvitationButton
+            invitees={invitees.map((inviteeID) => {
+              return { userID: inviteeID, userName:  inviteeID };
+            })}
+            isVideoCall={false}
+            resourceID={"zego_data"}
+          />
+          <ZegoSendCallInvitationButton
+            invitees={invitees.map((inviteeID) => {
+              return { userID: inviteeID, userName:  inviteeID };
+            })}
+            isVideoCall={true}
+            resourceID={"zegouikit_call"}
+          />
               <Ionicons name="redo-variant" size={24} color="black" />
               <Ionicons name="undo-variant" size={24} color="black" />
               <FontAwesome name="star" size={24} color="black" />

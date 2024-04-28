@@ -28,17 +28,6 @@ import {
 } from "../../recoil/initState";
 import axios from 'axios'
 
-import * as ZIM from 'zego-zim-react-native';
-import * as ZPNs from 'zego-zpns-react-native';
-import ZegoUIKitPrebuiltCallService, {
-  ZegoCallInvitationDialog,
-  ZegoUIKitPrebuiltCallWaitingScreen,
-  ZegoUIKitPrebuiltCallInCallScreen,
-  ZegoSendCallInvitationButton,
-  ZegoMenuBarButtonName,
-  ZegoUIKitPrebuiltCallFloatingMinimizedView,
-  ZegoCountdownLabel,
-} from '@zegocloud/zego-uikit-prebuilt-call-rn';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -71,25 +60,7 @@ const Login = ({ navigation }) => {
 
   }, [])
 
-  const onUserLogin = async (userID, userName, props) => {
-    console.log(`User logged in with userID: ${userID}, userName: ${userName}`);
-    return ZegoUIKitPrebuiltCallService.init(
-      722062014, // You can get it from ZEGOCLOUD's console
-      "46231991ad89a2dfa10ed17e8d900b182acba20c3425117595f07fb4ed734cbf", // You can get it from ZEGOCLOUD's console
-      userID, // It can be any valid characters, but we recommend using a phone number.
-      userName,
-      [ZIM, ZPNs],
-      {
-          ringtoneConfig: {
-              incomingCallFileName: 'zego_incoming.mp3',
-              outgoingCallFileName: 'zego_outgoing.mp3',
-          },
-          androidNotificationConfig: {
-              channelID: "ZegoUIKit",
-              channelName: "ZegoUIKit",
-          },
-      });
-  }
+ 
   const handleLogin = () => {
     fetch('https://www.socialnetwork.somee.com/api/auth/login', {
       method: 'POST',
@@ -123,10 +94,7 @@ const Login = ({ navigation }) => {
         console.log("Info: ", data.data.data.hasInfor)
         setToken(token)
 
-        onUserLogin(email, email).then(() => {
-          // Jump to HomeScreen to make new call
-          navigation.navigate('BottomTabNavigation', { email });
-        })
+       
 
         // console.log(to)
         if (data.data.data.hasInfor == false) {

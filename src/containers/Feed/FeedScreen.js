@@ -9,6 +9,19 @@ import {   tokenState,likeR
 } from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
+
+import * as ZIM from 'zego-zim-react-native';
+import * as ZPNs from 'zego-zpns-react-native';
+import ZegoUIKitPrebuiltCallService, {
+  ZegoCallInvitationDialog,
+  ZegoUIKitPrebuiltCallWaitingScreen,
+  ZegoUIKitPrebuiltCallInCallScreen,
+  ZegoSendCallInvitationButton,
+  ZegoMenuBarButtonName,
+  ZegoUIKitPrebuiltCallFloatingMinimizedView,
+  ZegoCountdownLabel,
+} from '@zegocloud/zego-uikit-prebuilt-call-rn';
+
 export const FeedScreen = ({ navigation}) => {
   const [data, setData] = useState([]);
   const [dataInfo, setDataInfo] = useState([]);
@@ -16,13 +29,35 @@ export const FeedScreen = ({ navigation}) => {
   const [to, setToken] = useRecoilState(tokenState);
   const [likeRR, setLikeRR] = useRecoilState(likeR);
   const [load,setLoad] = useState(false)
+
+  const onUserLogin = async (userID, userName, props) => {
+    console.log(`User logged in with userID: ${userID}, userName: ${userName}`);
+    return ZegoUIKitPrebuiltCallService.init(
+      722062014, // You can get it from ZEGOCLOUD's console
+      "46231991ad89a2dfa10ed17e8d900b182acba20c3425117595f07fb4ed734cbf", // You can get it from ZEGOCLOUD's console
+      userID, // It can be any valid characters, but we recommend using a phone number.
+      userName,
+      [ZIM, ZPNs],
+      {
+          ringtoneConfig: {
+              incomingCallFileName: 'zego_incoming.mp3',
+              outgoingCallFileName: 'zego_outgoing.mp3',
+          },
+          androidNotificationConfig: {
+              channelID: "ZegoUIKit",
+              channelName: "ZegoUIKit",
+          },
+      });
+  }
+
   useEffect(() => {
     const fetchData = async () => {
 
       setAuthToken(to)
      
     try {
-   
+      const responseInfor = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
+   onUserLogin(responseInfor.data.data.fullName,responseInfor.data.data.fullName)
       const response = await api.get('https://www.socialnetwork.somee.com/api/post?numberOfPosts=10');
       // console.log(response)
       setData(response.data.data);

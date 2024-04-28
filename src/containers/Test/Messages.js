@@ -34,7 +34,7 @@ const Messages = () => {
     try {
    
       const response = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
-      //  console.log(response.data)
+       console.log("dautien>>>>>>>>>>>>>>>>>>>>>>>>>>>>",response.data)
       setDataInfo(response.data.data.firebaseData);
 
     } catch (error) {

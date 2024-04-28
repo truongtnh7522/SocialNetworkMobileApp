@@ -20,7 +20,7 @@ export const ChatContextProvider = ({ children }) => {
     try {
    
       const response = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
-       console.log(response.data)
+       console.log("xin chao>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",response.data)
       setDataInfo(response.data);
 
     } catch (error) {
