@@ -105,13 +105,13 @@ const Messages = () => {
            currentUser.photoUrl
          );
          await updateDoc(doc(db, "userChats", user.Uid), {
-           [combinedId + ".userInfo"]: {
-             uid: currentUser.uid,
-             displayName: currentUser.displayName,
-             photoURL: currentUser.photoUrl,
-           },
-           [combinedId + ".date"]: serverTimestamp(),
-         });
+          [combinedId + ".userInfo"]: {
+            uid: currentUser.data.firebaseData.uid,
+            displayName: currentUser.data.firebaseData.displayName,
+            photoURL: currentUser.data.firebaseData.photoURL,
+          },
+          [combinedId + ".date"]: serverTimestamp(),
+        });
          console.log(456);
        }
      } catch (error) {
