@@ -53,12 +53,12 @@ const Login = ({ navigation }) => {
       .catch(error => {
         console.log('Error retrieving token:', error);
       });
-    console.log("Toke la", token3)
+    console.log("Toke la", token3.length)
     if (token3 !== "") {
       navigation.navigate('BottomTabNavigation')
     }
 
-  }, [])
+  }, [token3])
 
  
   const handleLogin = () => {
@@ -73,11 +73,11 @@ const Login = ({ navigation }) => {
       }),
     })
       .then(response => response.json())
-      .then(data => {
+      .then( async  (data) => {
         console.log('Response from login:', data);
         const token = data.data.data.jwtToken;
 
-        AsyncStorage.setItem('token', token)
+        await  AsyncStorage.setItem('token', token)
           .then(() => {
 
             // Sau khi đã lưu token vào AsyncStorage, bạn cần lấy lại giá trị token từ AsyncStorage

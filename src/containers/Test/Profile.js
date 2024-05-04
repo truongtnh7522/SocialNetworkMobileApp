@@ -61,22 +61,25 @@ const Profile = ({ navigation }) => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const [dataInfo, setDataInfo] = useState([]);
+  const [lengthFriend, setLengthFriend] = useState(0);
+  const [loadData, setLoadData] = useState(false);
+  const [lengthPost, setLengthPost] = useState(0);
+  const [dataPost, setData] = useState([]);
 
   const [to, setToken] = useRecoilState(tokenState);
 
   const [load, setLoad] = useState(false)
   useEffect(() => {
-    console.log("okokkkokokokokokoko")
     const fetchDataInfo = async () => {
 
       setAuthToken(to)
 
       try {
-
+        console.log(12)
         const response = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
 
         setDataInfo(response.data.data);
-
+        console.log("s",response.data.data)
       } catch (error) {
         console.log(error)
         setStatus('error');
@@ -92,7 +95,48 @@ const Profile = ({ navigation }) => {
     { key: "first", title: "Photos" },
     { key: "second", title: "Likes" },
   ]);
+  useEffect(() => {
+    setAuthToken(to)
+    const fetchData = async () => {
+      try {
+        const id = dataInfo.userId;
+        const response = await api.get(
+          `https://www.socialnetwork.somee.com/api/post/user/${id}`
+        );
+        console.log(response);
+        setLengthPost(response.data.data.length);
+        // setTotal(response.data.data.length);
+        setData(response.data);
+        setLoadData(true);
+      } catch (error) {
+        console.error("Get post failed", error);
+      }
+    };
+    fetchData();
+  }, [dataInfo.userId]);
+  const loadDataFriend = async () => {
+    // Gọi API để lấy dữ liệu
 
+    await api
+      .get(
+        `https://www.socialnetwork.somee.com/api/Friend/getAll`
+      )
+      .then((response) => {
+        // Cập nhật dữ liệu vào state
+        if (response.status === 200) {
+          setLengthFriend(response.data.data.length);
+          //setLoadData(true);
+          console.log(response.data.data.length);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  useEffect(() => {
+    loadDataFriend();
+  }, []);
+  console.log(dataPost)
   const renderTabBar = (props) => (
     <TabBar
       {...props}
@@ -199,7 +243,7 @@ const Profile = ({ navigation }) => {
                 color: COLORS.primary,
               }}
             >
-              122
+              {lengthFriend}
             </Text>
             <Text
               style={{
@@ -224,7 +268,7 @@ const Profile = ({ navigation }) => {
                 color: COLORS.primary,
               }}
             >
-              67
+             {lengthPost}
             </Text>
             <Text
               style={{
@@ -232,47 +276,24 @@ const Profile = ({ navigation }) => {
                 color: COLORS.primary,
               }}
             >
-              Followings
+              Posts
             </Text>
           </View>
 
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "center",
-              marginHorizontal: SIZES.padding,
-            }}
-          >
-            <Text
-              style={{
-                ...FONTS.h2,
-                color: COLORS.primary,
-              }}
-            >
-              77K
-            </Text>
-            <Text
-              style={{
-                ...FONTS.body4,
-                color: COLORS.primary,
-              }}
-            >
-              Likes
-            </Text>
-          </View>
+         
         </View>
 
         <View style={{ flexDirection: "row" }}>
           <TouchableOpacity
-            style={{
-              width: 124,
-              height: 36,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: COLORS.primary,
-              borderRadius: 10,
-              marginHorizontal: SIZES.padding * 2,
-            }}
+          style={{
+            width: 280,
+            height: 36,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: COLORS.primary,
+            borderRadius: 10,
+            marginHorizontal: SIZES.padding * 2,
+          }}
             onPress={() => navigation.navigate('CreateInfo')}
           >
             <Text
@@ -285,26 +306,7 @@ const Profile = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={{
-              width: 124,
-              height: 36,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: COLORS.primary,
-              borderRadius: 10,
-              marginHorizontal: SIZES.padding * 2,
-            }}
-          >
-            <Text
-              style={{
-                ...FONTS.body4,
-                color: COLORS.white,
-              }}
-            >
-              Add Friend
-            </Text>
-          </TouchableOpacity>
+         
 
 
         </View>

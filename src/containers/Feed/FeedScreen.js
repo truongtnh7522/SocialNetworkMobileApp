@@ -94,7 +94,7 @@ export const FeedScreen = ({ navigation}) => {
       
       onUserLogin(fullNameWithoutDiacriticsAndSpaces, fullNameWithoutDiacriticsAndSpaces);
       const response = await api.get('https://www.socialnetwork.somee.com/api/post?numberOfPosts=10');
-      // console.log(response)
+       console.log(response)
       setData(response.data.data);
  setLoad(true)
       setStatus('success');
@@ -108,7 +108,7 @@ export const FeedScreen = ({ navigation}) => {
 
     // // Hủy interval khi component unmount
     // return () => clearInterval(intervalId);
-    fetchData()
+    fetchData();
   }, [likeRR]);
 
 
@@ -138,7 +138,7 @@ export const FeedScreen = ({ navigation}) => {
         <View style={styles.storiesWrapper}>
           <Stories />
         </View>
-        <View>
+        <View style={styles.containerBody}>
           {
             load === false ? (
               <ScrollView style={styles.feedContainer}>
@@ -172,6 +172,9 @@ export const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flex: 1,
+  },
+  containerBody: {
+    paddingBottom:40
   },
   header: {
     display: 'flex',
