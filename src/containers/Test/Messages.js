@@ -106,9 +106,9 @@ const Messages = () => {
          );
          await updateDoc(doc(db, "userChats", user.Uid), {
           [combinedId + ".userInfo"]: {
-            uid: currentUser.data.firebaseData.uid,
-            displayName: currentUser.data.firebaseData.displayName,
-            photoURL: currentUser.data.firebaseData.photoURL,
+            uid: currentUser.uid,
+            displayName: currentUser.displayName,
+            photoURL:   currentUser.photoURL,
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
