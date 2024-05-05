@@ -19,7 +19,10 @@ export const likeR = atom({
   key: "likeR",
   default: false
 });
-
+export const idPost = atom({
+  key: "idPost",
+  default: ""
+});
 export const initState = atom({
   key: "initText",
   default: "",

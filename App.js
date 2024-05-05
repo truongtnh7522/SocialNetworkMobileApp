@@ -14,6 +14,7 @@ import VertifyPinScreen from "./src/containers/LoginAndSignUp/VertifyPinScreen"
 import Profile from './src/containers/Test/Profile';
 import CreateInfoScreen from './src/containers/CreateInfo/CreateInfo';
 import ChatMessagesScreen from "./src/components/ChatMessagesScreen/ChatMessagesScreen";
+import Comment from "./src/containers/Comment/Comment"
 import * as ZIM from 'zego-zim-react-native';
 import * as ZPNs from 'zego-zpns-react-native';
 import ZegoUIKitPrebuiltCallService, {
@@ -51,7 +52,7 @@ const App = () => {
             <Stack.Screen name="VertifyPinScreen" component={VertifyPinScreen} options={{ headerShown: false }} />
             <Stack.Screen name="ChatMessagesScreen" component={ChatMessagesScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
-
+            <Stack.Screen name="Comment" component={Comment} options={{ headerShown: false }} />
             <Stack.Screen
               options={{ headerShown: false }}
               // DO NOT change the name 

@@ -1,14 +1,15 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image,TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, Image,TouchableOpacity, TextInput} from 'react-native';
 import {colors} from '../../utils/configs/Colors';
 import { useRecoilState, useRecoilValue } from "recoil";
-import {   tokenState,likeR
-} from "../../recoil/initState";
+import {   tokenState,likeR , idPost} from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
+import { useNavigation, useRoute } from "@react-navigation/native";
 const Feed = ({data}) => {
   const [likeRR, setLikeRR] = useRecoilState(likeR);
   const [to, setToken] = useRecoilState(tokenState);
-  
+  const [idPostR, setidPostR] = useRecoilState(idPost);
+  const navigation = useNavigation();
    const handleLike = async () => {
 
     setAuthToken(to);
@@ -32,7 +33,11 @@ const Feed = ({data}) => {
       console.error("Login failed", error);
     }
   };
+  const handleCmt = () => {
+    setidPostR(data.id);
+    navigation.navigate('Comment')
 
+  }
   return (
     <View style={styles.container}>
       <View style={styles.headerWrapper}>
@@ -75,12 +80,15 @@ const Feed = ({data}) => {
         />
       </TouchableOpacity>
           
-       
+      <TouchableOpacity
+      style={styles.container1}
+      onPress={handleCmt}
+    >
         <Image
           style={styles.icon}
           source={require('../../assets/images/comment.png')}
         />
-      
+       </TouchableOpacity>
           <Image
    
             style={styles.icon}
@@ -104,6 +112,13 @@ const Feed = ({data}) => {
 
       
       </View>
+      <View style={styles.likesAndCommentsWrapper}>
+      
+    
+
+      
+      </View>
+      
     </View>
   );
 };
@@ -113,6 +128,9 @@ export default Feed;
 export const styles = StyleSheet.create({
   container: {
     display: 'flex',
+  },
+  container1: {
+   width:"full"
   },
   profileThumb: {
     width: 50,
@@ -124,6 +142,13 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
+  },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+  
   },
   icon: {
     width: 40,

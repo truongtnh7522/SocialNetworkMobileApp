@@ -174,7 +174,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   containerBody: {
-    paddingBottom:40
+    paddingBottom:300
   },
   header: {
     display: 'flex',
