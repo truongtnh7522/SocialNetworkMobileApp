@@ -1,5 +1,5 @@
 import React, {Component,useEffect,useState} from 'react';
-import {Text, View, StyleSheet, ScrollView, Image} from 'react-native';
+import {Text, View, StyleSheet, ScrollView, Image,ActivityIndicator } from 'react-native';
 import {colors} from '../../utils/configs/Colors';
 import Feed from '../../components/Feed/Feed';
 import Stories from '../../components/Feed/Stories';
@@ -29,6 +29,8 @@ export const FeedScreen = ({ navigation}) => {
   const [to, setToken] = useRecoilState(tokenState);
   const [likeRR, setLikeRR] = useRecoilState(likeR);
   const [load,setLoad] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [pageNumber, setPageNumber] = useState(3);
 
   const onUserLogin = async (userID, userName, props) => {
     console.log(`User logged in with userID: ${userID}, userName: ${userName}`);
@@ -93,10 +95,11 @@ export const FeedScreen = ({ navigation}) => {
       const fullNameWithoutDiacriticsAndSpaces = removeDiacriticsAndSpaces(fullName);
       
       onUserLogin(fullNameWithoutDiacriticsAndSpaces, fullNameWithoutDiacriticsAndSpaces);
-      const response = await api.get('https://www.socialnetwork.somee.com/api/post?numberOfPosts=10');
+      const response = await api.get(`https://www.socialnetwork.somee.com/api/post?numberOfPosts=${pageNumber}`);
        console.log(response)
-      setData(response.data.data);
- setLoad(true)
+       const newData = response.data.data;
+       setData(newData);
+      setLoad(true)
       setStatus('success');
     } catch (error) {
       console.log(error)
@@ -109,10 +112,19 @@ export const FeedScreen = ({ navigation}) => {
     // // Hủy interval khi component unmount
     // return () => clearInterval(intervalId);
     fetchData();
-  }, [likeRR]);
+  }, [likeRR,pageNumber]);
 
 
+  const handleLoadMore = () => {
+    if (!loadingMore) {
+      setLoadingMore(true);
+      setPageNumber(prevPageNumber => prevPageNumber + 1);
+    }
+  };
 
+  const renderFooter = () => {
+    return loadingMore ? <ActivityIndicator size="large" color={colors.primary} /> : null;
+  };
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -139,26 +151,25 @@ export const FeedScreen = ({ navigation}) => {
           <Stories />
         </View> */}
         <View style={styles.containerBody}>
-          {
-            load === false ? (
-              <ScrollView style={styles.feedContainer}>
-              <Spinner/>
-              </ScrollView>
-            ) : (
-              <ScrollView style={styles.feedContainer}>
-              {
-                data.map((item,index) => (
-                  <View key={index}>
-                    <Feed data= {item}/>
-                  </View>
-                ))
+       
+          <ScrollView
+            style={styles.feedContainer}
+            onScroll={({ nativeEvent }) => {
+              if (isCloseToBottom(nativeEvent)) {
+                handleLoadMore();
               }
-          
-               
-              </ScrollView>
-            )
-          }
-        </View>
+            }}
+            scrollEventThrottle={400}
+          >
+            {data.map((item, index) => (
+              <View key={index}>
+                <Feed data={item} />
+              </View>
+            ))}
+            {renderFooter()}
+          </ScrollView>
+       
+      </View>
        
       
       </View>
@@ -167,6 +178,10 @@ export const FeedScreen = ({ navigation}) => {
 
 
 export default FeedScreen;
+const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+  const paddingToBottom = 20;
+  return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+};
 
 export const styles = StyleSheet.create({
   container: {
