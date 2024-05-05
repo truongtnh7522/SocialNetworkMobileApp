@@ -11,6 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS, SIZES, images } from "../../constants";
 import { StatusBar, ActivityIndicator ,Button,StyleSheet,ScrollView  } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import { photos } from "../../constants/data";
 import AsyncStorage from '@react-native-async-storage/async-storage';
