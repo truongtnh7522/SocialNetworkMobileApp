@@ -135,9 +135,9 @@ export const FeedScreen = ({ navigation}) => {
             />
           </View>
         </View>
-        <View style={styles.storiesWrapper}>
+        {/* <View style={styles.storiesWrapper}>
           <Stories />
-        </View>
+        </View> */}
         <View style={styles.containerBody}>
           {
             load === false ? (
@@ -174,7 +174,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   containerBody: {
-    paddingBottom:300
+    paddingBottom:130
   },
   header: {
     display: 'flex',

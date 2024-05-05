@@ -59,7 +59,9 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
 
   const handleImageSelection = async () => {
     let result = await ImagePicker.launchImageLibrary({
-      mediaTypes: 'photo',
+
+      mediaType: 'photo',
+
       allowsEditing: true,
       aspect: [4, 4],
       quality: 1,
