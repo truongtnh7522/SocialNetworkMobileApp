@@ -55,7 +55,7 @@ const Login = ({ navigation }) => {
       });
     console.log("Toke la", token3.length)
     if (token3 !== "") {
-      navigation.navigate('AdCategory')
+      navigation.navigate('BottomTabNavigation')
     }
 
   }, [token3])
