@@ -55,7 +55,7 @@ const Login = ({ navigation }) => {
       });
     console.log("Toke la", token3.length)
     if (token3 !== "") {
-      navigation.navigate('BottomTabNavigation')
+      navigation.navigate('AdCategory')
     }
 
   }, [token3])
@@ -102,7 +102,13 @@ const Login = ({ navigation }) => {
           navigation.navigate('CreateInfo')
 
         } else {
-          navigation.navigate('BottomTabNavigation')
+          if( data.data.data.role?.[0] === "Admin")
+            {
+              navigation.navigate('AdCategory')
+            }
+            else {
+              navigation.navigate('BottomTabNavigation')
+            }
         }
         // if (data.success == 200) {
 

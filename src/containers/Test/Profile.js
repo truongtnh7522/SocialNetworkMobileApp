@@ -18,7 +18,7 @@ import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
-  tokenState, likeR,photosR,idPostSimple
+  tokenState, likeR,photosR,idPostSimple,
 } from "../../recoil/initState";
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
@@ -189,6 +189,7 @@ const Profile = ({ navigation }) => {
   }, []);
   const Logout = () => {
     AsyncStorage.removeItem('token')
+    setToken("")
     navigation.navigate('Login')
   }
   const [routes] = useState([

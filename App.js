@@ -13,6 +13,9 @@ import RegisterScreen from './src/containers/LoginAndSignUp/RegisterScreen';
 import BottomTabNav from './src/containers/Test/BottomTabNav';
 import VertifyPinScreen from "./src/containers/LoginAndSignUp/VertifyPinScreen"
 import Profile from './src/containers/Test/Profile';
+import ManagePost from './src/containers/Test/ManagePost';
+import ManageUser from './src/containers/Test/ManageUser';
+import AdCategory from './src/containers/Test/AdCategory';
 import ProfileUsers from './src/containers/Test/ProfileUsers';
 import CreateInfoScreen from './src/containers/CreateInfo/CreateInfo';
 import ChatMessagesScreen from "./src/components/ChatMessagesScreen/ChatMessagesScreen";
@@ -59,6 +62,9 @@ const App = () => {
             <Stack.Screen name="Comment" component={Comment} options={{ headerShown: false }} />
             <Stack.Screen name="Notifications" component={Notifications} options={{ headerShown: false }} />
             <Stack.Screen name="ProfileUsers" component={ProfileUsers} options={{ headerShown: false }} />
+            <Stack.Screen name="AdCategory" component={AdCategory} options={{ headerShown: false }} />
+            <Stack.Screen name="ManagePost" component={ManagePost} options={{ headerShown: false }} />
+            <Stack.Screen name="ManageUser" component={ManageUser} options={{ headerShown: false }} />
             <Stack.Screen
               options={{ headerShown: false }}
               // DO NOT change the name 

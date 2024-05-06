@@ -471,33 +471,7 @@ const ProfileUsers = ({ navigation }) => {
 
         </View>
 
-        <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity
-            style={{
-              width: 280,
-              height: 36,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: COLORS.primary,
-              borderRadius: 10,
-              marginHorizontal: SIZES.padding * 2,
-            }}
-            onPress={() => navigation.navigate('CreateInfo')}
-          >
-            <Text
-              style={{
-                ...FONTS.body4,
-                color: COLORS.white,
-              }}
-            >
-              Edit Profile
-            </Text>
-          </TouchableOpacity>
-
-
-
-
-        </View>
+       
         <View style={{ flexDirection: "row", marginTop: 10 }}>
           <TouchableOpacity
             style={{
