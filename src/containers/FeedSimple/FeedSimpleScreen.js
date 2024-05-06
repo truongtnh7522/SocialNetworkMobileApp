@@ -5,7 +5,7 @@ import Feed from '../../components/Feed/Feed';
 import Stories from '../../components/Feed/Stories';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useRecoilState, useRecoilValue } from "recoil";
-import {   tokenState,likeR
+import {   tokenState,likeR,idPostSimple
 } from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
@@ -23,7 +23,7 @@ import ZegoUIKitPrebuiltCallService, {
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import { useNavigation, useRoute } from "@react-navigation/native";
 
-export const FeedScreen = ({ navigation}) => {
+export const FeedSimpleScreen = ({ navigation}) => {
   const [data, setData] = useState([]);
   const [dataInfo, setDataInfo] = useState([]);
   const [status, setStatus] = useState('idle');
@@ -33,6 +33,7 @@ export const FeedScreen = ({ navigation}) => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [pageNumber, setPageNumber] = useState(3);
   const navigation1 = useNavigation();
+  const [idPostSimpleR,setIdPostSimple] = useRecoilState(idPostSimple)
   const onUserLogin = async (userID, userName, props) => {
     console.log(`User logged in with userID: ${userID}, userName: ${userName}`);
     return ZegoUIKitPrebuiltCallService.init(
@@ -96,7 +97,7 @@ export const FeedScreen = ({ navigation}) => {
       const fullNameWithoutDiacriticsAndSpaces = removeDiacriticsAndSpaces(fullName);
       
       onUserLogin(fullNameWithoutDiacriticsAndSpaces, fullNameWithoutDiacriticsAndSpaces);
-      const response = await api.get(`https://www.socialnetwork.somee.com/api/post?numberOfPosts=${pageNumber}`);
+      const response = await api.get(`https://www.socialnetwork.somee.com/api/post/${idPostSimpleR}`);
        console.log(response)
        const newData = response.data.data;
        setData(newData);
@@ -120,16 +121,9 @@ export const FeedScreen = ({ navigation}) => {
     navigation1.navigate('Notifications')
 
   }
-  const handleLoadMore = () => {
-    if (!loadingMore) {
-      setLoadingMore(true);
-      setPageNumber(prevPageNumber => prevPageNumber + 1);
-    }
-  };
+ 
 
-  const renderFooter = () => {
-    return loadingMore ? <ActivityIndicator size="large" color={colors.primary} /> : null;
-  };
+  
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -161,26 +155,29 @@ export const FeedScreen = ({ navigation}) => {
         {/* <View style={styles.storiesWrapper}>
           <Stories />
         </View> */}
-        <View style={styles.containerBody}>
+        {
+          load == false ? (
+            <Spinner></Spinner>
+          ) : (
+                <View style={styles.containerBody}>
        
           <ScrollView
             style={styles.feedContainer}
-            onScroll={({ nativeEvent }) => {
-              if (isCloseToBottom(nativeEvent)) {
-                handleLoadMore();
-              }
-            }}
+           
             scrollEventThrottle={400}
           >
-            {data.map((item, index) => (
-              <View key={index}>
-                <Feed data={item} />
+            
+              <View>
+                <Feed data={data} />
               </View>
-            ))}
-            {renderFooter()}
+           
+          
           </ScrollView>
        
       </View>
+          )
+        }
+    
        
       
       </View>
@@ -188,11 +185,8 @@ export const FeedScreen = ({ navigation}) => {
   }
 
 
-export default FeedScreen;
-const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-  const paddingToBottom = 20;
-  return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
-};
+export default FeedSimpleScreen;
+
 
 export const styles = StyleSheet.create({
   container: {

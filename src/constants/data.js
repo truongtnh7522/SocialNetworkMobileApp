@@ -1,6 +1,6 @@
 import images from "./images";
 
-export const photos = [
+export const photos1 = [
     images.photo1,
     images.photo2,
     images.photo3,

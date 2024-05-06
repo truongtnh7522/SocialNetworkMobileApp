@@ -23,7 +23,19 @@ export const idPost = atom({
   key: "idPost",
   default: ""
 });
+export const idUsers = atom({
+  key: "idUsers",
+  default: ""
+});
+export const idPostSimple = atom({
+  key: "idPostSimple",
+  default: ""
+});
 export const initState = atom({
   key: "initText",
   default: "",
+});
+export const photosR = atom({
+  key: "photosR",
+  default: [],
 });

@@ -1,15 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {View, Text, StyleSheet, Image,TouchableOpacity, TextInput} from 'react-native';
 import {colors} from '../../utils/configs/Colors';
 import { useRecoilState, useRecoilValue } from "recoil";
-import {   tokenState,likeR , idPost} from "../../recoil/initState";
+import {   tokenState,likeR , idPost,idUsers} from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import { useNavigation, useRoute } from "@react-navigation/native";
 const Feed = ({data}) => {
   const [likeRR, setLikeRR] = useRecoilState(likeR);
   const [to, setToken] = useRecoilState(tokenState);
   const [idPostR, setidPostR] = useRecoilState(idPost);
+  const [idUserR, setidUsersR] = useRecoilState(idUsers);
+  const [idUser,setIdUser] = useState("")
   const navigation = useNavigation();
+  useEffect(() => {
+    setAuthToken(to);
+      const fetchInfo = async () => {
+        try {
+          const responseInfor = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
+          console.log("Info",responseInfor.data.data.userId)
+          setIdUser(responseInfor.data.data.userId)
+        }catch (e) {
+          console.log(e)
+        }
+      }
+      fetchInfo()
+  },[])
    const handleLike = async () => {
 
     setAuthToken(to);
@@ -21,8 +36,8 @@ const Feed = ({data}) => {
           // Cập nhật dữ liệu vào state
 
           if (response.status === 200) {
-            console.log(response)
-            console.log(456)
+           
+         
              setLikeRR(!likeRR);
           }
         })
@@ -38,16 +53,26 @@ const Feed = ({data}) => {
     navigation.navigate('Comment')
 
   }
+  console.log(data.userId)
+  const handleNavigate = () => {
+    if(data.userId === idUser) {
+      navigation.navigate('Profile')
+    }
+    else {
+      setidUsersR(data.userId )
+      navigation.navigate('ProfileUsers')
+    }
+  }
   return (
     <View style={styles.container}>
       <View style={styles.headerWrapper}>
-        <View style={styles.headerLeftWrapper}>
+        <TouchableOpacity style={styles.headerLeftWrapper} onPress={handleNavigate}>
           <Image
             style={styles.profileThumb}
             source={{uri: data.avatarUrl}}
           />
           <Text style={styles.headerTitle}> {data.fullName}</Text>
-        </View>
+        </TouchableOpacity>
         <Image
           style={styles.icon}
           source={require('../../assets/images/dots.jpg')}

@@ -6,8 +6,9 @@ import {
   useWindowDimensions,
   FlatList,
 } from "react-native";
+import { ChatContext } from "../../context/ChatContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS, SIZES, images } from "../../constants";
 import { StatusBar, ActivityIndicator ,Button,StyleSheet,ScrollView  } from "react-native";
@@ -18,12 +19,24 @@ import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
-  tokenState, likeR,photosR,idPostSimple
+  tokenState, likeR,photosR,idPostSimple,idUsers
 } from "../../recoil/initState";
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
-import Background from './../../components/LoginAndSignUp/Background';
-
+import Background from '../../components/LoginAndSignUp/Background';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  setDoc,
+  doc,
+  updateDoc,
+  serverTimestamp,
+  getDoc,
+  onSnapshot,
+} from "firebase/firestore";
+import { db } from "../../firebase";
 var photos = {};
 // console.log("data",photos.data?.[0].images?.[0].linkImage)
 const PhotosRoutes = ({ navigation }) => {
@@ -156,7 +169,7 @@ const renderScene = SceneMap({
   first: PhotosRoutes,
   second: FriendsRoutes,
 });
-const Profile = ({ navigation }) => {
+const ProfileUsers = ({ navigation }) => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const [dataInfo, setDataInfo] = useState([]);
@@ -164,11 +177,14 @@ const Profile = ({ navigation }) => {
   const [loadData, setLoadData] = useState(false);
   const [lengthPost, setLengthPost] = useState(0);
   const [dataPost, setData] = useState([]);
+  const [idUserR, setidUsersR] = useRecoilState(idUsers);
+  const navigation11 = useNavigation();
 
   const [to, setToken] = useRecoilState(tokenState);
 
   const [load, setLoad] = useState(false)
   const [photos,setPhotos] = useRecoilState(photosR)
+  console.log(idUserR)
   useEffect(() => {
     const fetchDataInfo = async () => {
 
@@ -176,21 +192,18 @@ const Profile = ({ navigation }) => {
 
       try {
        
-        const response = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
+        const response = await api.get(`https://www.socialnetwork.somee.com/api/infor/user/${idUserR}`)
 
         setDataInfo(response.data.data);
-        // console.log("s", response.data.data)
+         console.log("s", response.data.data)
       } catch (error) {
         console.log(error)
-        setStatus('error');
+   
       }
     }
     fetchDataInfo()
   }, []);
-  const Logout = () => {
-    AsyncStorage.removeItem('token')
-    navigation.navigate('Login')
-  }
+ 
   const [routes] = useState([
     { key: "first", title: "Photos" },
     { key: "second", title: "Friends" },
@@ -199,9 +212,9 @@ const Profile = ({ navigation }) => {
     setAuthToken(to)
     const fetchData = async () => {
       try {
-        const id = dataInfo.userId;
+      
         const response = await api.get(
-          `https://www.socialnetwork.somee.com/api/post/user/${id}`
+          `https://www.socialnetwork.somee.com/api/post/user/${idUserR}`
         );
         // console.log("DataPOst",response.data);
         setLengthPost(response.data.data.length);
@@ -237,7 +250,81 @@ const Profile = ({ navigation }) => {
   useEffect(() => {
     loadDataFriend();
   }, []);
-  console.log("data",photos.data)
+  const [currentUser, setCurrent] = useState([]);
+  useEffect(() => {
+    const fetchDataInfo = async () => {
+
+      setAuthToken(to)
+     
+    try {
+   
+      const response = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
+      
+      setCurrent(response.data);
+
+    } catch (error) {
+      console.log(error)
+    
+    }
+    }
+    fetchDataInfo()
+  }, [])
+  const { dispatch } = useContext(ChatContext);
+  const handleMessage = async () => {
+    const combinedId =
+      currentUser.data.firebaseData.uid > dataInfo.firebaseData.uid
+        ? currentUser.data.firebaseData.uid + dataInfo.firebaseData.uid
+        : dataInfo.firebaseData.uid + currentUser.data.firebaseData.uid;
+    try {
+      const res = await getDoc(doc(db, "chats", combinedId));
+      console.log(combinedId);
+      if (!res.exists()) {
+        await setDoc(doc(db, "chats", combinedId), { messages: [] });
+        console.log(
+          "u:",
+          dataInfo.firebaseData.uid,
+          "di:",
+          dataInfo.firebaseData.displayName,
+          "pho:",
+          dataInfo.firebaseData.photoURL
+        );
+
+        await updateDoc(
+          doc(db, "userChats", currentUser.data.firebaseData.uid),
+          {
+            [combinedId + ".userInfo"]: {
+              uid: dataInfo.firebaseData.uid,
+              displayName:dataInfo.firebaseData.displayName,
+              photoURL: dataInfo.firebaseData.photoURL,
+            },
+            [combinedId + ".date"]: serverTimestamp(),
+          }
+        );
+        console.log(
+          "u:",
+          currentUser.data.firebaseData.uid,
+          "di:",
+          currentUser.data.firebaseData.displayName,
+          "pho:",
+          currentUser.data.firebaseData.photoURL
+        );
+        await updateDoc(doc(db, "userChats", data.data.firebaseData.uid), {
+          [combinedId + ".userInfo"]: {
+            uid: currentUser.data.firebaseData.uid,
+            displayName: currentUser.data.firebaseData.displayName,
+            photoURL: currentUser.data.firebaseData.photoURL,
+          },
+          [combinedId + ".date"]: serverTimestamp(),
+        });
+
+        console.log(456);
+      }
+    } catch (error) {
+      console.log("Loi r");
+    }
+    dispatch({ type: "CHANGE_USER", payload: dataInfo.firebaseData });
+    navigation11.navigate("ChatMessagesScreen");
+  };
   const renderTabBar = (props) => (
     <TabBar
       {...props}
@@ -422,7 +509,7 @@ const Profile = ({ navigation }) => {
               borderRadius: 10,
               marginHorizontal: SIZES.padding * 2,
             }}
-            onPress={Logout}
+            onPress={handleMessage}
           >
             <Text
               style={{
@@ -430,7 +517,7 @@ const Profile = ({ navigation }) => {
                 color: COLORS.white,
               }}
             >
-              Log out
+              Chat
             </Text>
           </TouchableOpacity>
 
@@ -450,4 +537,4 @@ const Profile = ({ navigation }) => {
   );
 };
 
-export default Profile
+export default ProfileUsers
