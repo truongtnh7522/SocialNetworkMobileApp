@@ -15,7 +15,7 @@ import {
   import { imagesDataURL } from "../../constants/data";
   import DatePicker, { getFormatedDate } from "react-native-modern-datepicker";
   import { useRecoilState, useRecoilValue } from "recoil";
-import {   tokenState,likeR
+import {   tokenState,likeR,LoadPage
 } from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
   const CreatePostforScreen = ({ navigation }) => {
@@ -23,6 +23,7 @@ import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
     const [content, setContent] = useState("");
     const [isChecked, setIsChecked] = useState("1");
     const [to, setToken] = useRecoilState(tokenState);
+    const [LoadPageR, setLoadPageR] = useRecoilState(LoadPage);
     const today = new Date();
     const handlePost = async () => {
         setAuthToken(to);
@@ -52,6 +53,7 @@ import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
           if(res.status == 200) {
             setSelectedImage(imagesDataURL[0])
             setContent("")
+            setLoadPageR(!LoadPageR)
           }
           console.log("het qua: ", res)
         } catch (error) {

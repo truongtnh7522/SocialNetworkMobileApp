@@ -51,7 +51,6 @@ const Notifications = () => {
         console.log(response)
         // Cập nhật dữ liệu vào state
         if (response.status === 200) {
-          
           console.log("data",response.data)
           setData(response.data);
           setLoadCmt(false)
@@ -61,9 +60,14 @@ const Notifications = () => {
         console.error("Error fetching data:", error);
       });
   };
+  
   useEffect(() => {
-    scrollToBottom()
-    loadData()
+    scrollToBottom();
+    loadData(); // Gọi hàm loadData khi component được render lần đầu tiên
+    
+    const intervalId = setInterval(loadData, 2000); // Gọi hàm loadData mỗi 2 giây
+    
+    return () => clearInterval(intervalId); // Xóa interval khi component unmount
   }, []);
   useEffect(() => {
     const fetchDataInfo = async () => {

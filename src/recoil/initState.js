@@ -19,6 +19,10 @@ export const likeR = atom({
   key: "likeR",
   default: false
 });
+export const LoadPage = atom({
+  key: "LoadPage",
+  default: false
+});
 export const idPost = atom({
   key: "idPost",
   default: ""

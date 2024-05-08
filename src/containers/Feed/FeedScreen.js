@@ -5,7 +5,7 @@ import Feed from '../../components/Feed/Feed';
 import Stories from '../../components/Feed/Stories';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useRecoilState, useRecoilValue } from "recoil";
-import {   tokenState,likeR
+import {   tokenState,likeR,LoadPage
 } from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
@@ -29,6 +29,7 @@ export const FeedScreen = ({ navigation}) => {
   const [status, setStatus] = useState('idle');
   const [to, setToken] = useRecoilState(tokenState);
   const [likeRR, setLikeRR] = useRecoilState(likeR);
+  const [LoadPageR, setLoadPageR] = useRecoilState(LoadPage);
   const [load,setLoad] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false);
   const [pageNumber, setPageNumber] = useState(3);
@@ -113,7 +114,7 @@ export const FeedScreen = ({ navigation}) => {
     // // Hủy interval khi component unmount
     // return () => clearInterval(intervalId);
     fetchData();
-  }, [likeRR,pageNumber]);
+  }, [likeRR,pageNumber,LoadPageR]);
 
   const handleNotifi = () => {
 
@@ -123,7 +124,7 @@ export const FeedScreen = ({ navigation}) => {
   const handleLoadMore = () => {
     if (!loadingMore) {
       setLoadingMore(true);
-      setPageNumber(prevPageNumber => prevPageNumber + 1);
+      setPageNumber(prevPageNumber => prevPageNumber + 2);
     }
   };
 
