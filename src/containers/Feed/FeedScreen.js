@@ -98,7 +98,7 @@ export const FeedScreen = ({ navigation}) => {
       
       onUserLogin(fullNameWithoutDiacriticsAndSpaces, fullNameWithoutDiacriticsAndSpaces);
       const response = await api.get(`https://www.socialnetwork.somee.com/api/post?numberOfPosts=${pageNumber}`);
-       console.log(response)
+       console.log("DaTA",response)
        const newData = response.data.data;
        setData(newData);
       setLoad(true)
