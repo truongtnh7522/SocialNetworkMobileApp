@@ -1,5 +1,5 @@
 import React, {Component,useEffect,useState} from 'react';
-import {Text, View, StyleSheet, ScrollView, Image,ActivityIndicator,TouchableOpacity } from 'react-native';
+import {Text, View, StyleSheet, ScrollView, Image,ActivityIndicator,TouchableOpacity,Platform } from 'react-native';
 import {colors} from '../../utils/configs/Colors';
 import Feed from '../../components/Feed/Feed';
 import Stories from '../../components/Feed/Stories';
@@ -9,9 +9,13 @@ import {   tokenState,likeR,idPostSimple
 } from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
-
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Entypo from "react-native-vector-icons/Entypo";
+import Fontisto from "react-native-vector-icons/Fontisto";
+import Feather from "react-native-vector-icons/Feather";
 import * as ZIM from 'zego-zim-react-native';
 import * as ZPNs from 'zego-zpns-react-native';
+
 import ZegoUIKitPrebuiltCallService, {
   ZegoCallInvitationDialog,
   ZegoUIKitPrebuiltCallWaitingScreen,
@@ -127,29 +131,21 @@ export const FeedSimpleScreen = ({ navigation}) => {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Image
+        <Image
             style={styles.icon}
-            source={require('../../assets/images/camera.jpg')}
+            source={require('../../assets/TKCTech.png')}
           />
-          <Image
-            style={styles.logo}
-            source={require('../../assets/images/instagramLogo.png')}
-          />
+          
           <View style={styles.headerRightWrapper}>
-          <TouchableOpacity onPress={handleNotifi}>
-          <View >
-            <Image
-              style={styles.icon}
-              source={require('../../assets/images/igtv.png')}
-            />
-          </View>
-        </TouchableOpacity>
         
         
-            <Image
-              style={styles.icon}
-              source={require('../../assets/images/message.jpg')}
-            />
+        
+        <Feather name="search" size={30} color="black" style={{marginRight:10}}/>
+        <Entypo name="camera" size={30} color="black"  style={{marginRight:10}}/>
+        <TouchableOpacity onPress={handleNotifi}>
+        <Ionicons name="notifications" size={30} color="black" />
+      </TouchableOpacity>
+      
           </View>
         </View>
         {/* <View style={styles.storiesWrapper}>
@@ -179,7 +175,7 @@ export const FeedSimpleScreen = ({ navigation}) => {
         }
     
        
-      
+
       </View>
     );
   }
@@ -199,11 +195,14 @@ export const styles = StyleSheet.create({
   header: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems:"center",
     justifyContent: 'space-between',
     padding: 10,
+    paddingRight:20,
+    paddingLeft:20,
     borderBottomColor: colors.gray1,
     borderBottomWidth: 1,
-    marginTop:15
+   
   },
   footer: {
     display: 'flex',
@@ -218,7 +217,7 @@ export const styles = StyleSheet.create({
     display: 'flex',
   },
   icon: {
-    width: 40,
+    width: 100,
     height: 40,
   },
   logo: {

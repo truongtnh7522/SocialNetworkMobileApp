@@ -254,12 +254,13 @@ input: {
   flex: 1,
   borderWidth: 1,
   borderColor: '#ccc',
-  borderRadius: 5,
-  paddingHorizontal: 10,
+  borderRadius: 30,
+  paddingHorizontal: 20,
   marginRight: 10,
+  height:"70%"
 },
 button: {
-  backgroundColor: 'blue',
+  backgroundColor: '#456fe6',
   paddingVertical: 5,
   paddingHorizontal: 20,
   borderRadius: 5,

@@ -12,6 +12,7 @@ import React, { useState, useContext, useLayoutEffect, useEffect, useRef } from 
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ioniconss from "react-native-vector-icons/MaterialIcons";
+import Ionicons1 from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Entypo from "react-native-vector-icons/Entypo";
 import EmojiSelector from "react-native-emoji-selector";
@@ -53,12 +54,14 @@ import ZegoUIKitPrebuiltCallService, {
   ZegoUIKitPrebuiltCallFloatingMinimizedView,
   ZegoCountdownLabel,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import Spinner from "../Spinner";
 
 const ChatMessagesScreen = () => {
   const [invitees, setInvitees] = useState([]);
 
   const [showEmojiSelector, setShowEmojiSelector] = useState(false);
   const [selectedMessages, setSelectedMessages] = useState([]);
+  const [load, setLoad] = useState(false);
 
   const [recepientData, setRecepientData] = useState();
   const navigation = useNavigation();
@@ -131,7 +134,7 @@ const ChatMessagesScreen = () => {
             onPress={() => navigation.goBack()}
             name="arrow-back"
             size={24}
-            color="black"
+            color="#456fe6"
           />
 
 
@@ -218,11 +221,11 @@ const ChatMessagesScreen = () => {
         if (fullNameWithoutDiacriticsAndSpaces) {
           setInvitees([fullNameWithoutDiacriticsAndSpaces]);
         }
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", invitees)
+
         const response = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
         //  console.log(response.data)
         setDataInfo(response.data.data.firebaseData);
-
+        setLoad(true)
       } catch (error) {
         console.log(error)
         setStatus('error');
@@ -313,14 +316,14 @@ const ChatMessagesScreen = () => {
   }, [data.chatId]);
   console.log(messages)
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#F0F0F0" }}>
-      <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: 30, paddingLeft: 10, paddingRight: 10 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+    <KeyboardAvoidingView style={{ flex: 1,}}>
+      <View style={{ display: "flex", flexDirection: "row",backgroundColor:"white" , justifyContent: "space-between",  paddingLeft: 10, paddingRight: 10 , paddingTop:10, paddingBottom:10}}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10,}}>
           <Ioniconss
             onPress={() => navigation.goBack()}
             name="arrow-back"
             size={24}
-            color="black"
+            color="#456fe6"
           />
 
 
@@ -335,7 +338,7 @@ const ChatMessagesScreen = () => {
               source={{ uri: data.user.photoURL }}
             />
 
-            <Text style={{ marginLeft: 5, fontSize: 15, fontWeight: "bold" }}>
+            <Text style={{ marginLeft: 5, fontSize: 15, fontWeight: "bold",color:"#333" }}>
               {data.user.displayName}
             </Text>
           </View>
@@ -348,6 +351,7 @@ const ChatMessagesScreen = () => {
             })}
             isVideoCall={false}
             resourceID={"zego_data"}
+          
           />
           <ZegoSendCallInvitationButton
             invitees={invitees.map((inviteeID) => {
@@ -356,114 +360,121 @@ const ChatMessagesScreen = () => {
             isVideoCall={true}
             resourceID={"zegouikit_call"}
           />
-          <Ionicons name="redo-variant" size={24} color="black" />
-          <Ionicons name="undo-variant" size={24} color="black" />
-          <FontAwesome name="star" size={24} color="black" />
+        
+         
 
         </View></View>
       <ScrollView ref={scrollViewRef} contentContainerStyle={{ flexGrow: 1 }} onContentSizeChange={handleContentSizeChange}>
         {
-          messages.map((item, index) => (
-            <>
+          load === false ? <Spinner></Spinner> : <View>
+          {
+            messages.map((item, index) => (
               <>
-                {
-                  item.text == "" ? <></> : <Pressable
-
-
-                    style={[
-                      item.senderId === currentUser.uid
-                        ? {
-                          alignSelf: "flex-end",
-                          backgroundColor: "#DCF8C6",
-                          padding: 8,
-                          maxWidth: "60%",
-                          borderRadius: 7,
-                          margin: 10,
-                        }
-                        : {
-                          alignSelf: "flex-start",
-                          backgroundColor: "white",
-                          padding: 8,
-                          margin: 10,
-                          borderRadius: 7,
-                          maxWidth: "60%",
-                        },
-
-                      { width: "100%", backgroundColor: "#F0FFFF" },
-                    ]}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 13,
-                        textAlign: "right",
-                      }}
+                <>
+                  {
+                    item.text == "" ? <></> : <Pressable
+  
+  
+                      style={[
+                        item.senderId === currentUser.uid
+                          ? {
+                            alignSelf: "flex-end",
+                            backgroundColor: "#DCF8C6",
+                            padding: 8,
+                            paddingTop:0,
+                            maxWidth: "60%",
+                            borderRadius: 7,
+                            margin: 10,
+                            width:"fit-content"
+                          }
+                          : {
+                            alignSelf: "flex-start",
+                            backgroundColor: "white",
+                            padding: 8,
+                            paddingTop:0,
+                            margin: 10,
+                            borderRadius: 7,
+                            maxWidth: "60%",
+                            width:"fit-content"
+                          },
+  
+                        { backgroundColor: "#F0FFFF" },
+                      ]}
                     >
-                      {messages[index].text}
-                    </Text>
-                    <Text
-                      style={{
-                        textAlign: "right",
-                        fontSize: 9,
-                        color: "gray",
-                        marginTop: 5,
-                      }}
-                    >
-                      ss
-                    </Text>
-                  </Pressable>
-                }
-              </>
-              <>
-                {
-                  item.img == undefined ? <></> : <Pressable
-
-
-                    style={[
-                      item.senderId === currentUser.uid
-                        ? {
-                          alignSelf: "flex-end",
-                          backgroundColor: "white",
-                          padding: 8,
-                          maxWidth: "60%",
-                          borderRadius: 7,
-                          margin: 10,
-                        }
-                        : {
-                          alignSelf: "flex-start",
-                          backgroundColor: "white",
-                          padding: 8,
-                          margin: 10,
-                          borderRadius: 7,
-                          maxWidth: "60%",
-                        },
-
-                      { width: "100%", backgroundColor: "transperent" },
-                    ]}
-                  >
-                    <View>
-                      <Image
-                        source={{ uri: messages[index].img }}
-                        style={{ width: 200, height: 200, borderRadius: 7 }}
-                      />
+                      <Text
+                        style={{
+                          fontSize: 13,
+                          textAlign: "right",
+                        }}
+                      >
+                        {messages[index].text}
+                      </Text>
                       <Text
                         style={{
                           textAlign: "right",
-                          fontSize: 9,
-                          position: "absolute",
-                          right: 10,
-                          bottom: 7,
-                          color: "white",
+                          fontSize: 16,
+                          color: "gray",
                           marginTop: 5,
                         }}
                       >
-
+                      {messages[index].text}
                       </Text>
-                    </View>
-                  </Pressable>
-                }
+                    </Pressable>
+                  }
+                </>
+                <>
+                  {
+                    item.img == undefined ? <></> : <Pressable
+  
+  
+                      style={[
+                        item.senderId === currentUser.uid
+                          ? {
+                            alignSelf: "flex-end",
+                            backgroundColor: "white",
+                            padding: 8,
+                            maxWidth: "60%",
+                            borderRadius: 7,
+                            margin: 10,
+                          }
+                          : {
+                            alignSelf: "flex-start",
+                            backgroundColor: "white",
+                            padding: 8,
+                            margin: 10,
+                            borderRadius: 7,
+                            maxWidth: "60%",
+                          },
+  
+                        { width: "100%", backgroundColor: "transperent" },
+                      ]}
+                    >
+                      <View>
+                        <Image
+                          source={{ uri: messages[index].img }}
+                          style={{ width: 200, height: 200, borderRadius: 7 }}
+                        />
+                        <Text
+                          style={{
+                            textAlign: "right",
+                            fontSize: 9,
+                            position: "absolute",
+                            right: 10,
+                            bottom: 7,
+                            color: "white",
+                            marginTop: 5,
+                          }}
+                        >
+  
+                        </Text>
+                      </View>
+                    </Pressable>
+                  }
+                </>
               </>
-            </>
-          ))
+            ))
+          }
+          </View>
         }
 
 
@@ -479,6 +490,7 @@ const ChatMessagesScreen = () => {
           borderTopWidth: 1,
           borderTopColor: "#dddddd",
           marginBottom: showEmojiSelector ? 0 : 25,
+          background:"#fff"
         }}
       >
         <Entypo
@@ -519,7 +531,7 @@ const ChatMessagesScreen = () => {
         <Pressable
           onPress={handleSend}
           style={{
-            backgroundColor: "#007bff",
+            backgroundColor: "#456fe6",
             paddingVertical: 8,
             paddingHorizontal: 12,
             borderRadius: 20,

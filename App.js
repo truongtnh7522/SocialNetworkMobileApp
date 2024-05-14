@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Suspense } from 'react';
 import { RecoilRoot } from "recoil";
 import { NavigationContainer } from '@react-navigation/native';
@@ -32,10 +32,20 @@ import ZegoUIKitPrebuiltCallService, {
   ZegoUIKitPrebuiltCallFloatingMinimizedView,
   ZegoCountdownLabel,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import { View, Text, ActivityIndicator,Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
 const Stack = createStackNavigator();
 
 
-
+const LoadingScreen = () => (
+  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',backgroundColor:"white", position:"relative" }}>
+  <Image
+ 
+  source={require('./src/assets/LogoLoad.png')}
+/>
+  <Text style={{bottom:20,position:"absolute", color:"#456fe6", fontWeight:"600", right:115}}>KTC SOCIAL NETWORK</Text>
+  </View>
+);
 const onUserLogout = async () => {
   return ZegoUIKitPrebuiltCallService.uninit()
 }
@@ -85,12 +95,28 @@ const App = () => {
   );
 };
 
+
 const Root = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate a 5-second loading delay
+    const timer = setTimeout(() => {
+       setLoading(false);
+    }, 5000);
+
+    // Clean up the timer
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
   return (
     <RecoilRoot>
-      <Suspense fallback={console.log("load")}>
+      <Suspense fallback={<LoadingScreen />}>
         <App />
-
       </Suspense>
     </RecoilRoot>
   );

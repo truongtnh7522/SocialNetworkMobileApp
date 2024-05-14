@@ -18,7 +18,7 @@ import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
-  tokenState, likeR,photosR,idPostSimple,
+  tokenState, likeR,photosR,idPostSimple,idUsers
 } from "../../recoil/initState";
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
@@ -164,6 +164,7 @@ const Profile = ({ navigation }) => {
   const [loadData, setLoadData] = useState(false);
   const [lengthPost, setLengthPost] = useState(0);
   const [dataPost, setData] = useState([]);
+  const [idUserR, setidUsersR] = useRecoilState(idUsers);
 
   const [to, setToken] = useRecoilState(tokenState);
 
@@ -200,11 +201,11 @@ const Profile = ({ navigation }) => {
     setAuthToken(to)
     const fetchData = async () => {
       try {
-        const id = dataInfo.userId;
+        const id = idUserR || dataInfo.userId ;
         const response = await api.get(
           `https://www.socialnetwork.somee.com/api/post/user/${id}`
         );
-        // console.log("DataPOst",response.data);
+         console.log("DataPOst User", id);
         setLengthPost(response.data.data.length);
         setPhotos(response.data)
         // setTotal(response.data.data.length);
@@ -320,6 +321,7 @@ const Profile = ({ navigation }) => {
             style={{
               ...FONTS.body4,
               marginLeft: 4,
+              color:"#333"
             }}
           >
             {dataInfo.address}

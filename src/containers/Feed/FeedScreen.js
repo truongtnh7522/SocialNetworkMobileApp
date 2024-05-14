@@ -22,7 +22,9 @@ import ZegoUIKitPrebuiltCallService, {
   ZegoCountdownLabel,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import { useNavigation, useRoute } from "@react-navigation/native";
-
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Entypo from "react-native-vector-icons/Entypo";
+import Feather from "react-native-vector-icons/Feather";
 export const FeedScreen = ({ navigation}) => {
   const [data, setData] = useState([]);
   const [dataInfo, setDataInfo] = useState([]);
@@ -133,55 +135,47 @@ export const FeedScreen = ({ navigation}) => {
   };
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Image
-            style={styles.icon}
-            source={require('../../assets/images/camera.jpg')}
-          />
-          <Image
-            style={styles.logo}
-            source={require('../../assets/images/instagramLogo.png')}
-          />
-          <View style={styles.headerRightWrapper}>
-          <TouchableOpacity onPress={handleNotifi}>
-          <View >
-            <Image
-              style={styles.icon}
-              source={require('../../assets/images/igtv.png')}
-            />
-          </View>
-        </TouchableOpacity>
+      <View style={styles.header}>
+      <Image
+          style={styles.icon}
+          source={require('../../assets/TKCTech.png')}
+        />
         
-        
-            <Image
-              style={styles.icon}
-              source={require('../../assets/images/message.jpg')}
-            />
-          </View>
+        <View style={styles.headerRightWrapper}>
+      
+      
+      
+      <Feather name="search" size={30} color="black" style={{marginRight:10}}/>
+      <Entypo name="camera" size={30} color="black"  style={{marginRight:10}}/>
+      <TouchableOpacity onPress={handleNotifi}>
+      <Ionicons name="notifications" size={30} color="black" />
+    </TouchableOpacity>
+    
         </View>
-        {/* <View style={styles.storiesWrapper}>
-          <Stories />
-        </View> */}
-        <View style={styles.containerBody}>
-       
-          <ScrollView
-            style={styles.feedContainer}
-            onScroll={({ nativeEvent }) => {
-              if (isCloseToBottom(nativeEvent)) {
-                handleLoadMore();
-              }
-            }}
-            scrollEventThrottle={400}
-          >
-            {data.map((item, index) => (
-              <View key={index}>
-                <Feed data={item} />
-              </View>
-            ))}
-            {renderFooter()}
-          </ScrollView>
-       
       </View>
+        {
+          load === false ? <Spinner></Spinner> :     
+          <View style={styles.containerBody}>
+         
+            <ScrollView
+              style={styles.feedContainer}
+              onScroll={({ nativeEvent }) => {
+                if (isCloseToBottom(nativeEvent)) {
+                  handleLoadMore();
+                }
+              }}
+              scrollEventThrottle={400}
+            >
+              {data.map((item, index) => (
+                <View key={index}>
+                  <Feed data={item} />
+                </View>
+              ))}
+              {renderFooter()}
+            </ScrollView>
+         
+        </View>
+        }
        
       
       </View>
@@ -210,7 +204,8 @@ export const styles = StyleSheet.create({
     padding: 10,
     borderBottomColor: colors.gray1,
     borderBottomWidth: 1,
-    marginTop:15
+    
+     backgroundColor:"#fff"
   },
   footer: {
     display: 'flex',
@@ -225,7 +220,7 @@ export const styles = StyleSheet.create({
     display: 'flex',
   },
   icon: {
-    width: 40,
+    width: 100,
     height: 40,
   },
   logo: {
@@ -235,6 +230,8 @@ export const styles = StyleSheet.create({
   headerRightWrapper: {
     display: 'flex',
     flexDirection: 'row',
+    justifyContent:"center",
+    alignItems:"center"
   },
   storiesWrapper: {
     backgroundColor: colors.gray1,

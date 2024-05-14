@@ -5,6 +5,9 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import {   tokenState,likeR , idPost,idUsers} from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import { useNavigation, useRoute } from "@react-navigation/native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Feather from "react-native-vector-icons/Feather";
 const Feed = ({data}) => {
   const [likeRR, setLikeRR] = useRecoilState(likeR);
   const [to, setToken] = useRecoilState(tokenState);
@@ -56,6 +59,7 @@ const Feed = ({data}) => {
   console.log(data.userId)
   const handleNavigate = () => {
     if(data.userId === idUser) {
+      setidUsersR(idUser)
       navigation.navigate('Profile')
     }
     else {
@@ -73,10 +77,7 @@ const Feed = ({data}) => {
           />
           <Text style={styles.headerTitle}> {data.fullName}</Text>
         </TouchableOpacity>
-        <Image
-          style={styles.icon}
-          source={require('../../assets/images/dots.jpg')}
-        />
+       
       </View>
       <Text style={{marginBottom:10, paddingLeft:10}}>
           {' '}
@@ -85,24 +86,32 @@ const Feed = ({data}) => {
         </Text>
       <View>
     
-       {
-          data.images.map((item,index) => (
-            <Image
-            key={index}
-            style={{ flex: 1, aspectRatio: 1 }} // Sử dụng flex và aspectRatio để điều chỉnh tỷ lệ của hình ảnh
-            resizeMode="contain" // Sử dụng resizeMode="contain" để hình ảnh vừa với kích thước hiển thị
-            source={{ uri: item.linkImage }}
-          />
-          ))
-       }
+      {
+        data.images.map((item, index) => (
+          data.images.length > 1 ? 
+          
+           <Image
+         
+           style={{  aspectRatio: 1, height: "auto", width:"100px" }}
+           resizeMode="contain"
+           source={{ uri: item.linkImage }}
+         />
+        
+          :
+          <Image
+          key={index}
+          style={{ flex: 1, aspectRatio: 1, height: "auto" }}
+          resizeMode="contain"
+          source={{ uri: item.linkImage }}
+        />
+        ))
+      }
+      
       </View>
       <View style={styles.feedImageFooter}>
         <View style={styles.feddimageFooterLeftWrapper}>
         <TouchableOpacity onPress={handleLike}>
-        <Image
-          style={styles.icon}
-          source={require('../../assets/images/heartfeed.jpg')}
-        />
+        <Feather name="heart" size={30} color="pink" style={{marginRight:10}}/>
       </TouchableOpacity>
           
       <TouchableOpacity
@@ -129,10 +138,7 @@ const Feed = ({data}) => {
         <View style={styles.underLine} />
       </View>
       <View style={styles.likesAndCommentsWrapper}>
-        <Image
-          style={styles.likesImage}
-          source={require('../../assets/images/heart.png')}
-        />
+      <Feather name="heart" size={20} color="pink" style={{marginRight:10}}/>
         <Text style={styles.likesTitle}> {data.countLike}  Likes</Text>
 
       
@@ -187,6 +193,7 @@ export const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
+    color:"#333"
   },
   feedImage: {
     width: '100%',
@@ -218,5 +225,6 @@ export const styles = StyleSheet.create({
   likesTitle: {
     fontSize: 17,
     fontWeight: '600',
+    color:"#333"
   },
 });

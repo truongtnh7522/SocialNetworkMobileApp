@@ -18,14 +18,17 @@ import {
 import {   tokenState,likeR,LoadPage
 } from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
+import Spinner from "../../components/Spinner";
   const CreatePostforScreen = ({ navigation }) => {
     const [selectedImage, setSelectedImage] = useState(imagesDataURL[0]);
     const [content, setContent] = useState("");
     const [isChecked, setIsChecked] = useState("1");
     const [to, setToken] = useRecoilState(tokenState);
     const [LoadPageR, setLoadPageR] = useRecoilState(LoadPage);
+    const [load,setLoad] = useState(false)
     const today = new Date();
     const handlePost = async () => {
+      setLoad(true)
         setAuthToken(to);
         try {
           const formData = new FormData();
@@ -53,9 +56,10 @@ import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
           if(res.status == 200) {
             setSelectedImage(imagesDataURL[0])
             setContent("")
+            setLoad(false)
             setLoadPageR(!LoadPageR)
           }
-          console.log("het qua: ", res)
+  
         } catch (error) {
           console.error("Add sai!", error);
         }
@@ -97,7 +101,8 @@ import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
       >
         <View
           style={{
-            marginHorizontal: 12,
+         
+            paddingVertical:10,
             flexDirection: "row",
             justifyContent: "center",
           }}
@@ -107,16 +112,17 @@ import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
             style={{
               position: "absolute",
               left: 0,
+              top:10,
             }}
           >
             <MaterialIcons
               name="keyboard-arrow-left"
               size={24}
-              color={COLORS.black}
+              color="#456fe6"
             />
           </TouchableOpacity>
   
-          <Text style={{ ...FONTS.h3 }}>Create Post</Text>
+          <Text style={{ ...FONTS.h3 , color:"#333", fontWeight:800}}>Create Post</Text>
         </View>
             
         <View>
@@ -178,10 +184,11 @@ import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
             style={{
               height: 170,
               width: 170,
-        
+              
               borderWidth: 2,
               // borderColor: COLORS.primary,
             }}
+            resizeMode="contain"
           />
           
          
@@ -227,14 +234,17 @@ import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
           }}
           onPress={handlePost}
         >
-          <Text
-            style={{
-              ...FONTS.body3,
-              color: COLORS.white,
-            }}
-          >
-            Save Change
-          </Text>
+        {
+          load === false ?  <Text
+          style={{
+            ...FONTS.body3,
+            color: COLORS.white,
+          }}
+        >
+          Save Change
+        </Text> : <Spinner></Spinner>
+        }
+         
         </TouchableOpacity>
 
       

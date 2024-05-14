@@ -27,6 +27,7 @@ import {
   tokenState,
 } from "../../recoil/initState";
 import axios from 'axios'
+import Spinner from '../../components/Spinner'
 
 
 const Login = ({ navigation }) => {
@@ -36,6 +37,7 @@ const Login = ({ navigation }) => {
   const authContext = useContext(AuthContext);
   const [token2, setToken2] = useState('');
   const [token3, setToken3] = useState('');
+  const [load, setLoad] = useState(true);
   const publicAxios = axios.create({
     baseURL: 'https://www.socialnetwork.somee.com/api',
   });
@@ -129,10 +131,12 @@ const Login = ({ navigation }) => {
 
 
   return (
-    <Background>
-      <BackButton />
+    <View>
+     {
+      load === true ? <Spinner></Spinner> :  <Background>
+     
       <Logo />
-      <Header>Welcome back.</Header>
+      <Header>Welcome back</Header>
 
       <TextInput
         label="Email"
@@ -163,7 +167,7 @@ const Login = ({ navigation }) => {
           <Text style={styles.forgot}>Forgot your password?</Text>
         </TouchableOpacity>
       </View>
-      <Button mode="contained" onPress={handleLogin}>
+      <Button mode="contained"  onPress={handleLogin}>
         Login
       </Button>
       <View style={styles.row}>
@@ -173,6 +177,8 @@ const Login = ({ navigation }) => {
         </TouchableOpacity>
       </View>
     </Background>
+     }
+    </View>
   )
 }
 

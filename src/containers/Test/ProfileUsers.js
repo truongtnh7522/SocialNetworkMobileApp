@@ -406,6 +406,7 @@ const ProfileUsers = ({ navigation }) => {
             style={{
               ...FONTS.body4,
               marginLeft: 4,
+              color:"black"
             }}
           >
             {dataInfo.address}

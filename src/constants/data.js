@@ -10,5 +10,5 @@ export const photos1 = [
 ]
 
 export const imagesDataURL = [
-    'https://t4.ftcdn.net/jpg/02/17/88/73/360_F_217887350_mDfLv2ootQNeffWXT57VQr8OX7IvZKvB.jpg'
+    'https://ung-dung.com/images/upanh_online/upanh.png'
 ]

@@ -1,9 +1,9 @@
 import { View, Text, Platform } from "react-native";
 import React from "react";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+import Entypo from "react-native-vector-icons/Entypo";
 import Fontisto from "react-native-vector-icons/Fontisto";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Feather from "react-native-vector-icons/Feather";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { COLORS } from "../../constants";
 import  {Messages} from "../../containers/Test/index";
@@ -36,7 +36,7 @@ const BottomTabNav = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <SimpleLineIcons
+              <Entypo
                 name="home"
                 size={24}
                 color={focused ? COLORS.primary : COLORS.black}
@@ -52,8 +52,8 @@ const BottomTabNav = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <MaterialCommunityIcons
-                name="message-text-outline"
+              <Ionicons
+                name="chatbox-ellipses-outline"
                 size={24}
                 color={focused ? COLORS.primary : COLORS.black}
               />
@@ -72,7 +72,7 @@ const BottomTabNav = () => {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
-                  backgroundColor: COLORS.primary,
+                  backgroundColor: "#456fe6",
                   height: Platform.OS == "ios" ? 50 : 60,
                   width: Platform.OS == "ios" ? 50 : 60,
                   top: Platform.OS == "ios" ? -10 : -20,
@@ -94,7 +94,7 @@ const BottomTabNav = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <MaterialIcons
+              <Feather
                 name="settings"
                 size={24}
                 color={focused ? COLORS.primary : COLORS.black}
@@ -110,7 +110,7 @@ const BottomTabNav = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <MaterialIcons
+              <Ionicons
                 name="person-outline"
                 size={24}
                 color={focused ? COLORS.primary : COLORS.black}
