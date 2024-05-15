@@ -4,7 +4,7 @@ import axios from "axios";
 
 
 const api = axios.create({
-  baseURL: "hhttps://www.socialnetwork.somee.com/api/auth/login",
+  baseURL: "https://www.socialnetwork.somee.com/api/auth/login",
 });
 
 // Hàm này sẽ thêm token vào header nếu token tồn tại
