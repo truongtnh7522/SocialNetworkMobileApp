@@ -26,6 +26,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Entypo from "react-native-vector-icons/Entypo";
 import Feather from "react-native-vector-icons/Feather";
+import AntDesign from "react-native-vector-icons/AntDesign";
 import Video from 'react-native-video';
 const { height: windowHeight } = Dimensions.get('window');
 export const FeedScreen = ({ navigation}) => {
@@ -155,7 +156,7 @@ export const FeedScreen = ({ navigation}) => {
       
       
       <Feather name="search" size={30} color="black" style={{marginRight:10}}/>
-      <Entypo name="camera" size={30} color="black"  style={{marginRight:10}}/>
+      <AntDesign name="pluscircle" size={28} color="black"  style={{marginRight:10}}/>
       <TouchableOpacity onPress={handleNotifi}>
       <Ionicons name="notifications" size={30} color="black" />
     </TouchableOpacity>
@@ -255,7 +256,7 @@ useEffect(() => {
   }
 
   return () => {
-    if (video) {
+    if (!video) {
       setPaused(true);
    
     }

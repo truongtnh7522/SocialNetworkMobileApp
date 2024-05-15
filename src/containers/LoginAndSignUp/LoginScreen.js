@@ -16,7 +16,7 @@ import {
   StyleSheet,
   SafeAreaView,
   Alert,
-  TouchableOpacity,
+  TouchableOpacity,Dimensions
 } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
@@ -29,7 +29,8 @@ import {
 import axios from 'axios'
 import Spinner from '../../components/Spinner'
 
-
+const { height: windowHeight } = Dimensions.get('window');
+const { width: windowWidth } = Dimensions.get('window');
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [to, setToken] = useRecoilState(tokenState);
@@ -131,9 +132,10 @@ const Login = ({ navigation }) => {
 
 
   return (
-    <View>
-     {
-      load === true ? <Spinner></Spinner> :  <Background>
+    <View style={{backgroundColor:"#333", height: windowHeight *1 ,
+    width: windowWidth * 1,}}>
+     
+      <Background>
      
       <Logo />
       <Header>Welcome back</Header>
@@ -177,7 +179,7 @@ const Login = ({ navigation }) => {
         </TouchableOpacity>
       </View>
     </Background>
-     }
+    
     </View>
   )
 }

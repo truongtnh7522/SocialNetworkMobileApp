@@ -26,7 +26,7 @@ import ZegoUIKitPrebuiltCallService, {
   ZegoCountdownLabel,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import { useNavigation, useRoute } from "@react-navigation/native";
-
+import AntDesign from "react-native-vector-icons/AntDesign";
 export const FeedSimpleScreen = ({ navigation}) => {
   const [data, setData] = useState([]);
   const [dataInfo, setDataInfo] = useState([]);
@@ -141,7 +141,7 @@ export const FeedSimpleScreen = ({ navigation}) => {
         
         
         <Feather name="search" size={30} color="black" style={{marginRight:10}}/>
-        <Entypo name="camera" size={30} color="black"  style={{marginRight:10}}/>
+        <AntDesign name="pluscircle" size={28} color="black"  style={{marginRight:10}}/>
         <TouchableOpacity onPress={handleNotifi}>
         <Ionicons name="notifications" size={30} color="black" />
       </TouchableOpacity>

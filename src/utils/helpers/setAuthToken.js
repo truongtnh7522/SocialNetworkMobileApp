@@ -17,7 +17,7 @@ const setAuthToken = (token) => {
   }
 };
 const authAxios = axios.create({
-    baseURL: 'hhttps://www.socialnetwork.somee.com/api',
+    baseURL: 'https://www.socialnetwork.somee.com/api',
   });
 
   const publicAxios = axios.create({

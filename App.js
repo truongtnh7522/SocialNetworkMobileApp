@@ -9,6 +9,7 @@ import FeedScreen from './src/containers/Feed/FeedScreen';
 import FeedSimpleScreen from './src/containers/FeedSimple/FeedSimpleScreen';
 import EditInforScreen from './src/containers/Infor/EditInforScreen';
 import CreatePostforScreen from './src/containers/CreatePost/CreatePost';
+import CreateReelsforScreen from './src/containers/CreateReels/CreateReels';
 import RegisterScreen from './src/containers/LoginAndSignUp/RegisterScreen';
 import BottomTabNav from './src/containers/Test/BottomTabNav';
 import VertifyPinScreen from "./src/containers/LoginAndSignUp/VertifyPinScreen"
@@ -65,6 +66,7 @@ const App = () => {
             <Stack.Screen name="EditProfile" component={EditInforScreen} options={{ headerShown: false }} />
             <Stack.Screen name="CreateInfo" component={CreateInfoScreen} options={{ headerShown: false }} />
             <Stack.Screen name="CreatePost" component={CreatePostforScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="CreateReels" component={CreateReelsforScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
             <Stack.Screen name="VertifyPinScreen" component={VertifyPinScreen} options={{ headerShown: false }} />
             <Stack.Screen name="ChatMessagesScreen" component={ChatMessagesScreen} options={{ headerShown: false }} />
