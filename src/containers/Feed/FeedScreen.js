@@ -1,5 +1,5 @@
-import React, {Component,useEffect,useState} from 'react';
-import {Text, View, StyleSheet, ScrollView, Image,ActivityIndicator,TouchableOpacity } from 'react-native';
+import React, {Component,useEffect,useState,useRef } from 'react';
+import {Text, View, StyleSheet, ScrollView, Image,ActivityIndicator,TouchableOpacity ,Dimensions} from 'react-native';
 import {colors} from '../../utils/configs/Colors';
 import Feed from '../../components/Feed/Feed';
 import Stories from '../../components/Feed/Stories';
@@ -21,10 +21,13 @@ import ZegoUIKitPrebuiltCallService, {
   ZegoUIKitPrebuiltCallFloatingMinimizedView,
   ZegoCountdownLabel,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import getReels from "../../utils/api/getReelsAPI"
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Entypo from "react-native-vector-icons/Entypo";
 import Feather from "react-native-vector-icons/Feather";
+import Video from 'react-native-video';
+const { height: windowHeight } = Dimensions.get('window');
 export const FeedScreen = ({ navigation}) => {
   const [data, setData] = useState([]);
   const [dataInfo, setDataInfo] = useState([]);
@@ -34,12 +37,13 @@ export const FeedScreen = ({ navigation}) => {
   const [LoadPageR, setLoadPageR] = useRecoilState(LoadPage);
   const [load,setLoad] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false);
+  const [modePost, setModePost] = useState(true)
   const [pageNumber, setPageNumber] = useState(3);
   const navigation1 = useNavigation();
   const onUserLogin = async (userID, userName, props) => {
-    console.log(`User logged in with userID: ${userID}, userName: ${userName}`);
+  
     return ZegoUIKitPrebuiltCallService.init(
-      722062014, // You can get it from ZEGOCLOUD's console
+      722062014, // You can get it from ZEGOCLOUD's 
       "46231991ad89a2dfa10ed17e8d900b182acba20c3425117595f07fb4ed734cbf", // You can get it from ZEGOCLOUD's console
       userID, // It can be any valid characters, but we recommend using a phone number.
       userName,
@@ -100,13 +104,13 @@ export const FeedScreen = ({ navigation}) => {
       
       onUserLogin(fullNameWithoutDiacriticsAndSpaces, fullNameWithoutDiacriticsAndSpaces);
       const response = await api.get(`https://www.socialnetwork.somee.com/api/post?numberOfPosts=${pageNumber}`);
-       console.log("DaTA",response)
+    
        const newData = response.data.data;
        setData(newData);
       setLoad(true)
       setStatus('success');
     } catch (error) {
-      console.log(error)
+   
       setStatus('error');
     }
     }
@@ -123,6 +127,11 @@ export const FeedScreen = ({ navigation}) => {
     navigation1.navigate('Notifications')
 
   }
+  const [reels, setReels] = useState([]);
+  useEffect(() => {
+    getReels().then((data) => setReels(data));
+  }, []);
+  // console.log("Reels",reels)
   const handleLoadMore = () => {
     if (!loadingMore) {
       setLoadingMore(true);
@@ -153,9 +162,24 @@ export const FeedScreen = ({ navigation}) => {
     
         </View>
       </View>
+      <View style={styles.headerSe}>
+
+    <TouchableOpacity onPress={() => setModePost(true)} style={[styles.containerSe ,modePost && { borderBottomWidth: 1, borderBottomColor: colors.primaryBlue }]}>  
+      <Text style={{color:"#333",fontWeight:600}}>Posts</Text>
+   </TouchableOpacity>
+    <View style={{width:3,height:40,backgroundColor:"#f9f9f9"}}>
+    <Text style={{color:"#333",}}></Text>
+  </View>
+  <TouchableOpacity onPress={() => setModePost(false)} style={[styles.containerSe ,!modePost && { borderBottomWidth: 1, borderBottomColor: colors.primaryBlue }]}>  
+      <Text style={{color:"#333",fontWeight:600}}>Reels</Text>
+   </TouchableOpacity>
+      
+      </View>
+      { 
+        modePost === true ?  <View style={styles.container}>
         {
           load === false ? <Spinner></Spinner> :     
-          <View style={styles.containerBody}>
+          <View >
          
             <ScrollView
               style={styles.feedContainer}
@@ -176,6 +200,22 @@ export const FeedScreen = ({ navigation}) => {
          
         </View>
         }
+        </View> : <View style={[styles.container, {paddingBottom:50}]}>
+        <View >
+        <ScrollView
+        style={[styles.feedContainer, {paddingBottom:30}]}
+       
+        scrollEventThrottle={400}
+      >
+        {reels?.data?.map((item: any, index: number) => (
+          <VideoPlayer data={item} key={index}/>
+        ))}
+        </ScrollView>
+        </View>
+        </View>
+      }
+     
+      
        
       
       </View>
@@ -188,20 +228,146 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   const paddingToBottom = 20;
   return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
 };
+const VideoPlayer = (data) => {
+  const [paused, setPaused] = useState(true);
+  const [muted, setMuted] = useState(false);
+  const videoRef = useRef(null);
+  const [videos, setVideos] = useState(data.videos);
+
+  const togglePlayPause = () => {
+    setPaused(!paused);
+  };
+
+  const toggleMute = () => {
+    setMuted(!muted);
+  };
+
+
+useEffect(() => {
+
+
+  const video = videoRef.current;
+  if (video) {
+    console.log(data.data.content)
+    setPaused(false);
+    
+   
+  }
+
+  return () => {
+    if (video) {
+      setPaused(true);
+   
+    }
+  };
+}, []);
+  return (
+    <View style={[styles.containerBodyVideo,{display:"flex", flex:1,justifyContent:"center", alignItems:"center", backgroundColor:"#000000", borderBottomColor:"#fff",borderBottomWidth:1}]}>
+      <Video
+        ref={videoRef}
+        source={{ uri:data.data.videos[0].link }}
+        style={styles.video}
+        paused={paused}
+        muted={muted}
+        resizeMode="contain"
+      />
+      <View style={styles.controls}>
+        <TouchableOpacity onPress={togglePlayPause} style={styles.controlButton}>
+          <Ionicons name={paused ? 'play' : 'pause'} size={30} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={toggleMute} style={styles.controlButton}>
+          <Ionicons name={muted ? 'volume-mute' : 'volume-high'} size={30} color="#fff" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.controlsContent}>
+      <View style={styles.headerWrapper}>
+      
+        <Text style={styles.headerContent}> {data.data.content}</Text>
+    
+     
+    </View>
+    </View>
+      <View style={styles.controlsName}>
+      <View style={styles.headerWrapper}>
+      <TouchableOpacity style={styles.headerLeftWrapper} >
+        <Image
+          style={styles.profileThumb}
+          source={{uri: data.data.avatarUrl}}
+        />
+        <Text style={styles.headerTitle}> {data.data.fullName}</Text>
+      </TouchableOpacity>
+     
+    </View>
+    </View>
+    </View>
+  );
+};
 
 export const styles = StyleSheet.create({
+  profileThumb: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+  },
+  headerWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  headerLeftWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color:"#fff",
+    marginLeft:10
+  },
+  headerContent: {
+    fontSize: 22,
+    fontWeight: '500',
+    color:"#fff",
+    marginLeft:10
+  },
+  feedImage: {
+    width: '100%',
+  },
   container: {
     display: 'flex',
     flex: 1,
   },
   containerBody: {
-    paddingBottom:130
+    height: windowHeight * 0.8
+  },
+  containerBodyVideo: {
+    height: windowHeight * 0.82
   },
   header: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
+    borderBottomColor: colors.gray1,
+    borderBottomWidth: 1,
+    
+     backgroundColor:"#fff"
+  },
+  containerSe: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    height:"100%"
+  },
+  headerSe: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height:40,
+   
     borderBottomColor: colors.gray1,
     borderBottomWidth: 1,
     
@@ -237,5 +403,42 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.gray1,
     borderBottomColor: colors.gray1,
     borderBottomWidth: 1,
+  },
+  containerV: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#333',
+  },
+  video: {
+    width: "100%",
+    height: 300,
+  },
+  controls: {
+    position: 'absolute',
+    top: 10,
+    flexDirection: 'row',
+    justifyContent: 'start',
+    width: '100%',
+  },
+  controlsName: {
+    position: 'absolute',
+    bottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'start',
+    width: '100%',
+  },
+  controlsContent: {
+    position: 'absolute',
+    bottom: 80,
+    flexDirection: 'row',
+    justifyContent: 'start',
+    width: '100%',
+  },
+  controlButton: {
+    padding: 10,
+    backgroundColor:"#676767",
+    borderRadius: 99999,
+    marginLeft:20
   },
 });

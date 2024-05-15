@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {View, Text, StyleSheet, Image,TouchableOpacity, TextInput} from 'react-native';
+import {View, Text, StyleSheet, Image,TouchableOpacity, TextInput,Dimensions} from 'react-native';
 import {colors} from '../../utils/configs/Colors';
 import { useRecoilState, useRecoilValue } from "recoil";
 import {   tokenState,likeR , idPost,idUsers} from "../../recoil/initState";
@@ -8,6 +8,10 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
+import Octicons from "react-native-vector-icons/Octicons";
+import AntDesign from "react-native-vector-icons/AntDesign";
+const { height: windowHeight } = Dimensions.get('window');
+const { width: windowWidth } = Dimensions.get('window');
 const Feed = ({data}) => {
   const [likeRR, setLikeRR] = useRecoilState(likeR);
   const [to, setToken] = useRecoilState(tokenState);
@@ -67,6 +71,12 @@ const Feed = ({data}) => {
       navigation.navigate('ProfileUsers')
     }
   }
+  const [imageBig, setImageBig] = useState("")
+  const [isImage, setIsImage] = useState(false)
+  const handleImage = (img) => {
+    setIsImage(true)
+    setImageBig(img)
+  }
   return (
     <View style={styles.container}>
       <View style={styles.headerWrapper}>
@@ -98,12 +108,13 @@ const Feed = ({data}) => {
          />
         
           :
-          <Image
-          key={index}
-          style={{ flex: 1, aspectRatio: 1, height: "auto" }}
-          resizeMode="contain"
-          source={{ uri: item.linkImage }}
-        />
+          <TouchableOpacity onPress={() => handleImage(item.linkImage)} key={index}>
+      <Image
+        style={{ flex: 1, aspectRatio: 1 }}
+        resizeMode="cover"
+        source={{ uri: item.linkImage }}
+      />
+    </TouchableOpacity>
         ))
       }
       
@@ -118,21 +129,11 @@ const Feed = ({data}) => {
       style={styles.container1}
       onPress={handleCmt}
     >
-        <Image
-          style={styles.icon}
-          source={require('../../assets/images/comment.png')}
-        />
+    <Octicons name="comment" size={30} color="#456fe6" style={{marginRight:10}}/>
        </TouchableOpacity>
-          <Image
-   
-            style={styles.icon}
-            source={require('../../assets/images/messagefeed.png')}
-          />
+         
         </View>
-        <Image
-          style={styles.icon}
-          source={require('../../assets/images/bookmarkfeed.png')}
-        />
+        <AntDesign name="sharealt" size={30} color="#456fe6" style={{marginRight:10}}/>
       </View>
       <View style={styles.underLineWRapper}>
         <View style={styles.underLine} />
@@ -149,7 +150,25 @@ const Feed = ({data}) => {
 
       
       </View>
-      
+      <View
+      style={{
+        position: isImage ? 'absolute' : 'relative',
+        zIndex: 999,
+        height: windowHeight * 0.9,
+        width: windowWidth * 0.9,
+        backgroundColor: 'rgba(158, 158, 158, 0.6)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        left:20
+        
+      }}
+    >
+      <Image
+        style={{ height: 400, width: "100%" }}
+        resizeMode="contain"
+        source={{ uri: imageBig }}
+      />
+    </View>
     </View>
   );
 };
