@@ -19,7 +19,7 @@ import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
-  tokenState, likeR,photosR,idPostSimple,idUsers
+  tokenState, likeR,photosR,idPostSimple,idUsers,photosRU
 } from "../../recoil/initState";
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
@@ -37,17 +37,19 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { db } from "../../firebase";
-var photos = {};
+
 // console.log("data",photos.data?.[0].images?.[0].linkImage)
 const PhotosRoutes = ({ navigation }) => {
   const navigation1 = useNavigation();
-  const [photos,setPhotos] = useRecoilState(photosR)
+  const [photos,setPhotos] = useRecoilState(photosRU)
   const [idPostSimpleR,setIdPostSimple] = useRecoilState(idPostSimple)
   const handleGetPost = (id) => {
     console.log(id)
     setIdPostSimple(id)
      navigation1.navigate('FeedSimpleScreen')
   }
+  // console.log("pts",photos.data?.[0].images[0].linkImage )
+  
   return (
     <View style={{ flex: 1 }}>
     <FlatList
@@ -63,11 +65,11 @@ const PhotosRoutes = ({ navigation }) => {
           }}
           onPress={() => {handleGetPost(photos.data?.[index].id)}}
         >
-          <Image
-            key={index}
-            source={{ uri: photos.data?.[index].images[0].linkImage }} 
-            style={{ width: "100%", height: "100%", borderRadius: 12 }}
-          />
+        <Image
+        key={index}
+        source={{ uri: photos.data?.[index].images[0].linkImage  }} 
+        style={{ width: "100%", height: "100%", borderRadius: 12 }}
+      />
         </TouchableOpacity>
       )}
     />
@@ -183,7 +185,7 @@ const ProfileUsers = ({ navigation }) => {
   const [to, setToken] = useRecoilState(tokenState);
 
   const [load, setLoad] = useState(false)
-  const [photos,setPhotos] = useRecoilState(photosR)
+  const [photos,setPhotos] = useRecoilState(photosRU)
   console.log(idUserR)
   useEffect(() => {
     const fetchDataInfo = async () => {

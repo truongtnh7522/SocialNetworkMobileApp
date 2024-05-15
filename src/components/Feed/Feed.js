@@ -63,11 +63,11 @@ const Feed = ({data}) => {
   console.log(data.userId)
   const handleNavigate = () => {
     if(data.userId === idUser) {
-      setidUsersR(idUser)
+  
       navigation.navigate('Profile')
     }
     else {
-      setidUsersR(data.userId )
+      setidUsersR(data.userId)
       navigation.navigate('ProfileUsers')
     }
   }
@@ -150,25 +150,7 @@ const Feed = ({data}) => {
 
       
       </View>
-      <View
-      style={{
-        position: isImage ? 'absolute' : 'relative',
-        zIndex: 999,
-        height: windowHeight * 0.9,
-        width: windowWidth * 0.9,
-        backgroundColor: 'rgba(158, 158, 158, 0.6)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        left:20
-        
-      }}
-    >
-      <Image
-        style={{ height: 400, width: "100%" }}
-        resizeMode="contain"
-        source={{ uri: imageBig }}
-      />
-    </View>
+ 
     </View>
   );
 };

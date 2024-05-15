@@ -24,11 +24,11 @@ import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
 import Background from './../../components/LoginAndSignUp/Background';
 
-var photos = {};
 // console.log("data",photos.data?.[0].images?.[0].linkImage)
 const PhotosRoutes = ({ navigation }) => {
   const navigation1 = useNavigation();
   const [photos,setPhotos] = useRecoilState(photosR)
+  console.log(photos)
   const [idPostSimpleR,setIdPostSimple] = useRecoilState(idPostSimple)
   const handleGetPost = (id) => {
     console.log(id)
@@ -182,7 +182,7 @@ const Profile = ({ navigation }) => {
         setDataInfo(response.data.data);
         // console.log("s", response.data.data)
       } catch (error) {
-        console.log(error)
+      
         setStatus('error');
       }
     }
@@ -201,7 +201,7 @@ const Profile = ({ navigation }) => {
     setAuthToken(to)
     const fetchData = async () => {
       try {
-        const id = idUserR || dataInfo.userId ;
+        const id =  dataInfo.userId ;
         const response = await api.get(
           `https://www.socialnetwork.somee.com/api/post/user/${id}`
         );
@@ -228,8 +228,7 @@ const Profile = ({ navigation }) => {
         // Cập nhật dữ liệu vào state
         if (response.status === 200) {
           setLengthFriend(response.data.data.length);
-          //setLoadData(true);
-          // console.log(response.data.data.length);
+       
         }
       })
       .catch((error) => {

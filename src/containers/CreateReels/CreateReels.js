@@ -7,7 +7,7 @@ import {
     TextInput,
     Modal,
   } from "react-native";
-  import React, { useState } from "react";
+  import React, { useState ,useEffect} from "react";
   import { SafeAreaView } from "react-native-safe-area-context";
   import * as ImagePicker from "react-native-image-picker";
   import { COLORS, FONTS } from "../../constants";
@@ -19,6 +19,9 @@ import {   tokenState,likeR,LoadPage
 } from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner";
+import CheckBox from 'react-native-check-box';
+import { colors } from "../../utils/configs/Colors";
+
   const CreateReelsforScreen = ({ navigation }) => {
     const [selectedImage, setSelectedImage] = useState(imagesDataURL[0]);
     const [content, setContent] = useState("");
@@ -26,7 +29,22 @@ import Spinner from "../../components/Spinner";
     const [to, setToken] = useRecoilState(tokenState);
     const [LoadPageR, setLoadPageR] = useRecoilState(LoadPage);
     const [load,setLoad] = useState(false)
+    const [disableVoice, setDisableVoice] = useState(true);
+    const [audio, setAudio] = useState([]);
     const today = new Date();
+    useEffect(() => {
+      const fetchAudio = async () => {
+        try {
+          setAuthToken(to);
+          const res = await api.get("https://www.socialnetwork.somee.com/api/audio");
+          setAudio(res.data.data);
+          console.log(res);
+        } catch (e) {
+          console.log(e);
+        }
+      };
+      fetchAudio();
+    }, []);
     const handlePost = async () => {
       setLoad(true)
         setAuthToken(to);
@@ -122,7 +140,7 @@ import Spinner from "../../components/Spinner";
             />
           </TouchableOpacity>
   
-          <Text style={{ ...FONTS.h3 , color:"#333", fontWeight:800}}>Create Post</Text>
+          <Text style={{ ...FONTS.h3 , color:"#333", fontWeight:800}}>Create Reels</Text>
         </View>
             
         <View>
@@ -195,6 +213,17 @@ import Spinner from "../../components/Spinner";
           </View>
         </TouchableOpacity>
       </View>
+      <View style={{ display:"flex",flexDirection:"row", justifyContent: 'center', alignItems: 'center' , marginBottom:10}}>
+      <Text style={{color:"#000000"}}>Disable Voice: </Text>
+      <CheckBox
+        style={{ flex: 1, padding: 10, color:colors.primaryBlue }}
+        onClick={() => setDisableVoice(!disableVoice)}
+        isChecked={disableVoice}
+        rightText="Check me"
+      
+      />
+      <Text>{isChecked ? "Checked" : "Unchecked"}</Text>
+    </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginBottom:30 }}>
       <TouchableOpacity
         style={{

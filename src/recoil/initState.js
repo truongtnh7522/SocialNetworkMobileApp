@@ -43,3 +43,7 @@ export const photosR = atom({
   key: "photosR",
   default: [],
 });
+export const photosRU = atom({
+  key: "photosRU",
+  default: [],
+});

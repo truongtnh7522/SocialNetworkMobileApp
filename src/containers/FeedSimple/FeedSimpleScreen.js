@@ -126,7 +126,11 @@ export const FeedSimpleScreen = ({ navigation}) => {
 
   }
  
+  const handleCreateReels = () => {
+    console.log(123)
+    navigation1.navigate('CreateReels')
 
+  }
   
     return (
       <View style={styles.container}>
@@ -141,7 +145,8 @@ export const FeedSimpleScreen = ({ navigation}) => {
         
         
         <Feather name="search" size={30} color="black" style={{marginRight:10}}/>
-        <AntDesign name="pluscircle" size={28} color="black"  style={{marginRight:10}}/>
+        <TouchableOpacity
+        onPress={handleCreateReels}>   <AntDesign name="pluscircle" size={28} color="black"  style={{marginRight:10}}/>    </TouchableOpacity>
         <TouchableOpacity onPress={handleNotifi}>
         <Ionicons name="notifications" size={30} color="black" />
       </TouchableOpacity>

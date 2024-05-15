@@ -128,6 +128,11 @@ export const FeedScreen = ({ navigation}) => {
     navigation1.navigate('Notifications')
 
   }
+  const handleCreateReels = () => {
+    console.log(123)
+    navigation1.navigate('CreateReels')
+
+  }
   const [reels, setReels] = useState([]);
   useEffect(() => {
     getReels().then((data) => setReels(data));
@@ -143,6 +148,7 @@ export const FeedScreen = ({ navigation}) => {
   const renderFooter = () => {
     return loadingMore ? <ActivityIndicator size="large" color={colors.primary} /> : null;
   };
+  
     return (
       <View style={styles.container}>
       <View style={styles.header}>
@@ -156,7 +162,9 @@ export const FeedScreen = ({ navigation}) => {
       
       
       <Feather name="search" size={30} color="black" style={{marginRight:10}}/>
-      <AntDesign name="pluscircle" size={28} color="black"  style={{marginRight:10}}/>
+      <TouchableOpacity onPress={handleCreateReels}>
+      <AntDesign name="pluscircle" size={28} color="black"  style={{marginRight:10}}/>  
+    </TouchableOpacity>
       <TouchableOpacity onPress={handleNotifi}>
       <Ionicons name="notifications" size={30} color="black" />
     </TouchableOpacity>
@@ -226,7 +234,7 @@ export const FeedScreen = ({ navigation}) => {
 
 export default FeedScreen;
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-  const paddingToBottom = 20;
+  const paddingToBottom = 40;
   return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
 };
 const VideoPlayer = (data) => {
@@ -262,6 +270,7 @@ useEffect(() => {
     }
   };
 }, []);
+
   return (
     <View style={[styles.containerBodyVideo,{display:"flex", flex:1,justifyContent:"center", alignItems:"center", backgroundColor:"#000000", borderBottomColor:"#fff",borderBottomWidth:1}]}>
       <Video
