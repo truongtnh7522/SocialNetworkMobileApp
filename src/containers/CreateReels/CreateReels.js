@@ -21,7 +21,9 @@ import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner";
 import CheckBox from 'react-native-check-box';
 import { colors } from "../../utils/configs/Colors";
+import Sound from 'react-native-sound';
 
+Sound.setCategory('Playback');
   const CreateReelsforScreen = ({ navigation }) => {
     const [selectedImage, setSelectedImage] = useState(imagesDataURL[0]);
     const [content, setContent] = useState("");
@@ -113,13 +115,46 @@ import { colors } from "../../utils/configs/Colors";
     const [selectedItem, setSelectedItem] = useState("");
     const [audioSrc, setAudioSrc] = useState("");
     const [audioID, setAudioID] = useState("");
+    const stopSound = () => {
+      if (sound) {
+        sound.stop(() => {
+          console.log('Stop');
+        });
+      }
+    };
     const handleMenuClick = (item: any) => {
-      console.log(item);
+      console.log(item.link);
+      stopSound()
       setVisible(false)
       setSelectedItem(item.name);
       setAudioSrc(item.link);
       setAudioID(item.id);
     };
+    const [sound, setSound] = useState(null);
+
+    const playSound = () => {
+      const sound = new Sound(audioSrc, Sound.MAIN_BUNDLE, (error) => {
+        if (error) {
+          console.log('failed to load the sound', error);
+          return;
+        }
+        sound.play((success) => {
+          if (success) {
+            console.log('successfully finished playing');
+          } else {
+            console.log('playback failed due to audio decoding errors');
+          }
+        });
+      });
+      setSound(sound);
+    };
+  
+  
+    useEffect(() => {
+     if(audioSrc !== "") {
+      playSound();
+     }
+    },[audioSrc])
     return (
       <SafeAreaView
         style={{
@@ -194,6 +229,7 @@ import { colors } from "../../utils/configs/Colors";
               />
             </View>
           </View>
+         
           <View style={styles.container}>
           <TouchableOpacity onPress={() => setVisible(true)}  style={{
             backgroundColor: COLORS.primary,

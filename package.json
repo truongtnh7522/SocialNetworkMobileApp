@@ -23,6 +23,7 @@
     "@zegocloud/zego-uikit-prebuilt-call-rn": "^4.7.1",
     "@zegocloud/zego-uikit-rn": "^2.8.0",
     "axios": "^1.6.8",
+    "expo-image-picker": "^15.0.4",
     "firebase": "^10.11.0",
     "mime": "^4.0.3",
     "react": "18.2.0",
