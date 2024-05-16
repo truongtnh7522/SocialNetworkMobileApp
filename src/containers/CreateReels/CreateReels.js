@@ -5,7 +5,7 @@ import {
     ScrollView,
     Image,
     TextInput,
-    Modal,
+    Modal,Button,StyleSheet
   } from "react-native";
   import React, { useState ,useEffect} from "react";
   import { SafeAreaView } from "react-native-safe-area-context";
@@ -31,6 +31,7 @@ import { colors } from "../../utils/configs/Colors";
     const [load,setLoad] = useState(false)
     const [disableVoice, setDisableVoice] = useState(true);
     const [audio, setAudio] = useState([]);
+    const [visible, setVisible] = useState(false);
     const today = new Date();
     useEffect(() => {
       const fetchAudio = async () => {
@@ -51,7 +52,9 @@ import { colors } from "../../utils/configs/Colors";
         try {
           const formData = new FormData();
           formData.append("Content", content);
-          formData.append("LevelVieW", isChecked);
+        formData.append("LevelVieW", isChecked);
+        formData.append("audioId", audioID);
+        formData.append("DisableVoice", disableVoice);
     
           if (selectedImage) {
             const localUri = selectedImage;
@@ -106,9 +109,17 @@ import { colors } from "../../utils/configs/Colors";
     const handleModeSelect = (mode,number) => {
         setIsChecked(number)
       setSelectedMode(mode);
-      // Thực hiện hành động tương ứng với việc chọn chế độ
     };
-  
+    const [selectedItem, setSelectedItem] = useState("");
+    const [audioSrc, setAudioSrc] = useState("");
+    const [audioID, setAudioID] = useState("");
+    const handleMenuClick = (item: any) => {
+      console.log(item);
+      setVisible(false)
+      setSelectedItem(item.name);
+      setAudioSrc(item.link);
+      setAudioID(item.id);
+    };
     return (
       <SafeAreaView
         style={{
@@ -183,10 +194,44 @@ import { colors } from "../../utils/configs/Colors";
               />
             </View>
           </View>
+          <View style={styles.container}>
+          <TouchableOpacity onPress={() => setVisible(true)}  style={{
+            backgroundColor: COLORS.primary,
+            height: 36,
+            borderRadius: 6,
+            alignItems: "center",
+            justifyContent: "center",
+            width:"100%"
+          }}>
+                <Text style={{color:"white"}}>Choose Audio</Text>
+          </TouchableOpacity>
+          <Text style={styles.selectedText}>Audio: {selectedItem}</Text>
+    
+          <Modal
+            transparent={true}
+            visible={visible}
+            onRequestClose={() => setVisible(false)}
+          >
+            <TouchableOpacity style={styles.modalBackground} onPress={() => setVisible(false)}>
+              <View style={styles.popup}>
+              <TouchableOpacity style={styles.item} >
+              <Text style={{color:colors.black, textAlign:"center",fontWeight:700,fontSize:20}}> Choose Audio</Text>
+              </TouchableOpacity>
+              {audio.map((item: any, index: number) => (
+                <TouchableOpacity style={styles.item} key={index} onPress={() => handleMenuClick(item)}>
+                <Text style={{color:colors.black, textAlign:"center"}}>  {item.name}</Text>
+                </TouchableOpacity>
+               
+              ))}
+               
+              </View>
+            </TouchableOpacity>
+          </Modal>
+        </View>
         <View
         style={{
           alignItems: "left",
-          marginVertical: 22,
+     
         }}
       >  
        <Text style={{ ...FONTS.h5, marginBottom:10 }}>Image or Video</Text>
@@ -282,6 +327,42 @@ import { colors } from "../../utils/configs/Colors";
       </SafeAreaView>
     );
   };
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+   
+    },
+    selectedText: {
+      marginTop: 20,
+      fontSize: 18,
+      color:"black",
+      textAlign:"left"
+    },
+    modalBackground: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    popup: {
+      width: 300,
+      backgroundColor: 'white',
+      borderRadius: 5,
+      padding: 10,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.8,
+      shadowRadius: 2,
+      elevation: 1,
+    },
+    item: {
+      padding: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: '#ccc',
+    },
+  });
   
   export default CreateReelsforScreen;
   

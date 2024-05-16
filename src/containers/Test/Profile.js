@@ -276,7 +276,7 @@ const Profile = ({ navigation }) => {
         />
       </View>
 
-      <View style={{ flex: 1, alignItems: "center" }}>
+      <View style={{  alignItems: "center", height:"fit-content"}}>
         <Image
         source={{uri: dataInfo.image}}
           resizeMode="contain"

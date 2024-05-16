@@ -11,7 +11,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState, useEffect,useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS, SIZES, images } from "../../constants";
-import { StatusBar, ActivityIndicator ,Button,StyleSheet,ScrollView  } from "react-native";
+import { StatusBar, ActivityIndicator,StyleSheet,ScrollView ,Modal,Button } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
@@ -24,6 +24,7 @@ import {
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
 import Background from '../../components/LoginAndSignUp/Background';
+import {  colors } from 'react-native-elements';
 import {
   collection,
   query,
@@ -83,12 +84,19 @@ const FriendsRoutes = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [friendsPerPage] = useState(3);
-
+  const [idUserR, setidUsersR] = useRecoilState(idUsers);
+  const navigation = useNavigation();
+  const handleNavigate = (userIDD) => {
+   console.log("Ưse",userIDD)
+    setidUsersR(userIDD)
+    navigation.navigate('ProfileUsers')
+ 
+}
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await api.get(
-          "https://www.socialnetwork.somee.com/api/Friend/getAll"
+          "https://www.socialnetwork.somee.com/api/Friend/getAllNotFriend"
         );
         setFriends(response.data.data);
         setLoading(false);
@@ -124,13 +132,13 @@ const FriendsRoutes = () => {
         <View>
           <ScrollView horizontal={true} contentContainerStyle={styles1.scrollView}>
             {paginate(currentPage).map((friend, index) => (
-              <View key={index} style={styles1.friendContainer}>
+              <TouchableOpacity key={index} style={styles1.friendContainer} onPress={() => handleNavigate(friend.userId)}>
                 <Image
                   source={{ uri: friend.image }} // Nếu avatar là URL
                   style={styles1.avatar}
                 />
                 <Text>{friend.fullName ? friend.fullName : "Unknown"}</Text>
-              </View>
+              </TouchableOpacity>
             ))}
           </ScrollView>
           <View style={styles1.buttonContainer}>
@@ -186,25 +194,27 @@ const ProfileUsers = ({ navigation }) => {
 
   const [load, setLoad] = useState(false)
   const [photos,setPhotos] = useRecoilState(photosRU)
-  console.log(idUserR)
-  useEffect(() => {
-    const fetchDataInfo = async () => {
 
-      setAuthToken(to)
+  const fetchDataInfo = async () => {
 
-      try {
-       
-        const response = await api.get(`https://www.socialnetwork.somee.com/api/infor/user/${idUserR}`)
+    setAuthToken(to)
 
-        setDataInfo(response.data.data);
-         console.log("s", response.data.data)
-      } catch (error) {
-        console.log(error)
-   
-      }
+    try {
+     
+      const response = await api.get(`https://www.socialnetwork.somee.com/api/infor/user/${idUserR}`)
+
+      setDataInfo(response.data.data);
+
+       console.log("s", response.data.data)
+    } catch (error) {
+      console.log(error)
+ 
     }
+  }
+  useEffect(() => {
+   
     fetchDataInfo()
-  }, []);
+  }, [idUserR]);
  
   const [routes] = useState([
     { key: "first", title: "Photos" },
@@ -229,13 +239,13 @@ const ProfileUsers = ({ navigation }) => {
       }
     };
     fetchData();
-  }, [dataInfo.userId]);
+  }, [dataInfo.userId,idUserR]);
   const loadDataFriend = async () => {
     // Gọi API để lấy dữ liệu
 
     await api
       .get(
-        `https://www.socialnetwork.somee.com/api/Friend/getAll`
+        `https://www.socialnetwork.somee.com/api/Friend/getAllNotFriend`
       )
       .then((response) => {
         // Cập nhật dữ liệu vào state
@@ -344,6 +354,111 @@ const ProfileUsers = ({ navigation }) => {
       )}
     />
   );
+  const handleAddF = async (idfriend: any) => {
+   
+    try {
+      const id = idfriend;
+      const response = await api.post(
+        `https://www.socialnetwork.somee.com/api/Friend/send/${id}`
+      );
+
+      if (response.status == 200) {
+        fetchDataInfo();
+      }
+    } catch (error) {
+      console.error("Login failed", error);
+    }
+  };
+
+  const handleAcceptF = async (idfriend: any) => {
+    try {
+      const id = idfriend;
+      console.log(1);
+      const response = await api.post(
+        `https://www.socialnetwork.somee.com/api/Friend/accept/${id}`
+      );
+      if (response.status == 200) {
+        fetchDataInfo();
+      }
+    } catch (error) {
+      console.log("Login failed", error);
+    }
+  };
+  const handleRemoveF = async (idfriend: any) => {
+    // setLoadSearch2(true);
+
+    try {
+      const id = idfriend;
+      const response = await api.post(
+        `https://www.socialnetwork.somee.com/api/Friend/refuseFriend/${id}`
+      );
+      console.log(response);
+      if (response.status == 200) {
+        fetchDataInfo();
+      }
+    } catch (error) {
+      console.error("Login failed", error);
+    }
+  };
+  const [visible, setVisible] = useState(false);
+  const [selectedOption, setSelectedOption] = useState('');
+
+  
+  const handleUpLevelF1 = async (idfriend: any) => {
+    try {
+      const response = await api.post(
+        `https://www.socialnetwork.somee.com/api/Friend/updateFriendLevel`,
+        {
+          user2: idfriend,
+          level: "4",
+        }
+      );
+
+      if (response.status == 200) {
+        console.log(response);
+        fetchDataInfo();  setVisible(false);
+      }
+    } catch (error) {
+      console.log("Login failed", error);
+    }
+  };
+  const handleUpLevelF = async (idfriend: any) => {
+    // setLoadSearch1(true);
+    // setAuthToken(token);
+    try {
+      const id = idfriend;
+      console.log(1);
+      const response = await api.post(
+        `https://www.socialnetwork.somee.com/api/Friend/updateFriendLevel`,
+        {
+          user2: idfriend,
+          level: "5",
+        }
+      );
+      console.log(response);
+      if (response.status == 200) {
+        fetchDataInfo();
+        setVisible(false);
+      }
+    } catch (error) {
+      console.log("Login failed", error);
+    }
+  };
+  const handleConfirm = async () => {
+    try {
+      const response = await api.delete(
+        `https://www.socialnetwork.somee.com/api/Friend/unfriend/${idUserR}`
+      );
+      if (response.status == 200) {
+        fetchDataInfo();
+        setVisible(false);
+      }
+    } catch (error) {
+      console.error("Login failed", error);
+    }
+    // Xử lý khi nhấn xác nhận
+    setSb(false);
+  };
   return (
 
     <SafeAreaView
@@ -364,7 +479,7 @@ const ProfileUsers = ({ navigation }) => {
         />
       </View>
 
-      <View style={{ flex: 1, alignItems: "center" }}>
+      <View style={{  alignItems: "center", height:"fit-content"}}>
         <Image
         source={{uri: dataInfo.image}}
           resizeMode="contain"
@@ -497,8 +612,159 @@ const ProfileUsers = ({ navigation }) => {
               Chat
             </Text>
           </TouchableOpacity>
-
+              
         </View>
+        <View style={{ flexDirection: "row", marginTop: 10 }}>
+        {dataInfo.statusFriend === "Thêm bạn bè" ? (
+
+          <TouchableOpacity
+          style={{
+            width: 280,
+            height: 36,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: COLORS.primary,
+            borderRadius: 10,
+            marginHorizontal: SIZES.padding * 2,
+          }}
+          onPress={() => {
+            handleAddF(dataInfo.userId);
+          }}
+        >
+          <Text
+            style={{
+              ...FONTS.body4,
+              color: COLORS.white,
+            }}
+          >
+         Thêm bạn bè
+          </Text>
+        </TouchableOpacity>
+        ) : dataInfo.statusFriend === "Hủy lời mời" ? (
+
+          <TouchableOpacity
+          style={{
+            width: 280,
+            height: 36,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: COLORS.primary,
+            borderRadius: 10,
+            marginHorizontal: SIZES.padding * 2,
+          }}
+       
+        >
+          <Text
+            style={{
+              ...FONTS.body4,
+              color: COLORS.white,
+            }}
+          >
+          Chờ xác nhận
+          </Text>
+        </TouchableOpacity>
+        ): dataInfo.statusFriend === "Phản Hồi" ? (
+          <View style={{flex:1,flexDirection:"row" , alignItems: "center",
+          justifyContent: "center",}}>
+          <TouchableOpacity
+          style={{
+            width: 120,
+            height: 36,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: COLORS.primary,
+            borderRadius: 10,
+            marginHorizontal: SIZES.padding * 2,
+          
+          }}
+          onPress={() => {
+            handleAcceptF(dataInfo.userId);
+          }}
+        >
+          <Text
+            style={{
+              ...FONTS.body4,
+              color: COLORS.white,
+            }}
+          >
+       Chấp nhận
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+        style={{
+          width: 120,
+          height: 36,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#ff0000",
+          borderRadius: 10,
+          marginHorizontal: SIZES.padding * 2,
+        }}
+        onPress={() => {
+          handleRemoveF(dataInfo.userId);
+        }}
+      >
+        <Text
+          style={{
+            ...FONTS.body4,
+            color: COLORS.white,
+          }}
+        >
+    Từ chối
+        </Text>
+      </TouchableOpacity>
+          </View>
+        ) : ( 
+          <View style={styles.container}>
+          <Button title={dataInfo.statusFriend === "Bạn thường"  ?  "Bạn bè" : "Bạn thân"}  onPress={() => setVisible(true)}  style={{
+            width: 120,
+            height: 36,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#456fe6",
+            borderRadius: 10,
+            marginHorizontal: SIZES.padding * 2,
+          }}/>
+          <Text style={styles.selectedText}>Selected: {selectedOption}</Text>
+    
+          <Modal
+            transparent={true}
+            visible={visible}
+            onRequestClose={() => setVisible(false)}
+          >
+            <TouchableOpacity style={styles.modalBackground} onPress={() => setVisible(false)}>
+              <View style={styles.popup}>
+              {
+                dataInfo.statusFriend === "Bạn thường"   ? (
+                  <TouchableOpacity style={styles.item} onPress={() => {
+                    handleUpLevelF(
+                      dataInfo.userId
+                    );
+                  }}>
+                  <Text style={{color:colors.white, textAlign:"center"}}>Bạn thân</Text>
+                </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity style={styles.item} onPress={() => {
+                    handleUpLevelF1(
+                      dataInfo.userId
+                    );
+                  }}>
+                  <Text style={{color:colors.white,textAlign:"center"}}>Bạn bè</Text>
+                </TouchableOpacity>
+                )
+              }
+             
+                <TouchableOpacity style={styles.item} onPress={handleConfirm}>
+                  <Text style={{color:colors.white, textAlign:"center"}}>Delete Friend</Text>
+                </TouchableOpacity>
+               
+              </View>
+            </TouchableOpacity>
+          </Modal>
+        </View>)}
+     
+            
+      </View>
       </View>
 
       <View style={{ flex: 1, marginHorizontal: 22, marginTop: 20 }}>
@@ -513,5 +779,39 @@ const ProfileUsers = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedText: {
+    marginTop: 20,
+    fontSize: 18,
+  },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  popup: {
+    width: 200,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    padding: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  item: {
+    padding: 10,
+    backgroundColor:"#456fe6",
+     marginBottom:10,
+      marginTop:10,
+      borderRadius:5
+  },
+});
 export default ProfileUsers

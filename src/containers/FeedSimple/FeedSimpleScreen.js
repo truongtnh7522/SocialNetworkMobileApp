@@ -145,8 +145,9 @@ export const FeedSimpleScreen = ({ navigation}) => {
         
         
         <Feather name="search" size={30} color="black" style={{marginRight:10}}/>
-        <TouchableOpacity
-        onPress={handleCreateReels}>   <AntDesign name="pluscircle" size={28} color="black"  style={{marginRight:10}}/>    </TouchableOpacity>
+        <TouchableOpacity onPress={handleCreateReels}>
+      <AntDesign name="pluscircle" size={28} color="black"  style={{marginRight:10}}/>  
+    </TouchableOpacity>
         <TouchableOpacity onPress={handleNotifi}>
         <Ionicons name="notifications" size={30} color="black" />
       </TouchableOpacity>
