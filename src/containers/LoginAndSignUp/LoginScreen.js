@@ -40,7 +40,7 @@ const Login = ({ navigation }) => {
   const [token3, setToken3] = useState('');
   const [load, setLoad] = useState(true);
   const publicAxios = axios.create({
-    baseURL: 'https://www.socialnetwork.somee.com/api',
+    baseURL: 'https://socialnetwork.somee.com/api',
   });
   useEffect(() => {
     AsyncStorage.getItem('token')
@@ -65,7 +65,7 @@ const Login = ({ navigation }) => {
 
  
   const handleLogin = () => {
-    fetch('https://www.socialnetwork.somee.com/api/auth/login', {
+    fetch('https://socialnetwork.somee.com/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

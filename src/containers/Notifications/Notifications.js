@@ -45,7 +45,7 @@ const Notifications = () => {
     setAuthToken(to)
     await api
       .get(
-        `https://www.socialnetwork.somee.com/api/Notify/getNotifies`
+        `https://socialnetwork.somee.com/api/Notify/getNotifies`
       )
       .then((response) => {
         console.log(response)
@@ -76,7 +76,7 @@ const Notifications = () => {
 
       try {
         console.log(12)
-        const response = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
+        const response = await api.get('https://socialnetwork.somee.com/api/infor/myinfor');
 
         setDataInfo(response.data.data);
        
@@ -107,7 +107,7 @@ const Notifications = () => {
     setAuthToken(to);
     try {
       // const data =;
-      const res = await api.post("https://www.socialnetwork.somee.com/api/cmt/create", {
+      const res = await api.post("https://socialnetwork.somee.com/api/cmt/create", {
         Content: text,
         postId: idPostR,
         userId: dataInfo.id,
@@ -131,7 +131,7 @@ const Notifications = () => {
     console.log("Ss",parentId)
     return api
       .post(
-        `https://www.socialnetwork.somee.com/api/cmt/deleteOrUndo/${parentId}`
+        `https://socialnetwork.somee.com/api/cmt/deleteOrUndo/${parentId}`
       )
       .then((res) => {
         console.log(res)

@@ -47,7 +47,7 @@ import Spinner from "../../components/Spinner";
             });
           }
     
-          const res = await api.post("https://www.socialnetwork.somee.com/api/post", formData,   {
+          const res = await api.post("https://socialnetwork.somee.com/api/post", formData,   {
             headers: {
               "Content-Type": "multipart/form-data",
             },

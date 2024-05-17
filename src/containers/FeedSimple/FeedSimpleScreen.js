@@ -96,12 +96,12 @@ export const FeedSimpleScreen = ({ navigation}) => {
       setAuthToken(to)
      
     try {
-      const responseInfor = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
+      const responseInfor = await api.get('https://socialnetwork.somee.com/api/infor/myinfor');
       const fullName = responseInfor.data.data.fullName;
       const fullNameWithoutDiacriticsAndSpaces = removeDiacriticsAndSpaces(fullName);
       
       onUserLogin(fullNameWithoutDiacriticsAndSpaces, fullNameWithoutDiacriticsAndSpaces);
-      const response = await api.get(`https://www.socialnetwork.somee.com/api/post/${idPostSimpleR}`);
+      const response = await api.get(`https://socialnetwork.somee.com/api/post/${idPostSimpleR}`);
        console.log(response)
        const newData = response.data.data;
        setData(newData);

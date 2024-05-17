@@ -130,7 +130,7 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
           Nickname: NickName,
         };
         console.log(data)
-      const res = await api.post("https://www.socialnetwork.somee.com/api/infor/create", data,   {
+      const res = await api.post("https://socialnetwork.somee.com/api/infor/create", data,   {
         headers: {
           "Content-Type": "multipart/form-data",
         },

@@ -39,7 +39,7 @@ Sound.setCategory('Playback');
       const fetchAudio = async () => {
         try {
           setAuthToken(to);
-          const res = await api.get("https://www.socialnetwork.somee.com/api/audio");
+          const res = await api.get("https://socialnetwork.somee.com/api/audio");
           setAudio(res.data.data);
           console.log(res);
         } catch (e) {
@@ -49,56 +49,70 @@ Sound.setCategory('Playback');
       fetchAudio();
     }, []);
     const handlePost = async () => {
-      setLoad(true)
-        setAuthToken(to);
-        try {
-          const formData = new FormData();
-          formData.append("Content", content);
+      setLoad(true);
+      setAuthToken(to);
+      try {
+        const formData = new FormData();
+        formData.append("content", content);
         formData.append("LevelVieW", isChecked);
         formData.append("audioId", audioID);
-        formData.append("DisableVoice", disableVoice);
+        let apiEndpoint = "";
     
-          if (selectedImage) {
-            const localUri = selectedImage;
-            const filename = localUri.split('/').pop();
-    
-            // Thêm thông tin hình ảnh vào formData
-            formData.append('File', {
+        if (selectedImage) {
+          const localUri = selectedImage;
+          const filename = localUri.split('/').pop();
+          const match = /\.(\w+)$/.exec(filename);
+          const fileType = match ? match[1].toLowerCase() : null;
+         
+          if (fileType === 'jpg' || fileType === 'jpeg' || fileType === 'png') {
+            // It's an image
+            apiEndpoint = "https://socialnetwork.somee.com/api/real/MergeImageWithAudio";
+            formData.append('file', {
               uri: localUri,
               name: filename,
-              type: 'image/jpeg', // Đổi loại hình ảnh tùy thuộc vào định dạng của file
+              type: 'image/jpeg', // Change type based on actual file type if necessary
             });
-          }
-    
-          const res = await api.post("https://www.socialnetwork.somee.com/api/post", formData,   {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-          
-          if(res.status == 200) {
-            setSelectedImage(imagesDataURL[0])
-            setContent("")
-            setLoad(false)
-            setLoadPageR(!LoadPageR)
-          }
-  
-        } catch (error) {
-          console.error("Add sai!", error);
-        }
-      };
+            // Remove DisableVoice for images
+          } else if (fileType === 'mp4' || fileType === 'mov' || fileType === 'avi') {
+            // It's a video
+            apiEndpoint = "https://socialnetwork.somee.com/api/real/MergeVideoWithAudio";
+            formData.append('file', {
+              uri: localUri,
+              name: filename,
+              type: 'video/mp4', // Change type based on actual file type if necessary
+            });
+            formData.append("DisableVoice", disableVoice); // Add DisableVoice for videos
+       console.log(formData);
 
-  
+          }
+        }
+       
+        const res = await api.post(apiEndpoint, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
     
-  
+        if (res.status === 200) {
+          setSelectedImage(imagesDataURL[0]);
+          setContent("");
+          setLoad(false);
+          setLoadPageR(!LoadPageR);
+        }
+    
+      } catch (error) {
+        console.error("Add sai!", error);
+      }
+    };
+    
     const handleImageSelection = async () => {
       let result = await ImagePicker.launchImageLibrary({
-        mediaTypes: 'mixed',
+        mediaType: 'mixed',
         allowsEditing: true,
-        aspect: [4, 4],
         quality: 1,
       });
-  
+    
+    
      
   
       if (!result.canceled) {

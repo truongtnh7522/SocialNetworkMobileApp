@@ -23,7 +23,7 @@ const Feed = ({data}) => {
     setAuthToken(to);
       const fetchInfo = async () => {
         try {
-          const responseInfor = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
+          const responseInfor = await api.get('https://socialnetwork.somee.com/api/infor/myinfor');
           console.log("Info",responseInfor.data.data.userId)
           setIdUser(responseInfor.data.data.userId)
         }catch (e) {
@@ -38,7 +38,7 @@ const Feed = ({data}) => {
     try {
       const id = data.id;
       await api
-        .post(`https://www.socialnetwork.somee.com/api/like/${id}`)
+        .post(`https://socialnetwork.somee.com/api/like/${id}`)
         .then((response) => {
           // Cập nhật dữ liệu vào state
 

@@ -11,11 +11,11 @@ const AxiosProvider = ({children}) => {
   const authContext = useContext(AuthContext);
 
   const authAxios = axios.create({
-    baseURL: 'https://www.socialnetwork.somee.com/api',
+    baseURL: 'https://socialnetwork.somee.com/api',
   });
 
   const publicAxios = axios.create({
-    baseURL: 'https://www.socialnetwork.somee.com/api',
+    baseURL: 'https://socialnetwork.somee.com/api',
   });
 
   authAxios.interceptors.request.use(

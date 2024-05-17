@@ -116,7 +116,7 @@ const ManageUser = ({ navigation }) => {
     try {
     
       const response = await api.post(
-        `https://www.socialnetwork.somee.com/api/admin/user/getAll`
+        `https://socialnetwork.somee.com/api/admin/user/getAll`
       );
       console.log(response.data.data.images?.[0].linkImage)
       setData(response.data.data);
@@ -140,7 +140,7 @@ const ManageUser = ({ navigation }) => {
     console.log(id)
     try {
       // const data =;
-      const res = await api.post(`https://www.socialnetwork.somee.com/api/admin/user/DeleteUserById?userId=${id}`);
+      const res = await api.post(`https://socialnetwork.somee.com/api/admin/user/DeleteUserById?userId=${id}`);
      console.log(res.data)
      fetchData()
   
