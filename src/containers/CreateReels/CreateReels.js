@@ -136,7 +136,7 @@ Sound.setCategory('Playback');
         });
       }
     };
-    const handleMenuClick = (item: any) => {
+    const handleMenuClick = (item) => {
       console.log(item.link);
       stopSound()
       setVisible(false)
@@ -267,7 +267,7 @@ Sound.setCategory('Playback');
               <TouchableOpacity style={styles.item} >
               <Text style={{color:colors.black, textAlign:"center",fontWeight:700,fontSize:20}}> Choose Audio</Text>
               </TouchableOpacity>
-              {audio.map((item: any, index: number) => (
+              {audio.map((item, index) => (
                 <TouchableOpacity style={styles.item} key={index} onPress={() => handleMenuClick(item)}>
                 <Text style={{color:colors.black, textAlign:"center"}}>  {item.name}</Text>
                 </TouchableOpacity>
