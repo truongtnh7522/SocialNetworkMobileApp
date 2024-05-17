@@ -288,6 +288,9 @@ useEffect(() => {
         <TouchableOpacity onPress={toggleMute} style={styles.controlButton}>
           <Ionicons name={muted ? 'volume-mute' : 'volume-high'} size={30} color="#fff" />
         </TouchableOpacity>
+        <TouchableOpacity style={styles.closeButton} onPress={() => {/* Handle close action */}}>
+        <Ionicons name="close" size={30} color="#fff" />
+      </TouchableOpacity>
       </View>
       <View style={styles.controlsContent}>
       <View style={styles.headerWrapper}>
@@ -450,5 +453,11 @@ export const styles = StyleSheet.create({
     backgroundColor:"#676767",
     borderRadius: 99999,
     marginLeft:20
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1, // Ensure it's on top of other elements
   },
 });
