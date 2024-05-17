@@ -73,7 +73,7 @@ const FriendsRoutes = () => {
     const fetchData = async () => {
       try {
         const response = await api.get(
-          "https://socialnetwork.somee.com/api/Friend/getAll"
+          "https://www.socialnetwork.somee.com/api/Friend/getAll"
         );
         setFriends(response.data.data);
         setLoading(false);
@@ -177,7 +177,7 @@ const Profile = ({ navigation }) => {
 
       try {
        
-        const response = await api.get('https://socialnetwork.somee.com/api/infor/myinfor');
+        const response = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
 
         setDataInfo(response.data.data);
         // console.log("s", response.data.data)
@@ -203,7 +203,7 @@ const Profile = ({ navigation }) => {
       try {
         const id =  dataInfo.userId ;
         const response = await api.get(
-          `https://socialnetwork.somee.com/api/post/user/${id}`
+          `https://www.socialnetwork.somee.com/api/post/user/${id}`
         );
          console.log("DataPOst User", id);
         setLengthPost(response.data.data.length);
@@ -222,7 +222,7 @@ const Profile = ({ navigation }) => {
 
     await api
       .get(
-        `https://socialnetwork.somee.com/api/Friend/getAll`
+        `https://www.socialnetwork.somee.com/api/Friend/getAll`
       )
       .then((response) => {
         // Cập nhật dữ liệu vào state

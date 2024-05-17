@@ -4,7 +4,7 @@ import axios from "axios";
 
 
 const api = axios.create({
-  baseURL: "https://socialnetwork.somee.com/api/auth/login",
+  baseURL: "https://www.socialnetwork.somee.com/api/auth/login",
 });
 
 // Hàm này sẽ thêm token vào header nếu token tồn tại
@@ -17,11 +17,11 @@ const setAuthToken = (token) => {
   }
 };
 const authAxios = axios.create({
-    baseURL: 'https://socialnetwork.somee.com/api',
+    baseURL: 'https://www.socialnetwork.somee.com/api',
   });
 
   const publicAxios = axios.create({
-    baseURL: 'https://socialnetwork.somee.com/api',
+    baseURL: 'https://www.socialnetwork.somee.com/api',
   });
 
   authAxios.interceptors.request.use(

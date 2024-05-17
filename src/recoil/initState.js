@@ -47,3 +47,13 @@ export const photosRU = atom({
   key: "photosRU",
   default: [],
 });
+
+export const isUpdatePost = atom({
+  key: "isUpdatePost",
+  default: true,
+});
+
+export const isUpdateReels = atom({
+  key: "isUpdateReels",
+  default: true,
+});

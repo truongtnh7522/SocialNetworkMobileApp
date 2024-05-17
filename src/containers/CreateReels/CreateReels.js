@@ -15,7 +15,7 @@ import {
   import { imagesDataURL } from "../../constants/data";
   import DatePicker, { getFormatedDate } from "react-native-modern-datepicker";
   import { useRecoilState, useRecoilValue } from "recoil";
-import {   tokenState,likeR,LoadPage
+import {   tokenState,likeR,LoadPage,isUpdateReels
 } from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner";
@@ -30,6 +30,7 @@ Sound.setCategory('Playback');
     const [isChecked, setIsChecked] = useState("1");
     const [to, setToken] = useRecoilState(tokenState);
     const [LoadPageR, setLoadPageR] = useRecoilState(LoadPage);
+    const [isUpdateReelsR, setIsUpdateReels] = useRecoilState(isUpdateReels);
     const [load,setLoad] = useState(false)
     const [disableVoice, setDisableVoice] = useState(true);
     const [audio, setAudio] = useState([]);
@@ -39,7 +40,7 @@ Sound.setCategory('Playback');
       const fetchAudio = async () => {
         try {
           setAuthToken(to);
-          const res = await api.get("https://socialnetwork.somee.com/api/audio");
+          const res = await api.get("https://www.socialnetwork.somee.com/api/audio");
           setAudio(res.data.data);
           console.log(res);
         } catch (e) {
@@ -51,14 +52,18 @@ Sound.setCategory('Playback');
     const handlePost = async () => {
       setLoad(true);
       setAuthToken(to);
+      console.log(selectedImage)
       try {
         const formData = new FormData();
         formData.append("content", content);
         formData.append("LevelVieW", isChecked);
         formData.append("audioId", audioID);
+        console.log(1)
         let apiEndpoint = "";
+
     
         if (selectedImage) {
+          console.log(2)
           const localUri = selectedImage;
           const filename = localUri.split('/').pop();
           const match = /\.(\w+)$/.exec(filename);
@@ -82,7 +87,7 @@ Sound.setCategory('Playback');
               type: 'video/mp4', // Change type based on actual file type if necessary
             });
             formData.append("DisableVoice", disableVoice); // Add DisableVoice for videos
-       console.log(formData);
+       console.log(3);
 
           }
         }
@@ -97,11 +102,12 @@ Sound.setCategory('Playback');
           setSelectedImage(imagesDataURL[0]);
           setContent("");
           setLoad(false);
-          setLoadPageR(!LoadPageR);
+          setIsUpdateReels(!isUpdateReelsR);
         }
     
       } catch (error) {
         console.error("Add sai!", error);
+        setLoad(false);
       }
     };
     
@@ -111,8 +117,7 @@ Sound.setCategory('Playback');
         allowsEditing: true,
         quality: 1,
       });
-    
-    
+  
      
   
       if (!result.canceled) {
@@ -136,7 +141,7 @@ Sound.setCategory('Playback');
         });
       }
     };
-    const handleMenuClick = (item) => {
+    const handleMenuClick = (item: any) => {
       console.log(item.link);
       stopSound()
       setVisible(false)
@@ -267,7 +272,7 @@ Sound.setCategory('Playback');
               <TouchableOpacity style={styles.item} >
               <Text style={{color:colors.black, textAlign:"center",fontWeight:700,fontSize:20}}> Choose Audio</Text>
               </TouchableOpacity>
-              {audio.map((item, index) => (
+              {audio.map((item: any, index: number) => (
                 <TouchableOpacity style={styles.item} key={index} onPress={() => handleMenuClick(item)}>
                 <Text style={{color:colors.black, textAlign:"center"}}>  {item.name}</Text>
                 </TouchableOpacity>

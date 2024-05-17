@@ -40,7 +40,7 @@ const Login = ({ navigation }) => {
   const [token3, setToken3] = useState('');
   const [load, setLoad] = useState(true);
   const publicAxios = axios.create({
-    baseURL: 'https://socialnetwork.somee.com/api',
+    baseURL: 'https://www.socialnetwork.somee.com/api',
   });
   useEffect(() => {
     AsyncStorage.getItem('token')
@@ -65,7 +65,8 @@ const Login = ({ navigation }) => {
 
  
   const handleLogin = () => {
-    fetch('https://socialnetwork.somee.com/api/auth/login', {
+    setLoad(false)
+    fetch('https://www.socialnetwork.somee.com/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -90,6 +91,7 @@ const Login = ({ navigation }) => {
             // Ở đây bạn nhận được giá trị token đã được lưu vào AsyncStorage
 
             setToken2(token1 || ''); // Gán giá trị token1 vào state
+
           })
           .catch(error => {
             console.log(error);
@@ -97,7 +99,7 @@ const Login = ({ navigation }) => {
         console.log("Info: ", data.data.data.hasInfor)
         setToken(token)
 
-       
+        setLoad(true)
 
         // console.log(to)
         if (data.data.data.hasInfor == false) {
@@ -169,9 +171,14 @@ const Login = ({ navigation }) => {
           <Text style={styles.forgot}>Forgot your password?</Text>
         </TouchableOpacity>
       </View>
-      <Button mode="contained"  onPress={handleLogin}>
+      {
+        load == true ?   <Button mode="contained"  onPress={handleLogin}>
         Login
-      </Button>
+      </Button> : <Button mode="contained" >
+      <Spinner></Spinner>
+    </Button>
+      }
+    
       <View style={styles.row}>
         <Text>Don’t have an account? </Text>
         <TouchableOpacity onPress={() => navigation.navigate('Register')}>

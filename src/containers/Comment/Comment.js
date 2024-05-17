@@ -45,7 +45,7 @@ const Comment = () => {
     setAuthToken(to)
     await api
       .get(
-        `https://socialnetwork.somee.com/api/cmt/getcmtPost/${idPostR}`
+        `https://www.socialnetwork.somee.com/api/cmt/getcmtPost/${idPostR}`
       )
       .then((response) => {
         console.log(response)
@@ -72,7 +72,7 @@ const Comment = () => {
 
       try {
         console.log(12)
-        const response = await api.get('https://socialnetwork.somee.com/api/infor/myinfor');
+        const response = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
 
         setDataInfo(response.data.data);
        
@@ -103,7 +103,7 @@ const Comment = () => {
     setAuthToken(to);
     try {
       // const data =;
-      const res = await api.post("https://socialnetwork.somee.com/api/cmt/create", {
+      const res = await api.post("https://www.socialnetwork.somee.com/api/cmt/create", {
         Content: text,
         postId: idPostR,
         userId: dataInfo.id,
@@ -127,7 +127,7 @@ const Comment = () => {
     console.log("Ss",parentId)
     return api
       .post(
-        `https://socialnetwork.somee.com/api/cmt/deleteOrUndo/${parentId}`
+        `https://www.socialnetwork.somee.com/api/cmt/deleteOrUndo/${parentId}`
       )
       .then((res) => {
         console.log(res)
@@ -189,6 +189,7 @@ const Comment = () => {
                 style={{
                   fontSize: 13,
                   textAlign: "left",
+                  color:"black"
                 }}
               >
               {item.content}
