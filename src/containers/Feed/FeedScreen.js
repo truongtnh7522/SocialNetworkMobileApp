@@ -265,7 +265,7 @@ export const FeedScreen = ({ navigation}) => {
        
         scrollEventThrottle={400}
       >
-        {reels?.data?.map((item: any, index: number) => (
+        {reels?.data?.map((item, index) => (
           <VideoPlayer data={item} key={index}/>
         ))}
         </ScrollView>

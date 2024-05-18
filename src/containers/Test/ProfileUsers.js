@@ -354,7 +354,7 @@ const ProfileUsers = ({ navigation }) => {
       )}
     />
   );
-  const handleAddF = async (idfriend: any) => {
+  const handleAddF = async (idfriend) => {
    
     try {
       const id = idfriend;
@@ -370,7 +370,7 @@ const ProfileUsers = ({ navigation }) => {
     }
   };
 
-  const handleAcceptF = async (idfriend: any) => {
+  const handleAcceptF = async (idfriend) => {
     try {
       const id = idfriend;
       console.log(1);
@@ -384,7 +384,7 @@ const ProfileUsers = ({ navigation }) => {
       console.log("Login failed", error);
     }
   };
-  const handleRemoveF = async (idfriend: any) => {
+  const handleRemoveF = async (idfriend) => {
     // setLoadSearch2(true);
 
     try {
@@ -404,7 +404,7 @@ const ProfileUsers = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState('');
 
   
-  const handleUpLevelF1 = async (idfriend: any) => {
+  const handleUpLevelF1 = async (idfriend) => {
     try {
       const response = await api.post(
         `https://socialnetwork.somee.com/api/Friend/updateFriendLevel`,
@@ -422,7 +422,7 @@ const ProfileUsers = ({ navigation }) => {
       console.log("Login failed", error);
     }
   };
-  const handleUpLevelF = async (idfriend: any) => {
+  const handleUpLevelF = async (idfriend) => {
     // setLoadSearch1(true);
     // setAuthToken(token);
     try {
