@@ -22,6 +22,7 @@ import ManageUser from './src/containers/Test/ManageUser';
 import AdCategory from './src/containers/Test/AdCategory';
 import ProfileUsers from './src/containers/Test/ProfileUsers';
 import CreateInfoScreen from './src/containers/CreateInfo/CreateInfo';
+import UpdateInfoScreen from './src/containers/UpdateInfo/UpdateInfo';
 import ChatMessagesScreen from "./src/components/ChatMessagesScreen/ChatMessagesScreen";
 import Comment from "./src/containers/Comment/Comment"
 import Notifications from "./src/containers/Notifications/Notifications"
@@ -84,6 +85,7 @@ const App = () => {
             <Stack.Screen name="ManageUser" component={ManageUser} options={{ headerShown: false }} />
             <Stack.Screen name="NewPasswordScreen" component={NewPasswordScreen} options={{ headerShown: false }} />
             <Stack.Screen name="VertifyPinPwScreen" component={VertifyPinPwScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="UpdateInfo" component={UpdateInfoScreen} options={{ headerShown: false }} />
             <Stack.Screen
               options={{ headerShown: false }}
               // DO NOT change the name 

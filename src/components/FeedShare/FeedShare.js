@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {View, Text, StyleSheet, Image,TouchableOpacity,Modal, TextInput,Dimensions} from 'react-native';
 import {colors} from '../../utils/configs/Colors';
 import { useRecoilState, useRecoilValue } from "recoil";
-import {   tokenState,likeR , idPost,idUsers,isUpdatePost,isSharePost} from "../../recoil/initState";
+import {   tokenState,likeR , idPost,idUsers,isUpdatePost,idPostSimple} from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -14,28 +14,25 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import Sound from 'react-native-sound';
 const { height: windowHeight } = Dimensions.get('window');
 const { width: windowWidth } = Dimensions.get('window');
-const Feed = ({data}) => {
+const FeedShare = ({data}) => {
+  console.log(data)
   const [likeRR, setLikeRR] = useRecoilState(likeR);
   const [to, setToken] = useRecoilState(tokenState);
   const [idPostR, setidPostR] = useRecoilState(idPost);
   const [idUserR, setidUsersR] = useRecoilState(idUsers);
   const [isUpdatePostR, setSsUpdatePost] = useRecoilState(isUpdatePost);
-  const [isSharePostR, setIsSharePostR] = useRecoilState(isSharePost);
   const [idUser,setIdUser] = useState("")
   const [content,setContent] = useState("")
-  const [countLike,setCountLike] = useState(data.countLike)
   const [visible, setVisible] = useState(false);
   const [visibleShare, setVisibleShare] = useState(false);
   const [dataInfo, setDataInfo] = useState([]);
   const navigation = useNavigation();
-  const [isLikeLo, setIsLikeLo] = useState(data.isLike)
-  const [isLikeNu, setIsLikeNu] = useState(false)
   useEffect(() => {
     setAuthToken(to);
       const fetchInfo = async () => {
         try {
           const responseInfor = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
-           console.log("Info",responseInfor.data.data)
+        
           setDataInfo(responseInfor.data.data)
           setIdUser(responseInfor.data.data.userId)
         }catch (e) {
@@ -48,9 +45,7 @@ const Feed = ({data}) => {
 
     setAuthToken(to);
     try {
-      const id = data.id;
-      setIsLikeLo(!isLikeLo)
-      setIsLikeNu(true)
+      const id = data.idShare;
       await api
         .post(`https://www.socialnetwork.somee.com/api/like/${id}`)
         .then((response) => {
@@ -70,9 +65,15 @@ const Feed = ({data}) => {
     }
   };
   const handleCmt = () => {
-    setidPostR(data.id);
+    setidPostR(data.idShare);
     navigation.navigate('Comment')
 
+  }
+  const [idPostSimpleR,setIdPostSimple] = useRecoilState(idPostSimple)
+  const handleNavigatePost = () => {
+    console.log(data.id)
+     setIdPostSimple(data.id)
+     navigation.navigate('FeedSimpleScreen')
   }
   // console.log(data.userId)
   const handleNavigate = () => {
@@ -88,18 +89,17 @@ const Feed = ({data}) => {
   const [imageBig, setImageBig] = useState("")
   const [isImage, setIsImage] = useState(false)
   const handleImage = (img) => {
-    console.log(img.linkImage)
+    
     setVisible(true)
     setImageBig(img.linkImage)
   }
   const hanldDltPost = async () => {
    
-    console.log(data.id);
     setAuthToken(to);
     return api
-      .delete(`https://www.socialnetwork.somee.com/api/post/${data.id}`)
+      .delete(`https://www.socialnetwork.somee.com/api/post/${data.idShare}`)
       .then((res) => {
-        console.log("Delete 1",res);
+
         if (res.status === 204) {
           setSsUpdatePost(false);
         }
@@ -116,7 +116,7 @@ const Feed = ({data}) => {
     try {
       // setLike(!like);
       // setCountData(data.countLike + 1);
-      console.log(value,data.id,content)
+
 
       await api
         .post(
@@ -137,7 +137,6 @@ const Feed = ({data}) => {
           // Cập nhật dữ liệu vào state
           console.log(response);
           if (response.status == 200) {
-            setIsSharePostR(false)
               setVisibleShare(false)
             // dispatch(fetchPost());
             // setLike(like + 1);
@@ -157,9 +156,9 @@ const Feed = ({data}) => {
         <TouchableOpacity style={styles.headerLeftWrapper} onPress={handleNavigate}>
           <Image
             style={styles.profileThumb}
-            source={{uri: data.avatarUrl}}
+            source={{uri: data.avatarUrlShare}}
           />
-          <Text style={styles.headerTitle}> {data.fullName}</Text>
+          <Text style={styles.headerTitle}> {data.fullNameShare}</Text>
         </TouchableOpacity>
         {
           idUser === data.userId && ( <View style={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
@@ -173,12 +172,13 @@ const Feed = ({data}) => {
         }
        
       </View>
-      <Text style={{marginBottom:10, paddingLeft:10, marginTop:10}}>
+      <Text style={{marginBottom:10, paddingLeft:10}}>
           {' '}
-          <Text style={styles.headerTitle}>{data.content}</Text>{' '}
+          <Text style={styles.headerTitle}>{data.contentShare}</Text>{' '}
 
         </Text>
-      <View>
+        <View>
+      <View style={{paddingHorizontal:10}}>
       {
         data.images.length > 1 ? <View style={{display:"flex", flexDirection:"row",justifyContent:"center", alignItems:"center"}}>
         {
@@ -243,22 +243,24 @@ const Feed = ({data}) => {
         </View> 
 
       }
+      <View style={styles.headerWrapper3}>
+      <TouchableOpacity style={styles.headerLeftWrapper} onPress={handleNavigatePost}>
+        <Image
+          style={styles.profileThumb}
+          source={{uri: data.avatarUrlShare}}
+        />
+        <Text style={styles.headerTitle}> {data.fullNameShare}</Text>
+      </TouchableOpacity>
      
+     
+    </View>
       
-      </View>
+      </View></View>
       <View style={styles.feedImageFooter}>
         <View style={styles.feddimageFooterLeftWrapper}>
-        {
-          isLikeLo === true ?  <TouchableOpacity onPress={handleLike}>
-            <FontAwesome name="heart" size={30} color="pink" style={{marginRight:10}}/>
-          </TouchableOpacity> :   <TouchableOpacity onPress={handleLike}>
-          <FontAwesome name="heart-o" size={30} color="pink" style={{marginRight:10}}/>
-        </TouchableOpacity>
-          
-      
-      } 
-    
-      
+        <TouchableOpacity onPress={handleLike}>
+        <Feather name="heart" size={30} color="pink" style={{marginRight:10}}/>
+      </TouchableOpacity>
           
       <TouchableOpacity
       style={styles.container1}
@@ -352,9 +354,7 @@ const Feed = ({data}) => {
       </View>
       <View style={styles.likesAndCommentsWrapper}>
       <Feather name="heart" size={20} color="pink" style={{marginRight:10}}/>
-        {
-          isLikeNu == true ? <Text style={styles.likesTitle}>You and  {countLike} Likes</Text> : <Text style={styles.likesTitle}> {countLike}  Likes</Text>
-        }
+        <Text style={styles.likesTitle}> {data.countLikeShare}  Likes</Text>
 
       
       </View>
@@ -369,7 +369,7 @@ const Feed = ({data}) => {
   );
 };
 
-export default Feed;
+export default FeedShare;
 
 export const styles = StyleSheet.create({
   container: {
@@ -390,6 +390,19 @@ export const styles = StyleSheet.create({
     
   
   },
+  headerWrapper3: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    borderRightWidth: 1,
+    borderLeftWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8
+  },
+  
   headerWrapper1: {
     display: 'flex',
     flexDirection: 'column',
@@ -427,8 +440,7 @@ export const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color:"#333",
-    
+    color:"#333"
   },
   feedImage: {
     width: '100%',

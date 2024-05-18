@@ -57,3 +57,8 @@ export const isUpdateReels = atom({
   key: "isUpdateReels",
   default: true,
 });
+
+export const isSharePost = atom({
+  key: "isSharePost",
+  default: true,
+});

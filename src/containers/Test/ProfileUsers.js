@@ -218,7 +218,7 @@ const ProfileUsers = ({ navigation }) => {
  
   const [routes] = useState([
     { key: "first", title: "Photos" },
-    { key: "second", title: "Friends" },
+    { key: "second", title: "Friendship suggestions" },
   ]);
   useEffect(() => {
     setAuthToken(to)
@@ -716,16 +716,17 @@ const ProfileUsers = ({ navigation }) => {
           </View>
         ) : ( 
           <View style={styles.container}>
-          <Button title={dataInfo.statusFriend === "Bạn thường"  ?  "Bạn bè" : "Bạn thân"}  onPress={() => setVisible(true)}  style={{
-            width: 120,
-            height: 36,
+         
+          <TouchableOpacity  style={{
+            width: 280,
+              height: 36,
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "#456fe6",
             borderRadius: 10,
             marginHorizontal: SIZES.padding * 2,
-          }}/>
-          <Text style={styles.selectedText}>Selected: {selectedOption}</Text>
+          }} onPress={() => setVisible(true)}><Text style={{color:"white"}}>{dataInfo.statusFriend === "Bạn thường"  ?  "Bạn bè" : "Bạn thân"}</Text></TouchableOpacity>
+      
     
           <Modal
             transparent={true}

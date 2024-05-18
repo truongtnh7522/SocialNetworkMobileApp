@@ -2,10 +2,11 @@ import React, {Component,useEffect,useState,useRef } from 'react';
 import {Text, View, StyleSheet, ScrollView, Image,ActivityIndicator,TouchableOpacity ,Dimensions} from 'react-native';
 import {colors} from '../../utils/configs/Colors';
 import Feed from '../../components/Feed/Feed';
+import FeedShare from '../../components/FeedShare/FeedShare';
 import Stories from '../../components/Feed/Stories';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useRecoilState, useRecoilValue } from "recoil";
-import {   tokenState,likeR,LoadPage,isUpdatePost,isUpdateReels
+import {   tokenState,likeR,LoadPage,isUpdatePost,isUpdateReels,isSharePost
 } from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
@@ -40,8 +41,9 @@ export const FeedScreen = ({ navigation}) => {
   const [isUpdateReelsR, setIsUpdateReels] = useRecoilState(isUpdateReels);
   const [loadingMore, setLoadingMore] = useState(false);
   const [modePost, setModePost] = useState(true)
-  const [pageNumber, setPageNumber] = useState(3);
+  const [pageNumber, setPageNumber] = useState(15);
   const [isUpdatePostR, setSsUpdatePost] = useRecoilState(isUpdatePost);
+  const [isSharePostR, setIsSharePostR] = useRecoilState(isSharePost);
   const navigation1 = useNavigation();
   const onUserLogin = async (userID, userName, props) => {
   
@@ -157,6 +159,26 @@ export const FeedScreen = ({ navigation}) => {
      fetchData()
     }
   }, [isUpdatePostR]);
+  useEffect(() => {
+    if (isSharePostR === false) {
+      console.log(2929292)
+     const fetchDataShare = async () => {
+      try {
+        const pageNumberS = pageNumber + 1;
+        const response = await api.get(`https://www.socialnetwork.somee.com/api/post?numberOfPosts=${pageNumberS}`);
+        console.log(111111)
+         const newData = response.data.data;
+         setData(newData);
+             
+         setIsSharePostR(true);
+      } catch (error) {
+     
+        console.log(error)
+      }
+     }
+     fetchDataShare()
+    }
+  }, [isSharePostR]);
   const handleLoadMore = () => {
     if (!loadingMore) {
       setLoadingMore(true);
@@ -210,7 +232,8 @@ export const FeedScreen = ({ navigation}) => {
           <View >
          
             <ScrollView
-              style={styles.feedContainer}
+            style={[ {display: 'flex',
+            marginBottom: loadingMore ? 80 : 20 }]}
               onScroll={({ nativeEvent }) => {
                 if (isCloseToBottom(nativeEvent)) {
                   handleLoadMore();
@@ -220,8 +243,14 @@ export const FeedScreen = ({ navigation}) => {
             >
               {data.map((item, index) => (
                 <View key={index}>
-                  <Feed data={item} />
+                {item.idShare === undefined ? (
+                   <Feed data={item} />
+                 
+                ) : (
+                  <FeedShare data={item} />
+                )}
                 </View>
+               
               ))}
               {renderFooter()}
             </ScrollView>
@@ -231,7 +260,8 @@ export const FeedScreen = ({ navigation}) => {
         </View> : <View style={[styles.container, {paddingBottom:50}]}>
         <View >
         <ScrollView
-        style={[styles.feedContainer, {paddingBottom:30}]}
+        style={[ {paddingBottom:30,display: 'flex',
+        marginBottom:80,}]}
        
         scrollEventThrottle={400}
       >
@@ -253,7 +283,7 @@ export const FeedScreen = ({ navigation}) => {
 
 export default FeedScreen;
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-  const paddingToBottom = 20;
+  const paddingToBottom = 40;
   return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
 };
 const VideoPlayer = (data) => {
@@ -273,7 +303,7 @@ const VideoPlayer = (data) => {
 
   const handleDeleteReel = async (reelId) => {
     try {
-      console.log("ádasdasda",reelId)
+     
       const responseDelete = await api.post(`https://socialnetwork.somee.com/api/real/DeleteReels?reelIds=${reelId}`);
       console.log(responseDelete)
       if (responseDelete.status === 200) {
@@ -445,6 +475,7 @@ export const styles = StyleSheet.create({
   },
   feedContainer: {
     display: 'flex',
+    marginBottom:80,
   },
   icon: {
     width: 100,
