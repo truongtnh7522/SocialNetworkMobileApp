@@ -40,7 +40,7 @@ Sound.setCategory('Playback');
       const fetchAudio = async () => {
         try {
           setAuthToken(to);
-          const res = await api.get("https://www.socialnetwork.somee.com/api/audio");
+          const res = await api.get("https://socialnetwork.somee.com/api/audio");
           setAudio(res.data.data);
           console.log(res);
         } catch (e) {

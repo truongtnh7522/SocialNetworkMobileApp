@@ -1,23 +1,33 @@
-import React, { useState } from 'react'
-import Background from '../../components/LoginAndSignUp/Background'
-import BackButton from '../../components/LoginAndSignUp/BackButton'
-import Logo from '../../components/LoginAndSignUp/Logo'
-import Header from '../../components/LoginAndSignUp/Header'
-import TextInput from '../../components/LoginAndSignUp/TextInput'
-import Button from '../../components/LoginAndSignUp/Button'
-import { emailValidator } from '../../utils/helpers/emailValidator'
+import React, { useState } from 'react';
+import axios from 'axios';
+import Background from '../../components/LoginAndSignUp/Background';
+import BackButton from '../../components/LoginAndSignUp/BackButton';
+import Logo from '../../components/LoginAndSignUp/Logo';
+import Header from '../../components/LoginAndSignUp/Header';
+import TextInput from '../../components/LoginAndSignUp/TextInput';
+import Button from '../../components/LoginAndSignUp/Button';
+import { emailValidator } from '../../utils/helpers/emailValidator';
 
 export default function ResetPasswordScreen({ navigation }) {
-  const [email, setEmail] = useState({ value: '', error: '' })
+  const [email, setEmail] = useState({ value: '', error: '' });
 
-  const sendResetPasswordEmail = () => {
-    const emailError = emailValidator(email.value)
+  const sendResetPasswordEmail = async () => {
+    const emailError = emailValidator(email.value);
     if (emailError) {
-      setEmail({ ...email, error: emailError })
-      return
+      setEmail({ ...email, error: emailError });
+      return;
     }
-    navigation.navigate('LoginScreen')
-  }
+
+    try {
+      await axios.post('https://socialnetwork.somee.com/api/auth/sendPinforgotPassword', {
+        email: email.value,
+      });
+      navigation.navigate('VertifyPinPwScreen', { email: email });
+    } catch (error) {
+      // Handle error appropriately, maybe set an error message in the state
+      setEmail({ ...email, error: 'Failed to send reset email. Please try again.' });
+    }
+  };
 
   return (
     <Background>
@@ -45,5 +55,5 @@ export default function ResetPasswordScreen({ navigation }) {
         Send Instructions
       </Button>
     </Background>
-  )
+  );
 }

@@ -101,12 +101,12 @@ export const FeedScreen = ({ navigation}) => {
       setAuthToken(to)
      
     try {
-      const responseInfor = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
+      const responseInfor = await api.get('https://socialnetwork.somee.com/api/infor/myinfor');
       const fullName = responseInfor.data.data.fullName;
       const fullNameWithoutDiacriticsAndSpaces = removeDiacriticsAndSpaces(fullName);
       
       onUserLogin(fullNameWithoutDiacriticsAndSpaces, fullNameWithoutDiacriticsAndSpaces);
-      const response = await api.get(`https://www.socialnetwork.somee.com/api/post?numberOfPosts=${pageNumber}`);
+      const response = await api.get(`https://socialnetwork.somee.com/api/post?numberOfPosts=${pageNumber}`);
     
        const newData = response.data.data;
        setData(newData);
@@ -143,7 +143,7 @@ export const FeedScreen = ({ navigation}) => {
      const fetchData = async () => {
       try {
       
-        const response = await api.get(`https://www.socialnetwork.somee.com/api/post?numberOfPosts=${pageNumber}`);
+        const response = await api.get(`https://socialnetwork.somee.com/api/post?numberOfPosts=${pageNumber}`);
       
          const newData = response.data.data;
          setData(newData);

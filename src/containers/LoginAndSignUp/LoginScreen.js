@@ -28,7 +28,7 @@ import {
 } from "../../recoil/initState";
 import axios from 'axios'
 import Spinner from '../../components/Spinner'
-
+import Toast from 'react-native-toast-message';
 const { height: windowHeight } = Dimensions.get('window');
 const { width: windowWidth } = Dimensions.get('window');
 const Login = ({ navigation }) => {
@@ -40,7 +40,7 @@ const Login = ({ navigation }) => {
   const [token3, setToken3] = useState('');
   const [load, setLoad] = useState(true);
   const publicAxios = axios.create({
-    baseURL: 'https://www.socialnetwork.somee.com/api',
+    baseURL: 'https://socialnetwork.somee.com/api',
   });
   useEffect(() => {
     AsyncStorage.getItem('token')
@@ -66,7 +66,7 @@ const Login = ({ navigation }) => {
  
   const handleLogin = () => {
     setLoad(false)
-    fetch('https://www.socialnetwork.somee.com/api/auth/login', {
+    fetch('https://socialnetwork.somee.com/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -101,27 +101,24 @@ const Login = ({ navigation }) => {
 
         setLoad(true)
 
-        // console.log(to)
+         Toast.show({
+        type: 'success',
+        text1: 'Login Successful',
+        text2: 'You have logged in successfully.',
+        visibilityTime: 2000, 
+      });
+
+      setTimeout(() => {
         if (data.data.data.hasInfor == false) {
-          console.log(123)
-          navigation.navigate('CreateInfo')
-
+          navigation.navigate('CreateInfo');
         } else {
-          if( data.data.data.role?.[0] === "Admin")
-            {
-              navigation.navigate('AdCategory')
-            }
-            else {
-              navigation.navigate('BottomTabNavigation')
-            }
+          if (data.data.data.role?.[0] === "Admin") {
+            navigation.navigate('AdCategory');
+          } else {
+            navigation.navigate('BottomTabNavigation');
+          }
         }
-        // if (data.success == 200) {
-
-        //   navigation.navigate('BottomTabNavigation')
-        //   // setLoggedIn(true); // Đăng nhập thành công
-        // } else {
-        //   navigation.navigate('BottomTabNavigation')
-        // }
+      },2000);
       })
       .catch(error => {
         console.error('Error:', error);
@@ -166,7 +163,7 @@ const Login = ({ navigation }) => {
       />
       <View style={styles.forgotPassword}>
         <TouchableOpacity
-
+onPress={() => navigation.navigate('ResetPasswordScreen')}
         >
           <Text style={styles.forgot}>Forgot your password?</Text>
         </TouchableOpacity>
@@ -186,7 +183,7 @@ const Login = ({ navigation }) => {
         </TouchableOpacity>
       </View>
     </Background>
-    
+    <Toast ref={(ref) => Toast.setRef(ref)} />
     </View>
   )
 }

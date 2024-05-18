@@ -19,7 +19,7 @@ export const ChatContextProvider = ({ children }) => {
      
     try {
    
-      const response = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
+      const response = await api.get('https://socialnetwork.somee.com/api/infor/myinfor');
      
       setDataInfo(response.data);
 

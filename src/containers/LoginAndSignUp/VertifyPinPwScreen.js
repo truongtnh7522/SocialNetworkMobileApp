@@ -9,7 +9,7 @@ import Button from '../../components/LoginAndSignUp/Button';
 import BackButton from '../../components/LoginAndSignUp/BackButton';
 import { theme } from '../../theme/LoginAndSignUp/theme';
 
-export default function VertifyPinScreen({ navigation }) {
+export default function VertifyPinPwScreen({ navigation }) {
   const route = useRoute();
   const email = route.params.email;
   const [pin, setPin] = useState(Array(6).fill(''));
@@ -23,6 +23,7 @@ export default function VertifyPinScreen({ navigation }) {
       pinInputRefs[index + 1].current.focus();
     }
   };
+
   const handleKeyPress = (index, key) => {
     if (key === 'Backspace' && pin[index] === '') {
       if (index > 0) {
@@ -30,13 +31,14 @@ export default function VertifyPinScreen({ navigation }) {
       }
     }
   };
+
   const onVerifyPressed = () => {
     const body = {
       email: email.value,
       pin: pin.join('')
     };
-    console.log(body)
-    fetch('https://socialnetwork.somee.com/api/auth/VerifyPin', {
+
+    fetch('https://socialnetwork.somee.com/api/auth/VerifyPinForgotPassword', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -46,14 +48,19 @@ export default function VertifyPinScreen({ navigation }) {
       .then(response => {
         if (response.ok) {
           console.log('Verification successful');
+          // Navigate to the next screen upon successful verification
+          navigation.navigate('NewPasswordScreen', { email: email });
         } else {
           console.log('Verification failed');
+          // Handle verification failure (e.g., show an error message)
         }
       })
       .catch(error => {
         console.error('Error calling VerifyPin API:', error);
+        // Handle network or other errors
       });
   };
+
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
@@ -106,7 +113,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.primary,
     textAlign: 'center',
-    color:'black',
+    color: 'black',
     fontSize: 24,
   },
 });

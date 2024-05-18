@@ -211,7 +211,7 @@ const ChatMessagesScreen = () => {
       try {
         const fullName = data.user?.displayName;
         const responseInfo = await api.get(
-          "https://www.socialnetwork.somee.com/api/infor/searchuser",
+          "https://socialnetwork.somee.com/api/infor/searchuser",
           {
             params: { fullname: fullName },
           }
@@ -222,7 +222,7 @@ const ChatMessagesScreen = () => {
           setInvitees([fullNameWithoutDiacriticsAndSpaces]);
         }
 
-        const response = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
+        const response = await api.get('https://socialnetwork.somee.com/api/infor/myinfor');
         //  console.log(response.data)
         setDataInfo(response.data.data.firebaseData);
         setLoad(true)

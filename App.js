@@ -4,15 +4,18 @@ import { RecoilRoot } from "recoil";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ChatContextProvider } from './src/context/ChatContext';
-import Login from './src/containers/LoginAndSignUp/LoginScreen';
+import LoginScreen from './src/containers/LoginAndSignUp/LoginScreen';
 import FeedScreen from './src/containers/Feed/FeedScreen';
 import FeedSimpleScreen from './src/containers/FeedSimple/FeedSimpleScreen';
 import EditInforScreen from './src/containers/Infor/EditInforScreen';
 import CreatePostforScreen from './src/containers/CreatePost/CreatePost';
 import CreateReelsforScreen from './src/containers/CreateReels/CreateReels';
 import RegisterScreen from './src/containers/LoginAndSignUp/RegisterScreen';
+import ResetPasswordScreen from './src/containers/LoginAndSignUp/ResetPasswordScreen';
+import NewPasswordScreen from './src/containers/LoginAndSignUp/NewPasswordScreen';
 import BottomTabNav from './src/containers/Test/BottomTabNav';
 import VertifyPinScreen from "./src/containers/LoginAndSignUp/VertifyPinScreen"
+import VertifyPinPwScreen from "./src/containers/LoginAndSignUp/VertifyPinPwScreen"
 import Profile from './src/containers/Test/Profile';
 import ManagePost from './src/containers/Test/ManagePost';
 import ManageUser from './src/containers/Test/ManageUser';
@@ -22,6 +25,7 @@ import CreateInfoScreen from './src/containers/CreateInfo/CreateInfo';
 import ChatMessagesScreen from "./src/components/ChatMessagesScreen/ChatMessagesScreen";
 import Comment from "./src/containers/Comment/Comment"
 import Notifications from "./src/containers/Notifications/Notifications"
+import Toast from 'react-native-toast-message';
 import * as ZIM from 'zego-zim-react-native';
 import * as ZPNs from 'zego-zpns-react-native';
 import ZegoUIKitPrebuiltCallService, {
@@ -59,7 +63,7 @@ const App = () => {
         <NavigationContainer>
           <ZegoCallInvitationDialog />
           <Stack.Navigator initialRouteName="Login">
-            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+            <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
             <Stack.Screen name="BottomTabNavigation" component={BottomTabNav} options={{ headerShown: false }} />
             <Stack.Screen name="FeedScreen" component={FeedScreen} options={{ headerShown: false }} />
             <Stack.Screen name="FeedSimpleScreen" component={FeedSimpleScreen} options={{ headerShown: false }} />
@@ -68,6 +72,7 @@ const App = () => {
             <Stack.Screen name="CreatePost" component={CreatePostforScreen} options={{ headerShown: false }} />
             <Stack.Screen name="CreateReels" component={CreateReelsforScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} options={{ headerShown: false }} />
             <Stack.Screen name="VertifyPinScreen" component={VertifyPinScreen} options={{ headerShown: false }} />
             <Stack.Screen name="ChatMessagesScreen" component={ChatMessagesScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
@@ -77,6 +82,8 @@ const App = () => {
             <Stack.Screen name="AdCategory" component={AdCategory} options={{ headerShown: false }} />
             <Stack.Screen name="ManagePost" component={ManagePost} options={{ headerShown: false }} />
             <Stack.Screen name="ManageUser" component={ManageUser} options={{ headerShown: false }} />
+            <Stack.Screen name="NewPasswordScreen" component={NewPasswordScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="VertifyPinPwScreen" component={VertifyPinPwScreen} options={{ headerShown: false }} />
             <Stack.Screen
               options={{ headerShown: false }}
               // DO NOT change the name 
@@ -90,6 +97,7 @@ const App = () => {
               component={ZegoUIKitPrebuiltCallInCallScreen}
             />
           </Stack.Navigator>
+          <Toast ref={(ref) => Toast.setRef(ref)} />
         </NavigationContainer>
       </RecoilRoot>
 
