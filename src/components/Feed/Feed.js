@@ -30,7 +30,7 @@ const Feed = ({data}) => {
     setAuthToken(to);
       const fetchInfo = async () => {
         try {
-          const responseInfor = await api.get('https://socialnetwork.somee.com/api/infor/myinfor');
+          const responseInfor = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
            console.log("Info",responseInfor.data.data)
           setDataInfo(responseInfor.data.data)
           setIdUser(responseInfor.data.data.userId)
@@ -46,7 +46,7 @@ const Feed = ({data}) => {
     try {
       const id = data.id;
       await api
-        .post(`https://socialnetwork.somee.com/api/like/${id}`)
+        .post(`https://www.socialnetwork.somee.com/api/like/${id}`)
         .then((response) => {
           // Cập nhật dữ liệu vào state
 
@@ -91,7 +91,7 @@ const Feed = ({data}) => {
     console.log(data.id);
     setAuthToken(to);
     return api
-      .delete(`https://socialnetwork.somee.com/api/post/${data.id}`)
+      .delete(`https://www.socialnetwork.somee.com/api/post/${data.id}`)
       .then((res) => {
         console.log("Delete 1",res);
         if (res.status === 204) {
@@ -115,7 +115,7 @@ const Feed = ({data}) => {
 
       await api
         .post(
-          "https://socialnetwork.somee.com/api/post/share",
+          "https://www.socialnetwork.somee.com/api/post/share",
           {
             PostId: data.id,
             LevelView: value,
@@ -144,9 +144,211 @@ const Feed = ({data}) => {
       console.error("Login failed", error);
     }
   };
-  console.log(data)
   return (
-      <View></View>
+    <View style={styles.container}>
+      <View style={styles.headerWrapper}>
+        <TouchableOpacity style={styles.headerLeftWrapper} onPress={handleNavigate}>
+          <Image
+            style={styles.profileThumb}
+            source={{uri: data.avatarUrl}}
+          />
+          <Text style={styles.headerTitle}> {data.fullName}</Text>
+        </TouchableOpacity>
+        {
+          idUser === data.userId && ( <View style={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+          <TouchableOpacity style={styles.headerLeftWrapper}>
+          <AntDesign name="edit" size={20} color="#456fe6" style={{marginRight:10}}/>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.headerLeftWrapper} onPress={hanldDltPost}>
+        <AntDesign name="closecircleo" size={20} color="#456fe6" style={{marginRight:10}}/>
+      </TouchableOpacity>
+          </View>)
+        }
+       
+      </View>
+      <Text style={{marginBottom:10, paddingLeft:10}}>
+          {' '}
+          <Text style={styles.headerTitle}>{data.content}</Text>{' '}
+
+        </Text>
+      <View>
+      {
+        data.images.length > 1 ? <View style={{display:"flex", flexDirection:"row",justifyContent:"center", alignItems:"center"}}>
+        {
+          data.images.map((item, index) => (
+           
+            
+           
+          
+      
+            <TouchableOpacity onPress={() => handleImage(item)} key={index} >
+        <Image
+          style={{ height:300, width:200, flex:1 }}
+          resizeMode="cover"
+          source={{ uri: item.linkImage }}
+        />
+        <Modal
+        transparent={true}
+        visible={visible}
+        onRequestClose={() => setVisible(false)}
+      >
+        <TouchableOpacity style={styles.modalBackground} onPress={() => setVisible(false)}>
+        <Image
+        style={{ width:windowWidth * 0.8, height:"auto", aspectRatio: 1 }}
+        resizeMode="contain"
+        source={{ uri: imageBig }}
+      />
+        </TouchableOpacity>
+      </Modal>
+      </TouchableOpacity>
+          ))
+        }
+        </View>  : <View>
+        {
+          data.images.map((item, index) => (
+           
+            
+           
+          
+      
+            <TouchableOpacity onPress={() => handleImage(item.linkImage)} key={index}>
+        <Image
+          style={{ flex: 1, aspectRatio: 1 }}
+          resizeMode="cover"
+          source={{ uri: item.linkImage }}
+        />
+        <Modal
+        transparent={true}
+        visible={visible}
+        onRequestClose={() => setVisible(false)}
+      >
+        <TouchableOpacity style={styles.modalBackground} onPress={() => setVisible(false)}>
+        <Image
+        style={{ width:windowWidth * 1, height:"auto", aspectRatio: 1 }}
+        resizeMode="contain"
+        source={{ uri: item.linkImage }}
+      />
+        </TouchableOpacity>
+      </Modal>
+      </TouchableOpacity>
+          ))
+        }
+        </View> 
+
+      }
+     
+      
+      </View>
+      <View style={styles.feedImageFooter}>
+        <View style={styles.feddimageFooterLeftWrapper}>
+        <TouchableOpacity onPress={handleLike}>
+        <Feather name="heart" size={30} color="pink" style={{marginRight:10}}/>
+      </TouchableOpacity>
+          
+      <TouchableOpacity
+      style={styles.container1}
+      onPress={handleCmt}
+    >
+    <Octicons name="comment" size={30} color="#456fe6" style={{marginRight:10}}/>
+       </TouchableOpacity>
+         
+        </View>
+        <TouchableOpacity
+        style={styles.container1}
+        onPress={() => setVisibleShare(true)}
+      >
+      <AntDesign name="sharealt" size={30} color="#456fe6" style={{marginRight:10}}/>
+         </TouchableOpacity>
+  
+      </View>
+      <Modal
+      transparent={true}
+      visible={visibleShare}
+      onRequestClose={() => setVisibleShare(false)}
+    >
+        <TouchableOpacity style={styles.modalBackground} onPress={() => setVisibleShare(false)}>
+        <View style={styles.popup}>
+        <View style={styles.headerWrapper}>
+        <View style={styles.headerLeftWrapper}>
+          <Image
+            style={styles.profileThumb}
+            source={{uri: dataInfo.image}}
+          />
+          <View><Text style={styles.headerTitle}> {dataInfo.fullName}</Text>
+          
+          </View>
+         
+        </View>
+        <View style={styles.headerLeftWrapper1}>
+        <TextInput
+        style={styles.input}
+        placeholder="Enter search term"
+        value={content}
+        onChangeText={(text) => setContent(text)}
+      />
+      </View>
+      <View style={styles.headerLeftWrapper2}>
+    
+      <TouchableOpacity
+      style={{
+        backgroundColor: "#456fe6",
+        height: 34,
+        paddingHorizontal:10,
+        borderRadius: 6,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+     
+    >
+    <Text
+          style={{
+          
+            color: "white",
+          }}
+        >
+          Save Change
+        </Text>
+    </TouchableOpacity>
+      </View>
+      <View style={styles.headerLeftWrapper2}>
+      <View style={styles.containerS}>
+       
+          <DropDownPicker
+            open={open}
+            value={value}
+            items={items}
+            setOpen={setOpen}
+            setValue={setValue}
+            setItems={setItems}
+            style={styles.dropdown}
+            placeholder="Công khai"
+          />
+       
+        </View>
+     
+      </View>
+       
+      </View>
+        </View>
+      </TouchableOpacity>
+    </Modal>
+      <View style={styles.underLineWRapper}>
+        <View style={styles.underLine} />
+      </View>
+      <View style={styles.likesAndCommentsWrapper}>
+      <Feather name="heart" size={20} color="pink" style={{marginRight:10}}/>
+        <Text style={styles.likesTitle}> {data.countLike}  Likes</Text>
+
+      
+      </View>
+      <View style={styles.likesAndCommentsWrapper}>
+      
+    
+
+      
+      </View>
+ 
+    </View>
   );
 };
 
