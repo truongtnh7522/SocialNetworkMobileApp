@@ -22,6 +22,7 @@ import Spinner from "../../components/Spinner";
 import CheckBox from 'react-native-check-box';
 import { colors } from "../../utils/configs/Colors";
 import Sound from 'react-native-sound';
+import Toast from 'react-native-toast-message';
 
 Sound.setCategory('Playback');
   const CreateReelsforScreen = ({ navigation }) => {
@@ -99,6 +100,11 @@ Sound.setCategory('Playback');
         });
     
         if (res.status === 200) {
+          Toast.show({
+            type: 'success',
+            text1: 'Create Reels Successfully',
+            visibilityTime: 2000, 
+          });
           setSelectedImage(imagesDataURL[0]);
           setContent("");
           setLoad(false);
@@ -106,6 +112,11 @@ Sound.setCategory('Playback');
         }
     
       } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Create Reels Failed',
+          visibilityTime: 2000, 
+        });
         console.error("Add sai!", error);
         setLoad(false);
       }
@@ -236,6 +247,7 @@ Sound.setCategory('Playback');
             >
               <TextInput
                   placeholder="Hãy nhập suy nghĩ của bạn"
+                  placeholderTextColor="gray"
                 value={content}
                 onChangeText={(value) => setContent(value)}
                 editable={true}
@@ -243,7 +255,8 @@ Sound.setCategory('Playback');
                 numberOfLines={2}
                 style={{
                paddingLeft:10,
-               paddingRight:10
+               paddingRight:10,
+               color:'black'
                 }}
               />
             </View>
@@ -379,6 +392,8 @@ Sound.setCategory('Playback');
       
       </ScrollView>
         </View>
+        <Toast ref={(ref) => Toast.setRef(ref)} />
+
       </SafeAreaView>
     );
   };

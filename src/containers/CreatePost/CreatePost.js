@@ -19,6 +19,8 @@ import {   tokenState,likeR,LoadPage
 } from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner";
+import Toast from 'react-native-toast-message';
+
   const CreatePostforScreen = ({ navigation }) => {
     const [selectedImage, setSelectedImage] = useState(imagesDataURL[0]);
     const [content, setContent] = useState("");
@@ -54,6 +56,11 @@ import Spinner from "../../components/Spinner";
           });
           
           if(res.status == 200) {
+            Toast.show({
+              type: 'success',
+              text1: 'Create Post Successfully',
+              visibilityTime: 2000, 
+            });
             setSelectedImage(imagesDataURL[0])
             setContent("")
             setLoad(false)
@@ -61,6 +68,11 @@ import Spinner from "../../components/Spinner";
           }
   
         } catch (error) {
+          Toast.show({
+            type: 'error',
+            text1: 'Create Post Failed',
+            visibilityTime: 2000, 
+          });
           console.error("Add sai!", error);
         }
       };
@@ -153,6 +165,7 @@ import Spinner from "../../components/Spinner";
             >
               <TextInput
                   placeholder="Hãy nhập suy nghĩ của bạn"
+                  placeholderTextColor="gray"
                 value={content}
                 onChangeText={(value) => setContent(value)}
                 editable={true}
@@ -160,7 +173,8 @@ import Spinner from "../../components/Spinner";
                 numberOfLines={2}
                 style={{
                paddingLeft:10,
-               paddingRight:10
+               paddingRight:10,
+               color:'black'
                 }}
               />
             </View>
@@ -250,6 +264,8 @@ import Spinner from "../../components/Spinner";
       
       </ScrollView>
         </View>
+        <Toast ref={(ref) => Toast.setRef(ref)} />
+
       </SafeAreaView>
     );
   };

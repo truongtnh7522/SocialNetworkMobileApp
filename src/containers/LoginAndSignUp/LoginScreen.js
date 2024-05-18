@@ -63,9 +63,8 @@ const Login = ({ navigation }) => {
 
   }, [token3])
 
- 
   const handleLogin = () => {
-    setLoad(false)
+    setLoad(false);
     fetch('https://socialnetwork.somee.com/api/auth/login', {
       method: 'POST',
       headers: {
@@ -76,38 +75,32 @@ const Login = ({ navigation }) => {
         password: password,
       }),
     })
-      .then(response => response.json())
-      .then( async  (data) => {
-        console.log('Response from login:', data);
-        const token = data.data.data.jwtToken;
-
-        await  AsyncStorage.setItem('token', token)
-          .then(() => {
-
-            // Sau khi đã lưu token vào AsyncStorage, bạn cần lấy lại giá trị token từ AsyncStorage
-            return AsyncStorage.getItem('token');
-          })
-          .then(token1 => {
-            // Ở đây bạn nhận được giá trị token đã được lưu vào AsyncStorage
-
-            setToken2(token1 || ''); // Gán giá trị token1 vào state
-
-          })
-          .catch(error => {
-            console.log(error);
-          });
-        console.log("Info: ", data.data.data.hasInfor)
-        setToken(token)
-
-        setLoad(true)
-
-         Toast.show({
+    .then(response => response.json())
+    .then(async (data) => {
+      console.log('Response from login:', data);
+      const token = data.data.data.jwtToken;
+  
+      await AsyncStorage.setItem('token', token)
+        .then(() => {
+          return AsyncStorage.getItem('token');
+        })
+        .then(token1 => {
+          setToken2(token1 || '');
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      console.log("Info: ", data.data.data.hasInfor);
+      setToken(token);
+  
+      setLoad(true);
+  
+      Toast.show({
         type: 'success',
         text1: 'Login Successful',
-        text2: 'You have logged in successfully.',
-        visibilityTime: 2000, 
+        visibilityTime: 2000,
       });
-
+  
       setTimeout(() => {
         if (data.data.data.hasInfor == false) {
           navigation.navigate('CreateInfo');
@@ -118,18 +111,20 @@ const Login = ({ navigation }) => {
             navigation.navigate('BottomTabNavigation');
           }
         }
-      },2000);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        // Xử lý lỗi ở đây
-        setError('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+      }, 2000);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Login Fail',
+        visibilityTime: 2000,
       });
+      setLoad(true);  // Đặt lại load thành true khi đăng nhập thất bại
+      setError('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+    });
   };
-
-
-
-
+  
   return (
     <View style={{backgroundColor:"#333", height: windowHeight *1 ,
     width: windowWidth * 1,}}>

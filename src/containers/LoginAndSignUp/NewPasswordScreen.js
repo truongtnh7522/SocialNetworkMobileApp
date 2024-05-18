@@ -7,6 +7,8 @@ import Header from '../../components/LoginAndSignUp/Header';
 import TextInput from '../../components/LoginAndSignUp/TextInput';
 import Button from '../../components/LoginAndSignUp/Button';
 import { useRoute } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
+
 export default function NewPasswordScreen({ navigation }) {
   const route = useRoute();
   const email = route.params.email;  // Retrieve email from route parameters
@@ -24,8 +26,20 @@ console.log(email.value, password.value, confirmPassword.value)
         email: email.value,
         password: password.value,
       });
-      navigation.navigate('LoginScreen');
+      Toast.show({
+        type: 'success',
+        text1: 'Password changed successfully',
+        visibilityTime: 2000,
+      });
+      setTimeout(() => {
+        navigation.navigate('LoginScreen');
+      }, 2000);
     } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Failed to change password. Please try again.',
+        visibilityTime: 2000,
+      });
       // Handle error appropriately, maybe set an error message in the state
       setPassword({ ...password, error: 'Failed to change password. Please try again.' });
     }
@@ -67,6 +81,8 @@ console.log(email.value, password.value, confirmPassword.value)
       >
         Change Password
       </Button>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
+
     </Background>
   );
 }
