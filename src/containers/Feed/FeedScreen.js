@@ -136,6 +136,10 @@ export const FeedScreen = ({ navigation}) => {
     navigation1.navigate('CreateReels')
 
   }
+  const handleSearch = () => {
+    navigation1.navigate('Search')
+
+  }
   const [reels, setReels] = useState([]);
   useEffect(() => {
     getReels().then((data) => setReels(data));
@@ -201,8 +205,8 @@ export const FeedScreen = ({ navigation}) => {
         <View style={styles.headerRightWrapper}>
       
       
-      
-      <Feather name="search" size={30} color="black" style={{marginRight:10}}/>
+        <TouchableOpacity onPress={handleSearch}>
+      <Feather name="search" size={30} color="black" style={{marginRight:10}}/></TouchableOpacity>
       <TouchableOpacity onPress={handleCreateReels}>
       <AntDesign name="pluscircle" size={28} color="black"  style={{marginRight:10}}/>  
     </TouchableOpacity>
@@ -261,7 +265,7 @@ export const FeedScreen = ({ navigation}) => {
         <View >
         <ScrollView
         style={[ {paddingBottom:30,display: 'flex',
-        marginBottom:80,}]}
+        marginBottom:0,}]}
        
         scrollEventThrottle={400}
       >

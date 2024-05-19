@@ -18,6 +18,7 @@ import VertifyPinScreen from "./src/containers/LoginAndSignUp/VertifyPinScreen"
 import VertifyPinPwScreen from "./src/containers/LoginAndSignUp/VertifyPinPwScreen"
 import Profile from './src/containers/Test/Profile';
 import ManagePost from './src/containers/Test/ManagePost';
+import SearchPage from './src/containers/Test/SearchPage';
 import ManageUser from './src/containers/Test/ManageUser';
 import AdCategory from './src/containers/Test/AdCategory';
 import ProfileUsers from './src/containers/Test/ProfileUsers';
@@ -86,6 +87,7 @@ const App = () => {
             <Stack.Screen name="NewPasswordScreen" component={NewPasswordScreen} options={{ headerShown: false }} />
             <Stack.Screen name="VertifyPinPwScreen" component={VertifyPinPwScreen} options={{ headerShown: false }} />
             <Stack.Screen name="UpdateInfo" component={UpdateInfoScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Search" component={SearchPage} options={{ headerShown: false }} />
             <Stack.Screen
               options={{ headerShown: false }}
               // DO NOT change the name 

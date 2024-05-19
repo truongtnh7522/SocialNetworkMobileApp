@@ -77,12 +77,12 @@ const FeedShare = ({data}) => {
   }
   // console.log(data.userId)
   const handleNavigate = () => {
-    if(data.userId === idUser) {
+    if(data.userIdSharePost === idUser) {
   
       navigation.navigate('Profile')
     }
     else {
-      setidUsersR(data.userId)
+      setidUsersR(data.userIdSharePost)
       navigation.navigate('ProfileUsers')
     }
   }
@@ -160,16 +160,7 @@ const FeedShare = ({data}) => {
           />
           <Text style={styles.headerTitle}> {data.fullNameShare}</Text>
         </TouchableOpacity>
-        {
-          idUser === data.userId && ( <View style={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
-          <TouchableOpacity style={styles.headerLeftWrapper}>
-          <AntDesign name="edit" size={20} color="#456fe6" style={{marginRight:10}}/>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.headerLeftWrapper} onPress={hanldDltPost}>
-        <AntDesign name="closecircleo" size={20} color="#456fe6" style={{marginRight:10}}/>
-      </TouchableOpacity>
-          </View>)
-        }
+      
        
       </View>
       <Text style={{marginBottom:10, paddingLeft:10}}>
