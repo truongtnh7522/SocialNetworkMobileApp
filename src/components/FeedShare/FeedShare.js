@@ -247,9 +247,9 @@ const FeedShare = ({data}) => {
       <TouchableOpacity style={styles.headerLeftWrapper} onPress={handleNavigatePost}>
         <Image
           style={styles.profileThumb}
-          source={{uri: data.avatarUrlShare}}
+          source={{uri: data.avatarUrl}}
         />
-        <Text style={styles.headerTitle}> {data.fullNameShare}</Text>
+        <Text style={styles.headerTitle}> {data.fullName}</Text>
       </TouchableOpacity>
      
      
