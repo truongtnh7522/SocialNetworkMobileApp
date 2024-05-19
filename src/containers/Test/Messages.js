@@ -179,8 +179,10 @@ const Messages = () => {
       <TextInput
         style={styles.input}
         placeholder="Enter search term"
+        placeholderTextColor="gray"
         value={username}
         onChangeText={(text) => setUsername(text)}
+      
       />
       <TouchableOpacity style={styles.button} onPress={handleSearch}>
         <Text style={styles.buttonText}>Search</Text>
@@ -257,7 +259,9 @@ input: {
   borderRadius: 30,
   paddingHorizontal: 20,
   marginRight: 10,
-  height:"70%"
+  height:"70%",
+  color:'black'
+
 },
 button: {
   backgroundColor: '#456fe6',
