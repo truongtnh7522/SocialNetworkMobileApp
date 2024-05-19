@@ -99,7 +99,6 @@ const App = () => {
               component={ZegoUIKitPrebuiltCallInCallScreen}
             />
           </Stack.Navigator>
-          <Toast ref={(ref) => Toast.setRef(ref)} />
         </NavigationContainer>
       </RecoilRoot>
 
