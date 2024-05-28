@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import {View, Text, StyleSheet, Image,TouchableOpacity,Modal, TextInput,Dimensions} from 'react-native';
-import {colors} from '../../utils/configs/Colors';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Dimensions } from 'react-native';
+import { colors } from '../../utils/configs/Colors';
 import { useRecoilState, useRecoilValue } from "recoil";
-import {   tokenState,likeR , idPost,idUsers,isUpdatePost,isSharePost} from "../../recoil/initState";
-import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
+import { tokenState, likeR, idPost, idUsers, isUpdatePost, isSharePost } from "../../recoil/initState";
+import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -14,16 +14,16 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import Sound from 'react-native-sound';
 const { height: windowHeight } = Dimensions.get('window');
 const { width: windowWidth } = Dimensions.get('window');
-const Feed = ({data}) => {
+const Feed = ({ data }) => {
   const [likeRR, setLikeRR] = useRecoilState(likeR);
   const [to, setToken] = useRecoilState(tokenState);
   const [idPostR, setidPostR] = useRecoilState(idPost);
   const [idUserR, setidUsersR] = useRecoilState(idUsers);
   const [isUpdatePostR, setSsUpdatePost] = useRecoilState(isUpdatePost);
   const [isSharePostR, setIsSharePostR] = useRecoilState(isSharePost);
-  const [idUser,setIdUser] = useState("")
-  const [content,setContent] = useState("")
-  const [countLike,setCountLike] = useState(data.countLike)
+  const [idUser, setIdUser] = useState("")
+  const [content, setContent] = useState("")
+  const [countLike, setCountLike] = useState(data.countLike)
   const [visible, setVisible] = useState(false);
   const [visibleShare, setVisibleShare] = useState(false);
   const [dataInfo, setDataInfo] = useState([]);
@@ -32,19 +32,19 @@ const Feed = ({data}) => {
   const [isLikeNu, setIsLikeNu] = useState(false)
   useEffect(() => {
     setAuthToken(to);
-      const fetchInfo = async () => {
-        try {
-          const responseInfor = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
-           console.log("Info",responseInfor.data.data)
-          setDataInfo(responseInfor.data.data)
-          setIdUser(responseInfor.data.data.userId)
-        }catch (e) {
-          console.log(e)
-        }
+    const fetchInfo = async () => {
+      try {
+        const responseInfor = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
+        console.log("Info", responseInfor.data.data)
+        setDataInfo(responseInfor.data.data)
+        setIdUser(responseInfor.data.data.userId)
+      } catch (e) {
+        console.log(e)
       }
-      fetchInfo()
-  },[])
-   const handleLike = async () => {
+    }
+    fetchInfo()
+  }, [])
+  const handleLike = async () => {
 
     setAuthToken(to);
     try {
@@ -57,9 +57,9 @@ const Feed = ({data}) => {
           // Cập nhật dữ liệu vào state
 
           if (response.status === 200) {
-           
-         
-             setLikeRR(!likeRR);
+
+
+            setLikeRR(!likeRR);
           }
         })
         .catch((error) => {
@@ -76,8 +76,8 @@ const Feed = ({data}) => {
   }
   // console.log(data.userId)
   const handleNavigate = () => {
-    if(data.userId === idUser) {
-  
+    if (data.userId === idUser) {
+
       navigation.navigate('Profile')
     }
     else {
@@ -93,13 +93,13 @@ const Feed = ({data}) => {
     setImageBig(img.linkImage)
   }
   const hanldDltPost = async () => {
-   
+
     console.log(data.id);
     setAuthToken(to);
     return api
       .delete(`https://www.socialnetwork.somee.com/api/post/${data.id}`)
       .then((res) => {
-        console.log("Delete 1",res);
+        console.log("Delete 1", res);
         if (res.status === 204) {
           setSsUpdatePost(false);
         }
@@ -116,7 +116,7 @@ const Feed = ({data}) => {
     try {
       // setLike(!like);
       // setCountData(data.countLike + 1);
-      console.log(value,data.id,content)
+      console.log(value, data.id, content)
 
       await api
         .post(
@@ -138,7 +138,7 @@ const Feed = ({data}) => {
           console.log(response);
           if (response.status == 200) {
             setIsSharePostR(false)
-              setVisibleShare(false)
+            setVisibleShare(false)
             // dispatch(fetchPost());
             // setLike(like + 1);
             // setCountData(data.countLike - 1);
@@ -157,214 +157,214 @@ const Feed = ({data}) => {
         <TouchableOpacity style={styles.headerLeftWrapper} onPress={handleNavigate}>
           <Image
             style={styles.profileThumb}
-            source={{uri: data.avatarUrl}}
+            source={{ uri: data.avatarUrl }}
           />
           <Text style={styles.headerTitle}> {data.fullName}</Text>
         </TouchableOpacity>
         {
-          idUser === data.userId && ( <View style={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
-          <TouchableOpacity style={styles.headerLeftWrapper}>
-          <AntDesign name="edit" size={20} color="#456fe6" style={{marginRight:10}}/>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.headerLeftWrapper} onPress={hanldDltPost}>
-        <AntDesign name="closecircleo" size={20} color="#456fe6" style={{marginRight:10}}/>
-      </TouchableOpacity>
+          idUser === data.userId && (<View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+            <TouchableOpacity style={styles.headerLeftWrapper}>
+              <AntDesign name="edit" size={20} color="#456fe6" style={{ marginRight: 10 }} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.headerLeftWrapper} onPress={hanldDltPost}>
+              <AntDesign name="closecircleo" size={20} color="#456fe6" style={{ marginRight: 10 }} />
+            </TouchableOpacity>
           </View>)
         }
-       
+
       </View>
-      <Text style={{marginBottom:10, paddingLeft:10, marginTop:10}}>
-          {' '}
-          <Text style={styles.headerTitle}>{data.content}</Text>{' '}
+      <Text style={{ marginBottom: 10, paddingLeft: 10, marginTop: 10 }}>
+        {' '}
+        <Text style={styles.headerTitle}>{data.content}</Text>{' '}
 
-        </Text>
+      </Text>
       <View>
-      {
-        data.images.length > 1 ? <View style={{display:"flex", flexDirection:"row",justifyContent:"center", alignItems:"center"}}>
         {
-          data.images.map((item, index) => (
-           
-            
-           
-          
-      
-            <TouchableOpacity onPress={() => handleImage(item)} key={index} >
-        <Image
-          style={{ height:300, width:200, flex:1 }}
-          resizeMode="cover"
-          source={{ uri: item.linkImage }}
-        />
-        <Modal
-        transparent={true}
-        visible={visible}
-        onRequestClose={() => setVisible(false)}
-      >
-        <TouchableOpacity style={styles.modalBackground} onPress={() => setVisible(false)}>
-        <Image
-        style={{ width:windowWidth * 0.8, height:"auto", aspectRatio: 1 }}
-        resizeMode="contain"
-        source={{ uri: imageBig }}
-      />
-        </TouchableOpacity>
-      </Modal>
-      </TouchableOpacity>
-          ))
-        }
-        </View>  : <View>
-        {
-          data.images.map((item, index) => (
-           
-            
-           
-          
-      
-            <TouchableOpacity onPress={() => handleImage(item.linkImage)} key={index}>
-        <Image
-          style={{ flex: 1, aspectRatio: 1 }}
-          resizeMode="cover"
-          source={{ uri: item.linkImage }}
-        />
-        <Modal
-        transparent={true}
-        visible={visible}
-        onRequestClose={() => setVisible(false)}
-      >
-        <TouchableOpacity style={styles.modalBackground} onPress={() => setVisible(false)}>
-        <Image
-        style={{ width:windowWidth * 1, height:"auto", aspectRatio: 1 }}
-        resizeMode="contain"
-        source={{ uri: item.linkImage }}
-      />
-        </TouchableOpacity>
-      </Modal>
-      </TouchableOpacity>
-          ))
-        }
-        </View> 
+          data.images.length > 1 ? <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+            {
+              data.images.map((item, index) => (
 
-      }
-     
-      
+
+
+
+
+                <TouchableOpacity onPress={() => handleImage(item)} key={index} >
+                  <Image
+                    style={{ height: 300, width: 200, flex: 1 }}
+                    resizeMode="cover"
+                    source={{ uri: item.linkImage }}
+                  />
+                  <Modal
+                    transparent={true}
+                    visible={visible}
+                    onRequestClose={() => setVisible(false)}
+                  >
+                    <TouchableOpacity style={styles.modalBackground} onPress={() => setVisible(false)}>
+                      <Image
+                        style={{ width: windowWidth * 0.8, height: "auto", aspectRatio: 1 }}
+                        resizeMode="contain"
+                        source={{ uri: imageBig }}
+                      />
+                    </TouchableOpacity>
+                  </Modal>
+                </TouchableOpacity>
+              ))
+            }
+          </View> : <View>
+            {
+              data.images.map((item, index) => (
+
+
+
+
+
+                <TouchableOpacity onPress={() => handleImage(item.linkImage)} key={index}>
+                  <Image
+                    style={{ flex: 1, aspectRatio: 1 }}
+                    resizeMode="cover"
+                    source={{ uri: item.linkImage }}
+                  />
+                  <Modal
+                    transparent={true}
+                    visible={visible}
+                    onRequestClose={() => setVisible(false)}
+                  >
+                    <TouchableOpacity style={styles.modalBackground} onPress={() => setVisible(false)}>
+                      <Image
+                        style={{ width: windowWidth * 1, height: "auto", aspectRatio: 1 }}
+                        resizeMode="contain"
+                        source={{ uri: item.linkImage }}
+                      />
+                    </TouchableOpacity>
+                  </Modal>
+                </TouchableOpacity>
+              ))
+            }
+          </View>
+
+        }
+
+
       </View>
       <View style={styles.feedImageFooter}>
         <View style={styles.feddimageFooterLeftWrapper}>
-        {
-          isLikeLo === true ?  <TouchableOpacity onPress={handleLike}>
-            <FontAwesome name="heart" size={30} color="pink" style={{marginRight:10}}/>
-          </TouchableOpacity> :   <TouchableOpacity onPress={handleLike}>
-          <FontAwesome name="heart-o" size={30} color="pink" style={{marginRight:10}}/>
-        </TouchableOpacity>
-          
-      
-      } 
-    
-      
-          
-      <TouchableOpacity
-      style={styles.container1}
-      onPress={handleCmt}
-    >
-    <Octicons name="comment" size={30} color="#456fe6" style={{marginRight:10}}/>
-       </TouchableOpacity>
-         
+          {
+            isLikeLo === true ? <TouchableOpacity onPress={handleLike}>
+              <FontAwesome name="heart" size={30} color="pink" style={{ marginRight: 10 }} />
+            </TouchableOpacity> : <TouchableOpacity onPress={handleLike}>
+              <FontAwesome name="heart-o" size={30} color="pink" style={{ marginRight: 10 }} />
+            </TouchableOpacity>
+
+
+          }
+
+
+
+          <TouchableOpacity
+            style={styles.container1}
+            onPress={handleCmt}
+          >
+            <Octicons name="comment" size={30} color="#456fe6" style={{ marginRight: 10 }} />
+          </TouchableOpacity>
+
         </View>
         <TouchableOpacity
-        style={styles.container1}
-        onPress={() => setVisibleShare(true)}
-      >
-      <AntDesign name="sharealt" size={30} color="#456fe6" style={{marginRight:10}}/>
-         </TouchableOpacity>
-  
+          style={styles.container1}
+          onPress={() => setVisibleShare(true)}
+        >
+          <AntDesign name="sharealt" size={30} color="#456fe6" style={{ marginRight: 10 }} />
+        </TouchableOpacity>
+
       </View>
       <Modal
-      transparent={true}
-      visible={visibleShare}
-      onRequestClose={() => setVisibleShare(false)}
-    >
+        transparent={true}
+        visible={visibleShare}
+        onRequestClose={() => setVisibleShare(false)}
+      >
         <TouchableOpacity style={styles.modalBackground} onPress={() => setVisibleShare(false)}>
-        <View style={styles.popup}>
-        <View style={styles.headerWrapper1}>
-        <View style={styles.headerLeftWrapper}>
-          <Image
-            style={styles.profileThumb}
-            source={{uri: dataInfo.image}}
-          />
-          <View><Text style={styles.headerTitle}> {dataInfo.fullName}</Text>
-          
+          <View style={styles.popup}>
+            <View style={styles.headerWrapper1}>
+              <View style={styles.headerLeftWrapper}>
+                <Image
+                  style={styles.profileThumb}
+                  source={{ uri: dataInfo.image }}
+                />
+                <View><Text style={styles.headerTitle}> {dataInfo.fullName}</Text>
+
+                </View>
+
+              </View>
+              <View style={styles.headerLeftWrapper1}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter content"
+                  value={content}
+                  onChangeText={(text) => setContent(text)}
+                />
+              </View>
+              <View style={styles.headerLeftWrapper2}>
+
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#456fe6",
+                    height: 34,
+                    paddingHorizontal: 10,
+                    borderRadius: 6,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  onPress={handleShare}
+                >
+                  <Text
+                    style={{
+
+                      color: "white",
+                    }}
+                  >
+                    Save Change
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.headerLeftWrapper2}>
+                <View style={styles.containerS}>
+
+                  <DropDownPicker
+                    open={open}
+                    value={value}
+                    items={items}
+                    setOpen={setOpen}
+                    setValue={setValue}
+                    setItems={setItems}
+                    style={styles.dropdown}
+                    placeholder="Công khai"
+                  />
+
+                </View>
+
+              </View>
+
+            </View>
           </View>
-         
-        </View>
-        <View style={styles.headerLeftWrapper1}>
-        <TextInput
-        style={styles.input}
-        placeholder="Enter content"
-        value={content}
-        onChangeText={(text) => setContent(text)}
-      />
-      </View>
-      <View style={styles.headerLeftWrapper2}>
-    
-      <TouchableOpacity
-      style={{
-        backgroundColor: "#456fe6",
-        height: 34,
-        paddingHorizontal:10,
-        borderRadius: 6,
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-      onPress={handleShare}
-    >
-    <Text
-          style={{
-          
-            color: "white",
-          }}
-        >
-          Save Change
-        </Text>
-    </TouchableOpacity>
-      </View>
-      <View style={styles.headerLeftWrapper2}>
-      <View style={styles.containerS}>
-       
-          <DropDownPicker
-            open={open}
-            value={value}
-            items={items}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
-            style={styles.dropdown}
-            placeholder="Công khai"
-          />
-       
-        </View>
-     
-      </View>
-       
-      </View>
-        </View>
-      </TouchableOpacity>
-    </Modal>
+        </TouchableOpacity>
+      </Modal>
       <View style={styles.underLineWRapper}>
         <View style={styles.underLine} />
       </View>
       <View style={styles.likesAndCommentsWrapper}>
-      <Feather name="heart" size={20} color="pink" style={{marginRight:10}}/>
+        <Feather name="heart" size={20} color="pink" style={{ marginRight: 10 }} />
         {
           isLikeNu == true ? <Text style={styles.likesTitle}>You and  {countLike} Likes</Text> : <Text style={styles.likesTitle}> {countLike}  Likes</Text>
         }
 
-      
+
       </View>
       <View style={styles.likesAndCommentsWrapper}>
-      
-    
 
-      
+
+
+
       </View>
- 
+
     </View>
   );
 };
@@ -376,7 +376,7 @@ export const styles = StyleSheet.create({
     display: 'flex',
   },
   container1: {
-   width:"full"
+    width: "full"
   },
   profileThumb: {
     width: 50,
@@ -387,22 +387,22 @@ export const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    
-  
+
+
   },
   headerWrapper1: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    
-  
+
+
   },
   input: {
     flex: 1,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
-  
+
   },
   icon: {
     width: 40,
@@ -422,13 +422,13 @@ export const styles = StyleSheet.create({
   headerLeftWrapper2: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent:"flex-end"
+    justifyContent: "flex-end"
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color:"#333",
-    
+    color: "#333",
+
   },
   feedImage: {
     width: '100%',
@@ -460,14 +460,14 @@ export const styles = StyleSheet.create({
   likesTitle: {
     fontSize: 17,
     fontWeight: '600',
-    color:"#333"
+    color: "#333"
   },
 
   selectedText: {
     marginTop: 20,
     fontSize: 18,
-    color:"black",
-    textAlign:"left"
+    color: "black",
+    textAlign: "left"
   },
   modalBackground: {
     flex: 1,
@@ -488,21 +488,21 @@ export const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-   
-    paddingVertical:20,
-    height:"80%"
+
+    paddingVertical: 20,
+    height: "80%"
   },
   containerS: {
     flex: 1,
     justifyContent: 'center',
-    height:100,
+    height: 100,
 
 
   },
   dropdown: {
 
-   padding:0,
-   
+    padding: 0,
+
   },
 
 });
