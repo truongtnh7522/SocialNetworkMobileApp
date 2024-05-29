@@ -62,3 +62,8 @@ export const isSharePost = atom({
   key: "isSharePost",
   default: true,
 });
+
+export const isOpenUpdatePost = atom({
+  key: "isOpenUpdatePost",
+  default: false,
+});

@@ -101,7 +101,7 @@ const Login = ({ navigation }, ref) => {
               navigation.navigate('BottomTabNavigation');
             }
           }
-        }, 2000);
+        }, 1000);
       })
       .catch(error => {
         console.error('Error:', error);

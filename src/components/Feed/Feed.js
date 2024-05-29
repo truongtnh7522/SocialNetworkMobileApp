@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Dimensions } from 'react-native';
 import { colors } from '../../utils/configs/Colors';
 import { useRecoilState, useRecoilValue } from "recoil";
-import { tokenState, likeR, idPost, idUsers, isUpdatePost, isSharePost } from "../../recoil/initState";
+import { tokenState, likeR, idPost, idUsers, isUpdatePost, isSharePost ,isOpenUpdatePost} from "../../recoil/initState";
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -11,6 +11,7 @@ import Feather from "react-native-vector-icons/Feather";
 import Octicons from "react-native-vector-icons/Octicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import DropDownPicker from 'react-native-dropdown-picker';
+import UpdatePostforScreen from "../../containers/UpdatePost/UpdatePost"
 import Sound from 'react-native-sound';
 const { height: windowHeight } = Dimensions.get('window');
 const { width: windowWidth } = Dimensions.get('window');
@@ -20,6 +21,7 @@ const Feed = ({ data }) => {
   const [idPostR, setidPostR] = useRecoilState(idPost);
   const [idUserR, setidUsersR] = useRecoilState(idUsers);
   const [isUpdatePostR, setSsUpdatePost] = useRecoilState(isUpdatePost);
+  const [isOpenUpdatePostR, setIsOpenUpdatePost] = useRecoilState(isOpenUpdatePost);
   const [isSharePostR, setIsSharePostR] = useRecoilState(isSharePost);
   const [idUser, setIdUser] = useState("")
   const [content, setContent] = useState("")
@@ -30,6 +32,7 @@ const Feed = ({ data }) => {
   const navigation = useNavigation();
   const [isLikeLo, setIsLikeLo] = useState(data.isLike)
   const [isLikeNu, setIsLikeNu] = useState(false)
+  const [IdEdit, setIdEdit] = useState("");
   useEffect(() => {
     setAuthToken(to);
     const fetchInfo = async () => {
@@ -151,6 +154,11 @@ const Feed = ({ data }) => {
       console.error("Login failed", error);
     }
   };
+  const hanlđUpatePost = () => {
+    setIdEdit(data.id);
+    console.log(data.id)
+    setIsOpenUpdatePost(true)
+  }
   return (
     <View style={styles.container}>
       <View style={styles.headerWrapper}>
@@ -163,7 +171,7 @@ const Feed = ({ data }) => {
         </TouchableOpacity>
         {
           idUser === data.userId && (<View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-            <TouchableOpacity style={styles.headerLeftWrapper}>
+            <TouchableOpacity style={styles.headerLeftWrapper} onPress={hanlđUpatePost}>
               <AntDesign name="edit" size={20} color="#456fe6" style={{ marginRight: 10 }} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.headerLeftWrapper} onPress={hanldDltPost}>
@@ -364,7 +372,7 @@ const Feed = ({ data }) => {
 
 
       </View>
-
+      {isOpenUpdatePostR === true && IdEdit === data.id && <UpdatePostforScreen data={data} />}
     </View>
   );
 };

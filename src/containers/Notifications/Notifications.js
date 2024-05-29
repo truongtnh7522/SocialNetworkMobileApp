@@ -7,7 +7,9 @@ import {
     TextInput,
     Pressable,
     Image,
+    TouchableOpacity
   } from "react-native";
+  import {colors} from '../../utils/configs/Colors';
   import React, { useState, useContext, useLayoutEffect, useEffect, useRef } from "react";
   import Feather from "react-native-vector-icons/Feather";
   import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -20,7 +22,7 @@ import {
   import { ChatContext } from "../../context/ChatContext";
   import { useRecoilState, useRecoilValue } from "recoil";
   import {
-    tokenState, likeR,idPost
+    tokenState, likeR,idPost,idUsers
   } from "../../recoil/initState";
   import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 
@@ -38,14 +40,14 @@ const Notifications = () => {
   const [postId, setPostId] = useState(data.id);
   const [to, setToken] = useRecoilState(tokenState);
   const [dataInfo, setDataInfo] = useState([]);
-
+  const [idUserR, setidUsersR] = useRecoilState(idUsers);
   const loadData = async () => {
     // Gọi API để lấy dữ liệu
     console.log(idPostR)
     setAuthToken(to)
     await api
       .get(
-        `https://socialnetwork.somee.com/api/Notify/getNotifies`
+        `https://socialnetwork.somee.com/api/Notify/getAcceptFriendNotifies`
       )
       .then((response) => {
         console.log(response)
@@ -98,9 +100,12 @@ const Notifications = () => {
     scrollToBottom();
   }
 
-  const handleEmojiPress = () => {
-    setShowEmojiSelector(!showEmojiSelector);
-  };
+  const handleNavigateFriend = (id) => {
+   
+      setidUsersR(id)
+      navigation.navigate('ProfileUsers')
+    
+  }
 
   console.log(dataInfo.id)
   const handleAddPostBig = async () => {
@@ -145,9 +150,11 @@ const Notifications = () => {
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#F0F0F0", paddingTop:"10px" }}>
     <Text style={{
       width:"100%",
-      textAlign:"center"
+      textAlign:"center",
+      color:"black",
+      marginTop:10
     }}>
-      Thông báo bài Post
+      Thông báo
     </Text>
     {
       loadCmt === false ? <ScrollView ref={scrollViewRef} contentContainerStyle={{ flexGrow: 1 }} onContentSizeChange={handleContentSizeChange}>
@@ -161,7 +168,7 @@ const Notifications = () => {
                 {
                   display:"flex",
                   flexDirection: "row",
-                  justifyContent:"start",
+                  justifyContent:"center",
                   alignItems:"center",
                   paddingLeft:10
            
@@ -169,36 +176,43 @@ const Notifications = () => {
 
              
              ]}>
-             <Image
-             style={styles.profileThumb}
-             source={{uri: item.image}}
-           />
-            <View
+            
+            <TouchableOpacity
 
-
+              onPress={() => handleNavigateFriend(item.userTo)}
               style={[
                  {
-                    alignSelf: "flex-start",
+                    alignSelf: "flex-center",
                     backgroundColor: "white",
                     padding: 8,
                     margin: 10,
                     borderRadius: 7,
                     maxWidth: "80%",
+                    flexDirection: "row",
+                    display:"flex",
+                    justifyContent:"center",
+                    alignItems:"center",
                   },
 
                 {  backgroundColor: "#F0FFFF" },
               ]}
-            >
+            > 
+            <Image
+            style={styles.profileThumb}
+            source={{uri: item.image}}
+          />
               <Text
                 style={{
                   fontSize: 13,
                   textAlign: "left",
+                  color:colors.black,
+                  marginLeft:10
                 }}
               >
               {item.content}
               </Text>
             
-            </View>
+            </TouchableOpacity>
            
             </View>
           ))}

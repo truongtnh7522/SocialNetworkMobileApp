@@ -15,51 +15,61 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { imagesDataURL } from "../../constants/data";
 import DatePicker, { getFormatedDate } from "react-native-modern-datepicker";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { tokenState, likeR, LoadPage } from "../../recoil/initState";
+import { tokenState, likeR, LoadPage,isOpenUpdatePost } from "../../recoil/initState";
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken";
 import Spinner from "../../components/Spinner";
 import Toast from 'react-native-toast-message';
 import Video from 'react-native-video';
 
-const CreatePostforScreen = ({ navigation }) => {
+const UpdatePostforScreen = ({ data }) => {
   const [selectedMedia, setSelectedMedia] = useState([]);
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(data.content);
   const [isChecked, setIsChecked] = useState("1");
   const [to, setToken] = useRecoilState(tokenState);
   const [LoadPageR, setLoadPageR] = useRecoilState(LoadPage);
   const [load, setLoad] = useState(false);
+  const [isOpenUpdatePostR, setIsOpenUpdatePost] = useRecoilState(isOpenUpdatePost);
   const today = new Date();
 
   const handlePost = async () => {
-      setLoad(true);
+    //   setLoad(true);
       setAuthToken(to);
       try {
           const formData = new FormData();
           formData.append("Content", content);
           formData.append("LevelVieW", isChecked);
-
-          selectedMedia.forEach((media, index) => {
-              const localUri = media.uri;
-              const filename = localUri.split('/').pop();
-              const fileType = media.type.startsWith("image") ? "image/jpeg" : "video/mp4";
-
-              formData.append('File', {
-                  uri: localUri,
-                  name: filename,
-                  type: fileType,
-              });
-          });
-
-          const res = await api.post("https://socialnetwork.somee.com/api/post", formData, {
+        //   data.images.forEach((media, index) => {
+        //     console.log(`ListImageDeleteId[${index}]`,media.id)
+        //     formData.append(`ListImageDeleteId[${index}]`, media.id);
+           
+        // });
+        // console.log(123)
+        //   selectedMedia.forEach((media, index) => {
+        //       const localUri = media.uri;
+        //       const filename = localUri.split('/').pop();
+        //       const fileType = media.type.startsWith("image") ? "image/jpeg" : "video/mp4";
+        //         console.log({
+        //             uri: localUri,
+        //             name: filename,
+        //             type: fileType,
+        //         })
+        //       formData.append('File', {
+        //           uri: localUri,
+        //           name: filename,
+        //           type: fileType,
+        //       });
+        //   });
+          console.log(formData)
+          const res = await api.put("https://socialnetwork.somee.com/api/post", formData, {
               headers: {
                   "Content-Type": "multipart/form-data",
               },
           });
-
+          console.log(res)
           if (res.status === 200) {
               Toast.show({
                   type: 'success',
-                  text1: 'Create Post Successfully',
+                  text1: 'Update Post Successfully',
                   visibilityTime: 2000,
               });
               setSelectedMedia([]);
@@ -71,9 +81,10 @@ const CreatePostforScreen = ({ navigation }) => {
       } catch (error) {
           Toast.show({
               type: 'error',
-              text1: 'Create Post Failed',
+              text1: 'Update Post Failed',
               visibilityTime: 2000,
           });
+          setLoad(false)
           console.error("Add failed!", error);
       }
   };
@@ -92,7 +103,7 @@ const CreatePostforScreen = ({ navigation }) => {
       }
   };
 
-  const [selectedMode, setSelectedMode] = useState(null);
+  const [selectedMode, setSelectedMode] = useState(data.levelView === 1 ? "mode1" : "mode2");
 
   const handleModeSelect = (mode, number) => {
       setIsChecked(number);
@@ -100,6 +111,11 @@ const CreatePostforScreen = ({ navigation }) => {
   };
 
   return (
+    <Modal
+                    transparent={true}
+                    visible={isOpenUpdatePostR}
+                    onRequestClose={() => setIsOpenUpdatePost(false)}
+                  >
       <SafeAreaView
           style={{
               flex: 1,
@@ -115,7 +131,7 @@ const CreatePostforScreen = ({ navigation }) => {
               }}
           >
               <TouchableOpacity
-                  onPress={() => navigation.goBack()}
+                  onPress={() => setIsOpenUpdatePost(false)}
                   style={{
                       position: "absolute",
                       left: 0,
@@ -129,7 +145,7 @@ const CreatePostforScreen = ({ navigation }) => {
                   />
               </TouchableOpacity>
 
-              <Text style={{ ...FONTS.h3, color: "#333", fontWeight: 800 }}>Create Post</Text>
+              <Text style={{ ...FONTS.h3, color: "#333", fontWeight: 800 }}>Update Post</Text>
           </View>
 
           <View>
@@ -189,15 +205,23 @@ const CreatePostforScreen = ({ navigation }) => {
                       }}>
                       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                       <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
-                      {selectedMedia.length === 0 ? (
-                        <Image
-                            source={{ uri: "https://ung-dung.com/images/upanh_online/upanh.png" }}
-                            style={{
-                                height: 100,
-                                width: 100,
-                            }}
-                            resizeMode="contain"
-                        />
+                      {selectedMedia?.length === 0 ? (
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
+                        {data.images.map((media, index) => (
+                          <View key={index} style={{ margin: 5 }}>
+                          
+                                  <Image
+                                      source={{ uri: media.linkImage }}
+                                      style={{
+                                          height: 100,
+                                          width: 100,
+                                      }}
+                                      resizeMode="contain"
+                                  />
+                             
+                          </View>
+                      ))}
+                        </View>
                     ) : (
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
                         {selectedMedia.map((media, index) => (
@@ -288,7 +312,8 @@ const CreatePostforScreen = ({ navigation }) => {
           </View>
           <Toast ref={(ref) => Toast.setRef(ref)} />
       </SafeAreaView>
+      </Modal>
   );
 };
 
-export default CreatePostforScreen;
+export default UpdatePostforScreen;
