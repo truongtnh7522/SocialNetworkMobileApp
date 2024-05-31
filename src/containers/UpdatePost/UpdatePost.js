@@ -15,51 +15,66 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { imagesDataURL } from "../../constants/data";
 import DatePicker, { getFormatedDate } from "react-native-modern-datepicker";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { tokenState, likeR, LoadPage,isOpenUpdatePost } from "../../recoil/initState";
+import { tokenState, likeR, LoadPage,isOpenUpdatePost ,UpdatePost1,loadUpdate} from "../../recoil/initState";
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken";
 import Spinner from "../../components/Spinner";
 import Toast from 'react-native-toast-message';
 import Video from 'react-native-video';
-
+import AntDesign from "react-native-vector-icons/AntDesign";
 const UpdatePostforScreen = ({ data }) => {
   const [selectedMedia, setSelectedMedia] = useState([]);
   const [content, setContent] = useState(data.content);
   const [isChecked, setIsChecked] = useState("1");
   const [to, setToken] = useRecoilState(tokenState);
   const [LoadPageR, setLoadPageR] = useRecoilState(LoadPage);
-  const [load, setLoad] = useState(false);
+  const [load, setLoad] = useRecoilState(loadUpdate);
   const [isOpenUpdatePostR, setIsOpenUpdatePost] = useRecoilState(isOpenUpdatePost);
+  const [UpdatePost1R, setUpdatePost1R] = useRecoilState(UpdatePost1);
   const today = new Date();
-
+  console.log("ID",data.id)
+  const [stringArray, setStringArray] = useState([""]);
+  const [hiddenIds, setHiddenIds] = useState([]);
+  const [lengthAI, setLengthAI] = useState(data.images.length);
+  const handleAddItem = (id: string) => {
+    setLengthAI(lengthAI - 1);
+    // Kiểm tra nếu chuỗi đầu tiên là rỗng thì thêm một phần tử mới vào mảng
+    if (stringArray.length === 1 && stringArray[0] === "") {
+      setStringArray([id]);
+    } else {
+      const newArray = [...stringArray];
+      newArray.push(id);
+      setStringArray(newArray);
+    }
+    // Thêm id vào mảng hiddenIds
+    setHiddenIds([...hiddenIds, id]);
+  };
   const handlePost = async () => {
-    //   setLoad(true);
+       setLoad(true);
       setAuthToken(to);
       try {
           const formData = new FormData();
           formData.append("Content", content);
           formData.append("LevelVieW", isChecked);
-        //   data.images.forEach((media, index) => {
-        //     console.log(`ListImageDeleteId[${index}]`,media.id)
-        //     formData.append(`ListImageDeleteId[${index}]`, media.id);
-           
-        // });
-        // console.log(123)
-        //   selectedMedia.forEach((media, index) => {
-        //       const localUri = media.uri;
-        //       const filename = localUri.split('/').pop();
-        //       const fileType = media.type.startsWith("image") ? "image/jpeg" : "video/mp4";
-        //         console.log({
-        //             uri: localUri,
-        //             name: filename,
-        //             type: fileType,
-        //         })
-        //       formData.append('File', {
-        //           uri: localUri,
-        //           name: filename,
-        //           type: fileType,
-        //       });
-        //   });
-          console.log(formData)
+          formData.append("postId", data.id);
+          if (stringArray) {
+            stringArray.map((item, index) => {
+            
+              formData.append(`ListImageDeleteId[${index}]`, item);
+            });
+          }
+   
+          selectedMedia.forEach((media, index) => {
+              const localUri = media.uri;
+              const filename = localUri.split('/').pop();
+              const fileType = media.type.startsWith("image") ? "image/jpeg" : "video/mp4";
+             
+              formData.append('File', {
+                  uri: localUri,
+                  name: filename,
+                  type: fileType,
+              });
+          });
+     
           const res = await api.put("https://socialnetwork.somee.com/api/post", formData, {
               headers: {
                   "Content-Type": "multipart/form-data",
@@ -67,14 +82,14 @@ const UpdatePostforScreen = ({ data }) => {
           });
           console.log(res)
           if (res.status === 200) {
+            setUpdatePost1R(false)
               Toast.show({
                   type: 'success',
                   text1: 'Update Post Successfully',
                   visibilityTime: 2000,
               });
-              setSelectedMedia([]);
-              setContent("");
-              setLoad(false);
+        
+           
               setLoadPageR(!LoadPageR);
           }
 
@@ -109,7 +124,11 @@ const UpdatePostforScreen = ({ data }) => {
       setIsChecked(number);
       setSelectedMode(mode);
   };
-
+  const handleRemoveMedia = (indexToRemove) => {
+    setSelectedMedia((prevSelectedMedia) =>
+      prevSelectedMedia.filter((_, index) => index !== indexToRemove)
+    );
+  };
   return (
     <Modal
                     transparent={true}
@@ -205,11 +224,14 @@ const UpdatePostforScreen = ({ data }) => {
                       }}>
                       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                       <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
-                      {selectedMedia?.length === 0 ? (
+                     
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
                         {data.images.map((media, index) => (
-                          <View key={index} style={{ margin: 5 }}>
-                          
+                          <View key={index} style={{ margin: 5, position:"relative" }}>
+                          {hiddenIds.includes(data.images[index].id) ? (
+                           <View></View>
+                          ) : (
+                            <View>
                                   <Image
                                       source={{ uri: media.linkImage }}
                                       style={{
@@ -218,14 +240,30 @@ const UpdatePostforScreen = ({ data }) => {
                                       }}
                                       resizeMode="contain"
                                   />
-                             
+                                  <TouchableOpacity style={{ 
+                                    position: 'absolute', 
+                                    top: -10, 
+                                    right: -5, 
+                                    padding: 8, 
+                                    borderRadius: 999, 
+                                    backgroundColor: '#d1d5db', 
+                                    transition: 'all 0.3s' 
+                                  }}
+                                  onPress={() =>
+                                    handleAddItem(data.images[index].id)
+                                  }
+                                  >
+                                  <AntDesign name="closecircleo" size={10} color="white"/>
+                                </TouchableOpacity>
+                                </View>
+                            )}
                           </View>
                       ))}
                         </View>
-                    ) : (
+                  
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
                         {selectedMedia.map((media, index) => (
-                          <View key={index} style={{ margin: 5 }}>
+                          <TouchableOpacity key={index} style={{ margin: 5 }} onPress={() => handleRemoveMedia(index)}>
                               {media.type.startsWith("image") ? (
                                   <Image
                                       source={{ uri: media.uri }}
@@ -246,10 +284,10 @@ const UpdatePostforScreen = ({ data }) => {
                                       controls={true}
                                   />
                               )}
-                          </View>
+                          </TouchableOpacity>
                       ))}
                         </View>
-                        )}
+                      
                       </View>
                   </View>
                   

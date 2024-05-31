@@ -67,3 +67,15 @@ export const isOpenUpdatePost = atom({
   key: "isOpenUpdatePost",
   default: false,
 });
+export const UpdatePost1 = atom({
+  key: "UpdatePost1",
+  default: true,
+});
+export const loadUpdate = atom({
+  key: "loadUpdate",
+  default: false,
+});
+export const IdEditR = atom({
+  key: "IdEditR",
+  default: "",
+});

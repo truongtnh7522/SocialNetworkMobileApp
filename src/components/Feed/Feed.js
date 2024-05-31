@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Dimensions } from 'react-native';
 import { colors } from '../../utils/configs/Colors';
 import { useRecoilState, useRecoilValue } from "recoil";
-import { tokenState, likeR, idPost, idUsers, isUpdatePost, isSharePost ,isOpenUpdatePost} from "../../recoil/initState";
+import { tokenState, likeR, idPost, idUsers, isUpdatePost, isSharePost ,isOpenUpdatePost,IdEditR} from "../../recoil/initState";
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -13,10 +13,12 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import DropDownPicker from 'react-native-dropdown-picker';
 import UpdatePostforScreen from "../../containers/UpdatePost/UpdatePost"
 import Sound from 'react-native-sound';
+import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 const { height: windowHeight } = Dimensions.get('window');
 const { width: windowWidth } = Dimensions.get('window');
 const Feed = ({ data }) => {
   const [likeRR, setLikeRR] = useRecoilState(likeR);
+  const [data1,setData1] = useState(data)
   const [to, setToken] = useRecoilState(tokenState);
   const [idPostR, setidPostR] = useRecoilState(idPost);
   const [idUserR, setidUsersR] = useRecoilState(idUsers);
@@ -32,13 +34,13 @@ const Feed = ({ data }) => {
   const navigation = useNavigation();
   const [isLikeLo, setIsLikeLo] = useState(data.isLike)
   const [isLikeNu, setIsLikeNu] = useState(false)
-  const [IdEdit, setIdEdit] = useState("");
+  const [IdEdit, setIdEdit] = useRecoilState(IdEditR);
   useEffect(() => {
     setAuthToken(to);
     const fetchInfo = async () => {
       try {
         const responseInfor = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
-        console.log("Info", responseInfor.data.data)
+
         setDataInfo(responseInfor.data.data)
         setIdUser(responseInfor.data.data.userId)
       } catch (e) {
@@ -91,13 +93,11 @@ const Feed = ({ data }) => {
   const [imageBig, setImageBig] = useState("")
   const [isImage, setIsImage] = useState(false)
   const handleImage = (img) => {
-    console.log(img.linkImage)
+
     setVisible(true)
     setImageBig(img.linkImage)
   }
   const hanldDltPost = async () => {
-
-    console.log(data.id);
     setAuthToken(to);
     return api
       .delete(`https://www.socialnetwork.somee.com/api/post/${data.id}`)
@@ -119,7 +119,7 @@ const Feed = ({ data }) => {
     try {
       // setLike(!like);
       // setCountData(data.countLike + 1);
-      console.log(value, data.id, content)
+
 
       await api
         .post(
@@ -138,7 +138,7 @@ const Feed = ({ data }) => {
         .then((response) => {
 
           // Cập nhật dữ liệu vào state
-          console.log(response);
+   
           if (response.status == 200) {
             setIsSharePostR(false)
             setVisibleShare(false)
@@ -155,10 +155,11 @@ const Feed = ({ data }) => {
     }
   };
   const hanlđUpatePost = () => {
-    setIdEdit(data.id);
-    console.log(data.id)
-    setIsOpenUpdatePost(true)
+     setIdEdit(data.id);
+    console.log("Id",data.id)
+     setIsOpenUpdatePost(true)
   }
+  console.log("s",IdEdit)
   return (
     <View style={styles.container}>
       <View style={styles.headerWrapper}>
@@ -372,7 +373,7 @@ const Feed = ({ data }) => {
 
 
       </View>
-      {isOpenUpdatePostR === true && IdEdit === data.id && <UpdatePostforScreen data={data} />}
+      {isOpenUpdatePostR === true && IdEdit === data.id && <UpdatePostforScreen data={data}/>}
     </View>
   );
 };

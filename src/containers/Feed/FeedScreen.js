@@ -6,7 +6,7 @@ import FeedShare from '../../components/FeedShare/FeedShare';
 import Stories from '../../components/Feed/Stories';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useRecoilState, useRecoilValue } from "recoil";
-import {   tokenState,likeR,LoadPage,isUpdatePost,isUpdateReels,isSharePost
+import {   tokenState,likeR,LoadPage,isUpdatePost,isUpdateReels,isSharePost,UpdatePost1,isOpenUpdatePost,loadUpdate
 } from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
@@ -45,6 +45,7 @@ export const FeedScreen = ({ navigation}) => {
   const [isUpdatePostR, setSsUpdatePost] = useRecoilState(isUpdatePost);
   const [isSharePostR, setIsSharePostR] = useRecoilState(isSharePost);
   const navigation1 = useNavigation();
+  const [isOpenUpdatePostR, setIsOpenUpdatePost] = useRecoilState(isOpenUpdatePost);
   const onUserLogin = async (userID, userName, props) => {
   
     return ZegoUIKitPrebuiltCallService.init(
@@ -163,14 +164,35 @@ export const FeedScreen = ({ navigation}) => {
      fetchData()
     }
   }, [isUpdatePostR]);
+  const [UpdatePost1R, setUpdatePost1R] = useRecoilState(UpdatePost1);
+  const [load1, setLoad1] = useRecoilState(loadUpdate);
+  useEffect(() => {
+    if (UpdatePost1R === false) {
+     const fetchData = async () => {
+      try {
+      
+        const response = await api.get(`https://www.socialnetwork.somee.com/api/post?numberOfPosts=${pageNumber}`);
+      
+         const newData = response.data.data;
+         setData(newData);
+         setUpdatePost1R(true) 
+         setLoad1(false)
+         setIsOpenUpdatePost(false)
+      } catch (error) {
+     
+        console.log(error)
+      }
+     }
+     fetchData()
+    }
+  }, [UpdatePost1R]);
   useEffect(() => {
     if (isSharePostR === false) {
-      console.log(2929292)
      const fetchDataShare = async () => {
       try {
         const pageNumberS = pageNumber + 1;
         const response = await api.get(`https://www.socialnetwork.somee.com/api/post?numberOfPosts=${pageNumberS}`);
-        console.log(111111)
+    
          const newData = response.data.data;
          setData(newData);
              
