@@ -21,7 +21,7 @@ import * as ImagePicker from "react-native-image-picker";
 import { ChatContext } from "../../context/ChatContext";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
-  tokenState, likeR
+  tokenState, likeR,loadUpdateInfo
 } from "../../recoil/initState";
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import {
@@ -202,7 +202,7 @@ const ChatMessagesScreen = () => {
   const [to, setToken] = useRecoilState(tokenState);
   const [text, setText] = useState("");
   const [img, setImg] = useState(null);
-
+  const [loadUpdateInfoR, setloadUpdateInfoR] = useRecoilState(loadUpdateInfo);
   useEffect(() => {
     const fetchDataInfo = async () => {
 
@@ -224,6 +224,11 @@ const ChatMessagesScreen = () => {
 
         const response = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
         //  console.log(response.data)
+        if(loadUpdateInfoR=== false) {
+          setloadUpdateInfoR(true)
+         
+        }
+    
         setDataInfo(response.data.data.firebaseData);
         setLoad(true)
       } catch (error) {
@@ -232,7 +237,7 @@ const ChatMessagesScreen = () => {
       }
     }
     fetchDataInfo()
-  }, []);
+  }, [loadUpdateInfoR]);
   const uuid = () => {
     const timestamp = new Date().getTime(); // Lấy thời gian hiện tại
     const randomChars = Math.random().toString(36).substring(2, 6); // Tạo một chuỗi ngẫu nhiên

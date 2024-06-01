@@ -2,7 +2,7 @@ import React, { useEffect, useState ,forwardRef} from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Dimensions } from 'react-native';
 import { colors } from '../../utils/configs/Colors';
 import { useRecoilState, useRecoilValue } from "recoil";
-import { tokenState, likeR, idPost, idUsers, isUpdatePost, idPostSimple } from "../../recoil/initState";
+import { tokenState, likeR, idPost, idUsers, isUpdatePost, idPostSimple ,UpdatePost2,loadUpdateInfo} from "../../recoil/initState";
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -23,6 +23,7 @@ const FeedShare = ({ data }, ref) => {
   const [idPostR, setidPostR] = useRecoilState(idPost);
   const [idUserR, setidUsersR] = useRecoilState(idUsers);
   const [isUpdatePostR, setSsUpdatePost] = useRecoilState(isUpdatePost);
+  const [UpdatePost2R, setUpdatePost2R] = useRecoilState(UpdatePost2);
   const [idUser, setIdUser] = useState("");
   const [content, setContent] = useState("");
   const [visible, setVisible] = useState(false);
@@ -38,12 +39,17 @@ const FeedShare = ({ data }, ref) => {
     { label: 'Công khai', value: '1' },
     { label: 'Bạn bè', value: '2' },
   ]);
-
+  const [loadUpdateInfoR, setloadUpdateInfoR] = useRecoilState(loadUpdateInfo);
   useEffect(() => {
     setAuthToken(to);
     const fetchInfo = async () => {
       try {
         const responseInfor = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
+        if(loadUpdateInfoR=== false) {
+          setloadUpdateInfoR(true)
+         
+        }
+    
         setDataInfo(responseInfor.data.data);
         setIdUser(responseInfor.data.data.userId);
       } catch (e) {
@@ -51,7 +57,7 @@ const FeedShare = ({ data }, ref) => {
       }
     };
     fetchInfo();
-  }, []);
+  }, [loadUpdateInfoR]);
 
   const handleLike = async () => {
     setAuthToken(to);
@@ -98,7 +104,8 @@ const FeedShare = ({ data }, ref) => {
   const hanldDltShare = async () => {
     setAuthToken(to);
     return api.delete(`https://truongnetwwork.bsite.net/api/post/share/delete?shareId=${data.idShare}`).then((res) => {
-      if (res.status === 204) {
+      console.log(res)
+      if (res.status === 200) {
         setSsUpdatePost(false);
         Toast.show({
           type: 'success',
@@ -124,7 +131,7 @@ const FeedShare = ({ data }, ref) => {
   const handleSaveEdit = async () => {
     setAuthToken(to);
     try {
-      console.log("oknhaaaaaaaaaaaa",data.idShare,contentShare,levelViewShare)
+
 
       await api.put("https://truongnetwwork.bsite.net/api/post/share/update", {
         shareId: data.idShare,
@@ -136,8 +143,9 @@ const FeedShare = ({ data }, ref) => {
         },
       }).then((response) => {
         if (response.status === 200) {
+        
+          setUpdatePost2R(false);
           setVisibleEdit(false);
-          setSsUpdatePost(true);
           Toast.show({
             type: 'success',
             text1: 'Update Share Successfully',
@@ -184,12 +192,12 @@ const FeedShare = ({ data }, ref) => {
       </Text>
       <View>
         <View style={{ paddingHorizontal: 10 }}>
-          {data.images.length > 1 ? (
+          {data.images.length === 2 ? (
             <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
               {data.images.map((item, index) => (
                 <TouchableOpacity onPress={() => handleImage(item)} key={index}>
                   <Image
-                    style={{ height: 300, width: 200, flex: 1 }}
+                    style={{ height: 300, width:188, flex: 1 }}
                     resizeMode="cover"
                     source={{ uri: item.linkImage }}
                   />
@@ -209,7 +217,77 @@ const FeedShare = ({ data }, ref) => {
                 </TouchableOpacity>
               ))}
             </View>
-          ) : (
+          ) :
+          data.images.length === 3 ? (
+            <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+            <View style={{display:"flex"}}>
+            <TouchableOpacity onPress={() => handleImage(data.images[0].linkImage)} >
+            <Image
+              style={{ height: 300, width:360, flex: 1 }}
+              resizeMode="cover"
+              source={{ uri: data.images[0].linkImage }}
+            />
+            <Modal
+              transparent={true}
+              visible={visible}
+              onRequestClose={() => setVisible(false)}
+            >
+              <TouchableOpacity style={styles.modalBackground} onPress={() => setVisible(false)}>
+                <Image
+                  style={{ width: windowWidth * 0.8, height: "auto", aspectRatio: 1 }}
+                  resizeMode="contain"
+                  source={{ uri: imageBig }}
+                />
+              </TouchableOpacity>
+            </Modal>
+          </TouchableOpacity>
+            <View style={{display:"flex",flexDirection:"row"}}>
+            <TouchableOpacity onPress={() => handleImage(data.images[1].linkImage)}  >
+            <Image
+            style={{ height: 300, width: 185, flex: 1 }}
+              resizeMode="cover"
+              source={{ uri: data.images[1].linkImage }}
+            />
+            <Modal
+              transparent={true}
+              visible={visible}
+              onRequestClose={() => setVisible(false)}
+            >
+              <TouchableOpacity style={styles.modalBackground} onPress={() => setVisible(false)}>
+                <Image
+                  style={{ width: windowWidth * 0.8, height: "auto", aspectRatio: 1 }}
+                  resizeMode="contain"
+                  source={{ uri: imageBig }}
+                />
+              </TouchableOpacity>
+            </Modal>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleImage(data.images[2].linkImage)} >
+          <Image
+          style={{ height: 300, width: 185, flex: 1 }}
+            resizeMode="cover"
+            source={{ uri: data.images[2].linkImage }}
+          />
+          <Modal
+            transparent={true}
+            visible={visible}
+            onRequestClose={() => setVisible(false)}
+          >
+            <TouchableOpacity style={styles.modalBackground} onPress={() => setVisible(false)}>
+              <Image
+                style={{ width: windowWidth * 0.8, height: "auto", aspectRatio: 1 }}
+                resizeMode="contain"
+                source={{ uri: imageBig }}
+              />
+            </TouchableOpacity>
+          </Modal>
+        </TouchableOpacity>
+            </View>
+            </View>
+           
+          </View>
+          )
+          : (
             data.images.map((item, index) => (
               <TouchableOpacity onPress={() => handleImage(item.linkImage)} key={index}>
                 <Image

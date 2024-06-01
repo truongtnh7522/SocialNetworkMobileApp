@@ -5,7 +5,7 @@ import Feed from '../../components/Feed/Feed';
 import Stories from '../../components/Feed/Stories';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useRecoilState, useRecoilValue } from "recoil";
-import {   tokenState,likeR,idPostSimple
+import {   tokenState,likeR,idPostSimple,loadUpdateInfo
 } from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
@@ -90,6 +90,7 @@ export const FeedSimpleScreen = ({ navigation}) => {
 
     return str.replace(/[^A-Za-z0-9]/g, char => diacriticsMap[char] || '');
 }
+const [loadUpdateInfoR, setloadUpdateInfoR] = useRecoilState(loadUpdateInfo);
   useEffect(() => {
     const fetchData = async () => {
 
@@ -99,7 +100,11 @@ export const FeedSimpleScreen = ({ navigation}) => {
       const responseInfor = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
       const fullName = responseInfor.data.data.fullName;
       const fullNameWithoutDiacriticsAndSpaces = removeDiacriticsAndSpaces(fullName);
-      
+      if(loadUpdateInfoR=== false) {
+        setloadUpdateInfoR(true)
+       
+      }
+  
       onUserLogin(fullNameWithoutDiacriticsAndSpaces, fullNameWithoutDiacriticsAndSpaces);
       const response = await api.get(`https://truongnetwwork.bsite.net/api/post/${idPostSimpleR}`);
        console.log(response)
@@ -118,7 +123,7 @@ export const FeedSimpleScreen = ({ navigation}) => {
     // // Hủy interval khi component unmount
     // return () => clearInterval(intervalId);
     fetchData();
-  }, [likeRR,pageNumber]);
+  }, [likeRR,pageNumber,loadUpdateInfo]);
 
   const handleNotifi = () => {
 

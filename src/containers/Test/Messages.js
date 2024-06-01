@@ -1,7 +1,7 @@
 import {View, Text, StyleSheet, Image,TouchableOpacity,ScrollView,TextInput} from 'react-native';
 import { createContext, useContext, useReducer,useEffect ,useState} from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import {   tokenState,likeR
+import {   tokenState,likeR,loadUpdateInfo
 } from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import {
@@ -26,6 +26,7 @@ const Messages = () => {
   const [currentUser, setDataInfo] = useState([]);
   const navigation = useNavigation();
   const [to, setToken] = useRecoilState(tokenState);
+  const [loadUpdateInfoR, setloadUpdateInfoR] = useRecoilState(loadUpdateInfo);
   useEffect(() => {
     const fetchDataInfo = async () => {
 
@@ -34,7 +35,11 @@ const Messages = () => {
     try {
    
       const response = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
-       console.log("dautien>>>>>>>>>>>>>>>>>>>>>>>>>>>>",response.data)
+      if(loadUpdateInfoR=== false) {
+        setloadUpdateInfoR(true)
+       
+      }
+  
       setDataInfo(response.data.data.firebaseData);
 
     } catch (error) {
@@ -43,7 +48,7 @@ const Messages = () => {
     }
     }
     fetchDataInfo()
-  }, []);
+  }, [loadUpdateInfoR]);
   console.log(currentUser.uid)
    const [username, setUsername] = useState("");
    const [user, setUser] = useState('');

@@ -18,7 +18,7 @@ import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
-  tokenState, likeR,photosR,idPostSimple,idUsers
+  tokenState, likeR,photosR,idPostSimple,idUsers,loadUpdateInfo
 } from "../../recoil/initState";
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
@@ -170,6 +170,7 @@ const Profile = ({ navigation }) => {
 
   const [load, setLoad] = useState(false)
   const [photos,setPhotos] = useRecoilState(photosR)
+  const [loadUpdateInfoR, setloadUpdateInfoR] = useRecoilState(loadUpdateInfo);
   useEffect(() => {
     const fetchDataInfo = async () => {
 
@@ -178,7 +179,11 @@ const Profile = ({ navigation }) => {
       try {
        
         const response = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
-
+        if(loadUpdateInfoR=== false) {
+          setloadUpdateInfoR(true)
+         
+        }
+    
         setDataInfo(response.data.data);
         // console.log("s", response.data.data)
       } catch (error) {
@@ -187,7 +192,7 @@ const Profile = ({ navigation }) => {
       }
     }
     fetchDataInfo()
-  }, []);
+  }, [loadUpdateInfoR]);
   const Logout = () => {
     AsyncStorage.removeItem('token')
     setToken("")

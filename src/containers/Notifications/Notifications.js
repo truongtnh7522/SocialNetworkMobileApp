@@ -22,7 +22,7 @@ import {
   import { ChatContext } from "../../context/ChatContext";
   import { useRecoilState, useRecoilValue } from "recoil";
   import {
-    tokenState, likeR,idPost,idUsers
+    tokenState, likeR,idPost,idUsers,loadUpdateInfo
   } from "../../recoil/initState";
   import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 
@@ -71,6 +71,7 @@ const Notifications = () => {
     
     return () => clearInterval(intervalId); // Xóa interval khi component unmount
   }, []);
+  const [loadUpdateInfoR, setloadUpdateInfoR] = useRecoilState(loadUpdateInfo);
   useEffect(() => {
     const fetchDataInfo = async () => {
 
@@ -79,7 +80,11 @@ const Notifications = () => {
       try {
         console.log(12)
         const response = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
-
+        if(loadUpdateInfoR=== false) {
+          setloadUpdateInfoR(true)
+         
+        }
+    
         setDataInfo(response.data.data);
        
       } catch (error) {
@@ -88,7 +93,7 @@ const Notifications = () => {
       }
     }
     fetchDataInfo()
-  }, []);
+  }, [loadUpdateInfoR]);
 
   const scrollToBottom = () => {
     if (scrollViewRef.current) {

@@ -1,6 +1,6 @@
 import { createContext, useContext, useReducer,useEffect ,useState} from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import {   tokenState,likeR
+import {   tokenState,likeR,loadUpdateInfo
 } from "../recoil/initState";
 import { setAuthToken, api} from "../utils/helpers/setAuthToken"
 // import { useSelector } from "react-redux";
@@ -12,6 +12,7 @@ export const ChatContextProvider = ({ children }) => {
   const [currentUser, setDataInfo] = useState([]);
 
   const [to, setToken] = useRecoilState(tokenState);
+  const [loadUpdateInfoR, setloadUpdateInfoR] = useRecoilState(loadUpdateInfo);
   useEffect(() => {
     const fetchDataInfo = async () => {
 
@@ -20,7 +21,11 @@ export const ChatContextProvider = ({ children }) => {
     try {
    
       const response = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
-     
+      if(loadUpdateInfoR=== false) {
+        setloadUpdateInfoR(true)
+       
+      }
+  
       setDataInfo(response.data);
 
     } catch (error) {
@@ -29,7 +34,7 @@ export const ChatContextProvider = ({ children }) => {
     }
     }
     fetchDataInfo()
-  }, []);
+  }, [loadUpdateInfoR]);
   const INITIAL_STATE = {
     chatId: "null",
     user: {},

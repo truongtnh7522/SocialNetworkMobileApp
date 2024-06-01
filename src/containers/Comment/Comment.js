@@ -20,7 +20,7 @@ import {
   import { ChatContext } from "../../context/ChatContext";
   import { useRecoilState, useRecoilValue } from "recoil";
   import {
-    tokenState, likeR,idPost
+    tokenState, likeR,idPost,loadUpdateInfo
   } from "../../recoil/initState";
   import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 
@@ -65,6 +65,7 @@ const Comment = () => {
     scrollToBottom()
     loadData()
   }, []);
+  const [loadUpdateInfoR, setloadUpdateInfoR] = useRecoilState(loadUpdateInfo);
   useEffect(() => {
     const fetchDataInfo = async () => {
 
@@ -73,7 +74,11 @@ const Comment = () => {
       try {
         console.log(12)
         const response = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
-
+        if(loadUpdateInfoR=== false) {
+          setloadUpdateInfoR(true)
+         
+        }
+    
         setDataInfo(response.data.data);
        
       } catch (error) {
@@ -82,7 +87,7 @@ const Comment = () => {
       }
     }
     fetchDataInfo()
-  }, []);
+  }, [loadUpdateInfoR]);
 
   const scrollToBottom = () => {
     if (scrollViewRef.current) {

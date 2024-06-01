@@ -19,7 +19,7 @@ import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
-  tokenState, likeR,photosR,idPostSimple,idUsers,photosRU
+  tokenState, likeR,photosR,idPostSimple,idUsers,photosRU,loadUpdateInfo
 } from "../../recoil/initState";
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
@@ -263,6 +263,7 @@ const ProfileUsers = ({ navigation }) => {
     loadDataFriend();
   }, []);
   const [currentUser, setCurrent] = useState([]);
+  const [loadUpdateInfoR, setloadUpdateInfoR] = useRecoilState(loadUpdateInfo);
   useEffect(() => {
     const fetchDataInfo = async () => {
 
@@ -271,7 +272,11 @@ const ProfileUsers = ({ navigation }) => {
     try {
    
       const response = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
-      
+      if(loadUpdateInfoR=== false) {
+        setloadUpdateInfoR(true)
+       
+      }
+  
       setCurrent(response.data);
 
     } catch (error) {
@@ -280,7 +285,7 @@ const ProfileUsers = ({ navigation }) => {
     }
     }
     fetchDataInfo()
-  }, [])
+  }, [loadUpdateInfoR])
   const { dispatch } = useContext(ChatContext);
   const handleMessage = async () => {
     const combinedId =

@@ -71,9 +71,17 @@ export const UpdatePost1 = atom({
   key: "UpdatePost1",
   default: true,
 });
+export const UpdatePost2 = atom({
+  key: "UpdatePost2",
+  default: true,
+});
 export const loadUpdate = atom({
   key: "loadUpdate",
   default: false,
+});
+export const loadUpdateInfo = atom({
+  key: "loadUpdateInfo",
+  default: true,
 });
 export const IdEditR = atom({
   key: "IdEditR",

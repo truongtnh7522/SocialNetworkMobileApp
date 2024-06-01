@@ -6,7 +6,7 @@ import FeedShare from '../../components/FeedShare/FeedShare';
 import Stories from '../../components/Feed/Stories';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useRecoilState, useRecoilValue } from "recoil";
-import {   tokenState,likeR,LoadPage,isUpdatePost,isUpdateReels,isSharePost,UpdatePost1,isOpenUpdatePost,loadUpdate
+import {   tokenState,likeR,LoadPage,isUpdatePost,isUpdateReels,isSharePost,UpdatePost1,isOpenUpdatePost,loadUpdate,UpdatePost2,loadUpdateInfo
 } from "../../recoil/initState";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
@@ -43,6 +43,7 @@ export const FeedScreen = ({ navigation}) => {
   const [modePost, setModePost] = useState(true)
   const [pageNumber, setPageNumber] = useState(15);
   const [isUpdatePostR, setSsUpdatePost] = useRecoilState(isUpdatePost);
+  const [UpdatePost2R, setUpdatePost2R] = useRecoilState(UpdatePost2);
   const [isSharePostR, setIsSharePostR] = useRecoilState(isSharePost);
   const navigation1 = useNavigation();
   const [isOpenUpdatePostR, setIsOpenUpdatePost] = useRecoilState(isOpenUpdatePost);
@@ -98,17 +99,39 @@ export const FeedScreen = ({ navigation}) => {
 
     return str.replace(/[^A-Za-z0-9]/g, char => diacriticsMap[char] || '');
 }
+const [loadUpdateInfoR, setloadUpdateInfoR] = useRecoilState(loadUpdateInfo);
+useEffect(() => {
+  const fetchData = async () => {
+
+    setAuthToken(to)
+   
+  try {
+    const responseInfor = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
+    if(loadUpdateInfoR=== false) {
+      setloadUpdateInfoR(true)
+     
+    }
+
+    const fullName = responseInfor.data.data.fullName;
+    const fullNameWithoutDiacriticsAndSpaces = removeDiacriticsAndSpaces(fullName);
+    
+    onUserLogin(fullNameWithoutDiacriticsAndSpaces, fullNameWithoutDiacriticsAndSpaces);
+    
+  
+  } catch (error) {
+ 
+    setStatus('error');
+  }
+  }
+  fetchData();
+}, [likeRR,pageNumber,LoadPageR,loadUpdateInfoR]);
   useEffect(() => {
     const fetchData = async () => {
 
       setAuthToken(to)
      
     try {
-      const responseInfor = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
-      const fullName = responseInfor.data.data.fullName;
-      const fullNameWithoutDiacriticsAndSpaces = removeDiacriticsAndSpaces(fullName);
       
-      onUserLogin(fullNameWithoutDiacriticsAndSpaces, fullNameWithoutDiacriticsAndSpaces);
       const response = await api.get(`https://truongnetwwork.bsite.net/api/post?numberOfPosts=${pageNumber}`);
     
        const newData = response.data.data;
@@ -120,11 +143,6 @@ export const FeedScreen = ({ navigation}) => {
       setStatus('error');
     }
     }
-  
-    // const intervalId = setInterval(fetchData, 1000); // Gọi fetchData mỗi giây một lần
-
-    // // Hủy interval khi component unmount
-    // return () => clearInterval(intervalId);
     fetchData();
   }, [likeRR,pageNumber,LoadPageR]);
 
@@ -186,6 +204,24 @@ export const FeedScreen = ({ navigation}) => {
      fetchData()
     }
   }, [UpdatePost1R]);
+  useEffect(() => {
+    if (UpdatePost2R === false) {
+     const fetchData = async () => {
+      try {
+      
+        const response = await api.get(`https://truongnetwwork.bsite.net/api/post?numberOfPosts=${pageNumber}`);
+      
+         const newData = response.data.data;
+         setData(newData);
+         setUpdatePost2R(true)
+      } catch (error) {
+     
+        console.log(error)
+      }
+     }
+     fetchData()
+    }
+  }, [UpdatePost2R]);
   useEffect(() => {
     if (isSharePostR === false) {
      const fetchDataShare = async () => {
@@ -341,13 +377,18 @@ const VideoPlayer = (data) => {
       console.error('Error deleting video:', error);
     }
   };
+  const [loadUpdateInfoR, setloadUpdateInfoR] = useRecoilState(loadUpdateInfo);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const responseInfor = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
         const userId = responseInfor.data.data.userId;
         setUserId(userId);
-
+        if(loadUpdateInfoR=== false) {
+          setloadUpdateInfoR(true)
+         
+        }
+    
         const video = videoRef.current;
         if (video) {
           console.log(data.data.content);
@@ -366,7 +407,7 @@ const VideoPlayer = (data) => {
         setPaused(true);
       }
     };
-  }, [data]); // Ensure the effect runs when `data` changes
+  }, [data,loadUpdateInfoR]); // Ensure the effect runs when `data` changes
  
 
   return (

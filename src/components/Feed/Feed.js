@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Dimensions } from 'react-native';
 import { colors } from '../../utils/configs/Colors';
 import { useRecoilState, useRecoilValue } from "recoil";
-import { tokenState, likeR, idPost, idUsers, isUpdatePost, isSharePost ,isOpenUpdatePost,IdEditR} from "../../recoil/initState";
+import { tokenState, likeR, idPost, idUsers, isUpdatePost, isSharePost ,isOpenUpdatePost,IdEditR,loadUpdateInfo} from "../../recoil/initState";
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -14,6 +14,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import UpdatePostforScreen from "../../containers/UpdatePost/UpdatePost"
 import Sound from 'react-native-sound';
 import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+import Video from 'react-native-video';
 const { height: windowHeight } = Dimensions.get('window');
 const { width: windowWidth } = Dimensions.get('window');
 const Feed = ({ data }) => {
@@ -35,12 +36,17 @@ const Feed = ({ data }) => {
   const [isLikeLo, setIsLikeLo] = useState(data.isLike)
   const [isLikeNu, setIsLikeNu] = useState(false)
   const [IdEdit, setIdEdit] = useRecoilState(IdEditR);
+  const [loadUpdateInfoR, setloadUpdateInfoR] = useRecoilState(loadUpdateInfo);
   useEffect(() => {
     setAuthToken(to);
     const fetchInfo = async () => {
       try {
         const responseInfor = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
-
+        if(loadUpdateInfoR=== false) {
+          setloadUpdateInfoR(true)
+         
+        }
+    
         setDataInfo(responseInfor.data.data)
         setIdUser(responseInfor.data.data.userId)
       } catch (e) {
@@ -48,7 +54,7 @@ const Feed = ({ data }) => {
       }
     }
     fetchInfo()
-  }, [])
+  }, [loadUpdateInfoR])
   const handleLike = async () => {
 
     setAuthToken(to);
@@ -95,7 +101,7 @@ const Feed = ({ data }) => {
   const handleImage = (img) => {
 
     setVisible(true)
-    setImageBig(img.linkImage)
+    setImageBig(img)
   }
   const hanldDltPost = async () => {
     setAuthToken(to);
@@ -189,7 +195,8 @@ const Feed = ({ data }) => {
       </Text>
       <View>
         {
-          data.images.length > 1 ? <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+          data.images.length === 2 ? 
+          <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
             {
               data.images.map((item, index) => (
 
@@ -219,14 +226,80 @@ const Feed = ({ data }) => {
                 </TouchableOpacity>
               ))
             }
-          </View> : <View>
+          </View>
+          : data.images.length === 3 ? (
+            <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+            <View style={{display:"flex"}}>
+            <TouchableOpacity onPress={() => handleImage(data.images[0].linkImage)} >
+            <Image
+              style={{ height: 300, width:400, flex: 1 }}
+              resizeMode="cover"
+              source={{ uri: data.images[0].linkImage }}
+            />
+            <Modal
+              transparent={true}
+              visible={visible}
+              onRequestClose={() => setVisible(false)}
+            >
+              <TouchableOpacity style={styles.modalBackground} onPress={() => setVisible(false)}>
+                <Image
+                  style={{ width: windowWidth * 0.8, height: "auto", aspectRatio: 1 }}
+                  resizeMode="contain"
+                  source={{ uri: imageBig }}
+                />
+              </TouchableOpacity>
+            </Modal>
+          </TouchableOpacity>
+            <View style={{display:"flex",flexDirection:"row"}}>
+            <TouchableOpacity onPress={() => handleImage(data.images[1].linkImage)}  >
+            <Image
+              style={{ height: 300, width: 200, flex: 1 }}
+              resizeMode="cover"
+              source={{ uri: data.images[1].linkImage }}
+            />
+            <Modal
+              transparent={true}
+              visible={visible}
+              onRequestClose={() => setVisible(false)}
+            >
+              <TouchableOpacity style={styles.modalBackground} onPress={() => setVisible(false)}>
+                <Image
+                  style={{ width: windowWidth * 0.8, height: "auto", aspectRatio: 1 }}
+                  resizeMode="contain"
+                  source={{ uri: imageBig }}
+                />
+              </TouchableOpacity>
+            </Modal>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleImage(data.images[2].linkImage)} >
+          <Image
+          style={{ height: 300, width: 200, flex: 1 }}
+            resizeMode="cover"
+            source={{ uri: data.images[2].linkImage }}
+          />
+          <Modal
+            transparent={true}
+            visible={visible}
+            onRequestClose={() => setVisible(false)}
+          >
+            <TouchableOpacity style={styles.modalBackground} onPress={() => setVisible(false)}>
+              <Image
+                style={{ width: windowWidth * 0.8, height: "auto", aspectRatio: 1 }}
+                resizeMode="contain"
+                source={{ uri: imageBig }}
+              />
+            </TouchableOpacity>
+          </Modal>
+        </TouchableOpacity>
+            </View>
+            </View>
+           
+          </View>
+          )
+          : 
+          <View>
             {
               data.images.map((item, index) => (
-
-
-
-
-
                 <TouchableOpacity onPress={() => handleImage(item.linkImage)} key={index}>
                   <Image
                     style={{ flex: 1, aspectRatio: 1 }}

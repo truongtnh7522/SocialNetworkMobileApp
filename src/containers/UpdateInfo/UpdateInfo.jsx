@@ -19,14 +19,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { decode } from 'react-native-base64';
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import { useRecoilState, useRecoilValue } from "recoil";
-import { tokenState, likeR } from "../../recoil/initState";
+import { tokenState, likeR,loadUpdateInfo } from "../../recoil/initState";
 import { colors } from "react-native-elements";
-
-const UpdateInfoScreen = ({ navigation }) => {
+import Toast from 'react-native-toast-message';
+import Spinner from "../../components/Spinner";
+const UpdateInfoScreen = ({ navigation },ref) => {
   const [myInfo, setMyInfo] = useState(null);
   const [selectedImage, setSelectedImage] = useState(imagesDataURL[0]);
   const [to, setToken] = useRecoilState(tokenState);
-
+  const [load, setLoad] = useState(false);
   // State để lưu thông tin người dùng
   const [FullName, setFullName] = useState("");
   const [NickName, setNickName] = useState("");
@@ -44,7 +45,7 @@ const UpdateInfoScreen = ({ navigation }) => {
   const startDate = getFormatedDate(today.setDate(today.getDate() + 1), "YYYY/MM/DD");
   const [startedDate, setStartedDate] = useState("12/12/2023");
   const [selectedMode, setSelectedMode] = useState(null);
-
+  const [loadUpdateInfoR, setloadUpdateInfoR] = useRecoilState(loadUpdateInfo);
   const handleChangeStartDate = (propDate) => {
     setStartedDate(propDate);
   };
@@ -81,7 +82,16 @@ const UpdateInfoScreen = ({ navigation }) => {
           setAddress(info.direction);
           setSelectedStartDate(info.dateOfBirth);
           setSelectedImage(info.image); 
-
+          if(loadUpdateInfoR=== false) {
+            setloadUpdateInfoR(true)
+            setLoad(false)
+            Toast.show({
+              type: 'success',
+              text1: 'Update Share Success',
+           
+            });
+          }
+      
         } else {
           console.error("Error fetching my info:", response.status);
         }
@@ -91,7 +101,7 @@ const UpdateInfoScreen = ({ navigation }) => {
     };
 
     fetchMyInfo();
-  }, []);
+  }, [loadUpdateInfoR]);
 
   const handleImageSelection = async () => {
     let result = await ImagePicker.launchImageLibrary({
@@ -107,6 +117,7 @@ const UpdateInfoScreen = ({ navigation }) => {
   };
 
   const handlePost = async () => {
+    setLoad(true)
     setAuthToken(to);
     try {
 
@@ -145,10 +156,12 @@ const UpdateInfoScreen = ({ navigation }) => {
       });
 
       if (res.status === 200) {
-        console.log("okela")
-        navigation.navigate('BottomTabNavigation');
+        setloadUpdateInfoR(false)
+       
+       
       } else {
         console.log("Update failed:", res);
+        setLoad(false)
       }
     } catch (error) {
       console.error("Error updating info:", error);
@@ -246,12 +259,15 @@ const UpdateInfoScreen = ({ navigation }) => {
           <InputField label="WorkPlace" value={WorkPlace} onChangeText={setWorkPlace} />
   
           <TouchableOpacity style={styles.saveButton} onPress={handlePost}>
-            <Text style={{ ...FONTS.body3, color: COLORS.white }}>Save Change</Text>
+           {
+            load == true ? <Spinner/> :  <Text style={{ ...FONTS.body3, color: COLORS.white }}>Save Change</Text>
+           }
           </TouchableOpacity>
         </View>
   
         {renderDatePicker()}
       </ScrollView>
+      <Toast ref={ref} />
     </SafeAreaView>
   );
   };
