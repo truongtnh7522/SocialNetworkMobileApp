@@ -197,7 +197,7 @@ const UpdateInfoScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <View style={styles.header}>
-        <Text style={{ ...FONTS.h3, color: COLORS.black }}>Add Profile</Text>
+        <Text style={{ ...FONTS.h3, color: COLORS.black }}>Edit Profile</Text>
       </View>
   
       <ScrollView style={styles.scrollView}>
