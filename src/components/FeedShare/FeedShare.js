@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState ,forwardRef} from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Dimensions } from 'react-native';
 import { colors } from '../../utils/configs/Colors';
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -17,7 +17,7 @@ import Toast from 'react-native-toast-message';
 const { height: windowHeight } = Dimensions.get('window');
 const { width: windowWidth } = Dimensions.get('window');
 
-const FeedShare = ({ data }) => {
+const FeedShare = ({ data }, ref) => {
   const [likeRR, setLikeRR] = useRecoilState(likeR);
   const [to, setToken] = useRecoilState(tokenState);
   const [idPostR, setidPostR] = useRecoilState(idPost);
@@ -387,13 +387,12 @@ const FeedShare = ({ data }) => {
         <Text style={styles.likesTitle}> {data.countLikeShare} Likes</Text>
       </View>
       <View style={styles.likesAndCommentsWrapper}></View>
-      <Toast ref={(ref) => Toast.setRef(ref)} />
-
+      <Toast ref={ref} />
     </View>
   );
 };
 
-export default FeedShare;
+export default forwardRef(FeedShare);
 
 export const styles = StyleSheet.create({
   container: {
