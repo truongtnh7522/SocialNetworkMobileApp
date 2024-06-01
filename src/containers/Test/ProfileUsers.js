@@ -96,7 +96,7 @@ const FriendsRoutes = () => {
     const fetchData = async () => {
       try {
         const response = await api.get(
-          "https://socialnetwork.somee.com/api/Friend/getAllNotFriend"
+          "https://truongnetwwork.bsite.net/api/Friend/getAllNotFriend"
         );
         setFriends(response.data.data);
         setLoading(false);
@@ -201,7 +201,7 @@ const ProfileUsers = ({ navigation }) => {
 
     try {
      
-      const response = await api.get(`https://socialnetwork.somee.com/api/infor/user/${idUserR}`)
+      const response = await api.get(`https://truongnetwwork.bsite.net/api/infor/user/${idUserR}`)
 
       setDataInfo(response.data.data);
 
@@ -226,7 +226,7 @@ const ProfileUsers = ({ navigation }) => {
       try {
       
         const response = await api.get(
-          `https://socialnetwork.somee.com/api/post/user/${idUserR}`
+          `https://truongnetwwork.bsite.net/api/post/user/${idUserR}`
         );
         // console.log("DataPOst",response.data);
         setLengthPost(response.data.data.length);
@@ -245,7 +245,7 @@ const ProfileUsers = ({ navigation }) => {
 
     await api
       .get(
-        `https://socialnetwork.somee.com/api/Friend/getAllNotFriend`
+        `https://truongnetwwork.bsite.net/api/Friend/getAllNotFriend`
       )
       .then((response) => {
         // Cập nhật dữ liệu vào state
@@ -270,7 +270,7 @@ const ProfileUsers = ({ navigation }) => {
      
     try {
    
-      const response = await api.get('https://socialnetwork.somee.com/api/infor/myinfor');
+      const response = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
       
       setCurrent(response.data);
 
@@ -359,7 +359,7 @@ const ProfileUsers = ({ navigation }) => {
     try {
       const id = idfriend;
       const response = await api.post(
-        `https://socialnetwork.somee.com/api/Friend/send/${id}`
+        `https://truongnetwwork.bsite.net/api/Friend/send/${id}`
       );
 
       if (response.status == 200) {
@@ -375,7 +375,7 @@ const ProfileUsers = ({ navigation }) => {
       const id = idfriend;
       console.log(1);
       const response = await api.post(
-        `https://socialnetwork.somee.com/api/Friend/accept/${id}`
+        `https://truongnetwwork.bsite.net/api/Friend/accept/${id}`
       );
       if (response.status == 200) {
         fetchDataInfo();
@@ -390,7 +390,7 @@ const ProfileUsers = ({ navigation }) => {
     try {
       const id = idfriend;
       const response = await api.post(
-        `https://socialnetwork.somee.com/api/Friend/refuseFriend/${id}`
+        `https://truongnetwwork.bsite.net/api/Friend/refuseFriend/${id}`
       );
       console.log(response);
       if (response.status == 200) {
@@ -407,7 +407,7 @@ const ProfileUsers = ({ navigation }) => {
   const handleUpLevelF1 = async (idfriend) => {
     try {
       const response = await api.post(
-        `https://socialnetwork.somee.com/api/Friend/updateFriendLevel`,
+        `https://truongnetwwork.bsite.net/api/Friend/updateFriendLevel`,
         {
           user2: idfriend,
           level: "4",
@@ -429,7 +429,7 @@ const ProfileUsers = ({ navigation }) => {
       const id = idfriend;
       console.log(1);
       const response = await api.post(
-        `https://socialnetwork.somee.com/api/Friend/updateFriendLevel`,
+        `https://truongnetwwork.bsite.net/api/Friend/updateFriendLevel`,
         {
           user2: idfriend,
           level: "5",
@@ -447,7 +447,7 @@ const ProfileUsers = ({ navigation }) => {
   const handleConfirm = async () => {
     try {
       const response = await api.delete(
-        `https://socialnetwork.somee.com/api/Friend/unfriend/${idUserR}`
+        `https://truongnetwwork.bsite.net/api/Friend/unfriend/${idUserR}`
       );
       if (response.status == 200) {
         fetchDataInfo();

@@ -23,7 +23,7 @@ export default function RegisterScreen({ navigation }) {
       setPassword({ ...password, error: passwordError })
       return
     }
-    const response = await fetch('https://socialnetwork.somee.com/api/auth/register', {
+    const response = await fetch('https://truongnetwwork.bsite.net/api/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

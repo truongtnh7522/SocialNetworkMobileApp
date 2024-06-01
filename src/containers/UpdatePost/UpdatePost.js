@@ -75,7 +75,7 @@ const UpdatePostforScreen = ({ data }) => {
               });
           });
      
-          const res = await api.put("https://socialnetwork.somee.com/api/post", formData, {
+          const res = await api.put("https://truongnetwwork.bsite.net/api/post", formData, {
               headers: {
                   "Content-Type": "multipart/form-data",
               },

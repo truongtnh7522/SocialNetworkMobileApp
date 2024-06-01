@@ -61,7 +61,7 @@ const UpdateInfoScreen = ({ navigation }) => {
   useEffect(() => {
     const fetchMyInfo = async () => {
       try {
-        const response = await api.get("https://socialnetwork.somee.com/api/infor/myinfor");
+        const response = await api.get("https://truongnetwwork.bsite.net/api/infor/myinfor");
 
         if (response.status === 200) {
           const info = response.data.data;
@@ -138,7 +138,7 @@ const UpdateInfoScreen = ({ navigation }) => {
         });
       }
 
-      const res = await api.post("https://socialnetwork.somee.com/api/infor/update", formData, {
+      const res = await api.post("https://truongnetwwork.bsite.net/api/infor/update", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

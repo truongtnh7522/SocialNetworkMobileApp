@@ -22,7 +22,7 @@ export default function NewPasswordScreen({ navigation }) {
     }
 console.log(email.value, password.value, confirmPassword.value)
     try {
-      await axios.post('https://socialnetwork.somee.com/api/auth/changePasswordForgotPassword', {
+      await axios.post('https://truongnetwwork.bsite.net/api/auth/changePasswordForgotPassword', {
         email: email.value,
         password: password.value,
       });

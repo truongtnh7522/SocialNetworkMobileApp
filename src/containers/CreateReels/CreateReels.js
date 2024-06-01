@@ -41,7 +41,7 @@ Sound.setCategory('Playback');
       const fetchAudio = async () => {
         try {
           setAuthToken(to);
-          const res = await api.get("https://socialnetwork.somee.com/api/audio");
+          const res = await api.get("https://truongnetwwork.bsite.net/api/audio");
           setAudio(res.data.data);
           console.log(res);
         } catch (e) {
@@ -72,7 +72,7 @@ Sound.setCategory('Playback');
          
           if (fileType === 'jpg' || fileType === 'jpeg' || fileType === 'png') {
             // It's an image
-            apiEndpoint = "https://socialnetwork.somee.com/api/real/MergeImageWithAudio";
+            apiEndpoint = "https://truongnetwwork.bsite.net/api/real/MergeImageWithAudio";
             formData.append('file', {
               uri: localUri,
               name: filename,
@@ -81,7 +81,7 @@ Sound.setCategory('Playback');
             // Remove DisableVoice for images
           } else if (fileType === 'mp4' || fileType === 'mov' || fileType === 'avi') {
             // It's a video
-            apiEndpoint = "https://socialnetwork.somee.com/api/real/MergeVideoWithAudio";
+            apiEndpoint = "https://truongnetwwork.bsite.net/api/real/MergeVideoWithAudio";
             formData.append('file', {
               uri: localUri,
               name: filename,

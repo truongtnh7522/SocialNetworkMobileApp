@@ -50,7 +50,7 @@ const CreatePostforScreen = ({ navigation }) => {
               });
           });
 
-          const res = await api.post("https://socialnetwork.somee.com/api/post", formData, {
+          const res = await api.post("https://truongnetwwork.bsite.net/api/post", formData, {
               headers: {
                   "Content-Type": "multipart/form-data",
               },

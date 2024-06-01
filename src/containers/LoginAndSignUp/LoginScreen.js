@@ -32,7 +32,7 @@ const Login = ({ navigation }, ref) => {
   const [token3, setToken3] = useState('');
   const [load, setLoad] = useState(true);
   const publicAxios = axios.create({
-    baseURL: 'https://socialnetwork.somee.com/api',
+    baseURL: 'https://truongnetwwork.bsite.net/api',
   });
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const Login = ({ navigation }, ref) => {
 
   const handleLogin = () => {
     setLoad(false);
-    fetch('https://socialnetwork.somee.com/api/auth/login', {
+    fetch('https://truongnetwwork.bsite.net/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

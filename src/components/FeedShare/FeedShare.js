@@ -43,7 +43,7 @@ const FeedShare = ({ data }, ref) => {
     setAuthToken(to);
     const fetchInfo = async () => {
       try {
-        const responseInfor = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
+        const responseInfor = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
         setDataInfo(responseInfor.data.data);
         setIdUser(responseInfor.data.data.userId);
       } catch (e) {
@@ -57,7 +57,7 @@ const FeedShare = ({ data }, ref) => {
     setAuthToken(to);
     try {
       const id = data.idShare;
-      await api.post(`https://www.socialnetwork.somee.com/api/like/${id}`).then((response) => {
+      await api.post(`https://truongnetwwork.bsite.net/api/like/${id}`).then((response) => {
         if (response.status === 200) {
           setLikeRR(!likeRR);
         }
@@ -97,7 +97,7 @@ const FeedShare = ({ data }, ref) => {
 
   const hanldDltShare = async () => {
     setAuthToken(to);
-    return api.delete(`https://www.socialnetwork.somee.com/api/post/share/delete?shareId=${data.idShare}`).then((res) => {
+    return api.delete(`https://truongnetwwork.bsite.net/api/post/share/delete?shareId=${data.idShare}`).then((res) => {
       if (res.status === 204) {
         setSsUpdatePost(false);
         Toast.show({
@@ -126,7 +126,7 @@ const FeedShare = ({ data }, ref) => {
     try {
       console.log("oknhaaaaaaaaaaaa",data.idShare,contentShare,levelViewShare)
 
-      await api.put("https://socialnetwork.somee.com/api/post/share/update", {
+      await api.put("https://truongnetwwork.bsite.net/api/post/share/update", {
         shareId: data.idShare,
         Content: contentShare,
         LevelView: levelViewShare,

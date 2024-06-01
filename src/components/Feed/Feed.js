@@ -39,7 +39,7 @@ const Feed = ({ data }) => {
     setAuthToken(to);
     const fetchInfo = async () => {
       try {
-        const responseInfor = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
+        const responseInfor = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
 
         setDataInfo(responseInfor.data.data)
         setIdUser(responseInfor.data.data.userId)
@@ -57,7 +57,7 @@ const Feed = ({ data }) => {
       setIsLikeLo(!isLikeLo)
       setIsLikeNu(true)
       await api
-        .post(`https://www.socialnetwork.somee.com/api/like/${id}`)
+        .post(`https://truongnetwwork.bsite.net/api/like/${id}`)
         .then((response) => {
           // Cập nhật dữ liệu vào state
 
@@ -100,7 +100,7 @@ const Feed = ({ data }) => {
   const hanldDltPost = async () => {
     setAuthToken(to);
     return api
-      .delete(`https://www.socialnetwork.somee.com/api/post/${data.id}`)
+      .delete(`https://truongnetwwork.bsite.net/api/post/${data.id}`)
       .then((res) => {
         console.log("Delete 1", res);
         if (res.status === 204) {
@@ -123,7 +123,7 @@ const Feed = ({ data }) => {
 
       await api
         .post(
-          "https://www.socialnetwork.somee.com/api/post/share",
+          "https://truongnetwwork.bsite.net/api/post/share",
           {
             PostId: data.id,
             LevelView: value,

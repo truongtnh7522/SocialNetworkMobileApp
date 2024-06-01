@@ -36,7 +36,7 @@ export default function VertifyPinScreen({ navigation }) {
       pin: pin.join('')
     };
     console.log(body)
-    fetch('https://socialnetwork.somee.com/api/auth/VerifyPin', {
+    fetch('https://truongnetwwork.bsite.net/api/auth/VerifyPin', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -19,7 +19,7 @@ export default function ResetPasswordScreen({ navigation }) {
     }
 
     try {
-      await axios.post('https://socialnetwork.somee.com/api/auth/sendPinforgotPassword', {
+      await axios.post('https://truongnetwwork.bsite.net/api/auth/sendPinforgotPassword', {
         email: email.value,
       });
       navigation.navigate('VertifyPinPwScreen', { email: email });

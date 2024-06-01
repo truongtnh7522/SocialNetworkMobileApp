@@ -104,12 +104,12 @@ export const FeedScreen = ({ navigation}) => {
       setAuthToken(to)
      
     try {
-      const responseInfor = await api.get('https://www.socialnetwork.somee.com/api/infor/myinfor');
+      const responseInfor = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
       const fullName = responseInfor.data.data.fullName;
       const fullNameWithoutDiacriticsAndSpaces = removeDiacriticsAndSpaces(fullName);
       
       onUserLogin(fullNameWithoutDiacriticsAndSpaces, fullNameWithoutDiacriticsAndSpaces);
-      const response = await api.get(`https://www.socialnetwork.somee.com/api/post?numberOfPosts=${pageNumber}`);
+      const response = await api.get(`https://truongnetwwork.bsite.net/api/post?numberOfPosts=${pageNumber}`);
     
        const newData = response.data.data;
        setData(newData);
@@ -150,7 +150,7 @@ export const FeedScreen = ({ navigation}) => {
      const fetchData = async () => {
       try {
       
-        const response = await api.get(`https://www.socialnetwork.somee.com/api/post?numberOfPosts=${pageNumber}`);
+        const response = await api.get(`https://truongnetwwork.bsite.net/api/post?numberOfPosts=${pageNumber}`);
       
          const newData = response.data.data;
          setData(newData);
@@ -171,7 +171,7 @@ export const FeedScreen = ({ navigation}) => {
      const fetchData = async () => {
       try {
       
-        const response = await api.get(`https://www.socialnetwork.somee.com/api/post?numberOfPosts=${pageNumber}`);
+        const response = await api.get(`https://truongnetwwork.bsite.net/api/post?numberOfPosts=${pageNumber}`);
       
          const newData = response.data.data;
          setData(newData);
@@ -191,7 +191,7 @@ export const FeedScreen = ({ navigation}) => {
      const fetchDataShare = async () => {
       try {
         const pageNumberS = pageNumber + 1;
-        const response = await api.get(`https://www.socialnetwork.somee.com/api/post?numberOfPosts=${pageNumberS}`);
+        const response = await api.get(`https://truongnetwwork.bsite.net/api/post?numberOfPosts=${pageNumberS}`);
     
          const newData = response.data.data;
          setData(newData);
@@ -330,7 +330,7 @@ const VideoPlayer = (data) => {
   const handleDeleteReel = async (reelId) => {
     try {
      
-      const responseDelete = await api.post(`https://socialnetwork.somee.com/api/real/DeleteReels?reelIds=${reelId}`);
+      const responseDelete = await api.post(`https://truongnetwwork.bsite.net/api/real/DeleteReels?reelIds=${reelId}`);
       console.log(responseDelete)
       if (responseDelete.status === 200) {
         // Remove video from local state
@@ -344,7 +344,7 @@ const VideoPlayer = (data) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseInfor = await api.get('https://socialnetwork.somee.com/api/infor/myinfor');
+        const responseInfor = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
         const userId = responseInfor.data.data.userId;
         setUserId(userId);
 

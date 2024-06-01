@@ -38,7 +38,7 @@ export default function VertifyPinPwScreen({ navigation }) {
       pin: pin.join('')
     };
 
-    fetch('https://socialnetwork.somee.com/api/auth/VerifyPinForgotPassword', {
+    fetch('https://truongnetwwork.bsite.net/api/auth/VerifyPinForgotPassword', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

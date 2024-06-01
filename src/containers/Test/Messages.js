@@ -33,7 +33,7 @@ const Messages = () => {
      
     try {
    
-      const response = await api.get('https://socialnetwork.somee.com/api/infor/myinfor');
+      const response = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
        console.log("dautien>>>>>>>>>>>>>>>>>>>>>>>>>>>>",response.data)
       setDataInfo(response.data.data.firebaseData);
 

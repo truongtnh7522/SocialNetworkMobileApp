@@ -116,7 +116,7 @@ const ManagePost = ({ navigation }) => {
     try {
     
       const response = await api.post(
-        `https://socialnetwork.somee.com/api/admin/user/GetAllPostsAdmin`
+        `https://truongnetwwork.bsite.net/api/admin/user/GetAllPostsAdmin`
       );
       console.log(response.data.data.images?.[0].linkImage)
       setData(response.data.data);
@@ -140,7 +140,7 @@ const ManagePost = ({ navigation }) => {
     console.log(id)
     try {
       // const data =;
-      const res = await api.post(`https://socialnetwork.somee.com/api/admin/user/DeletePostAdmin?postId=${id}`);
+      const res = await api.post(`https://truongnetwwork.bsite.net/api/admin/user/DeletePostAdmin?postId=${id}`);
      console.log(res.data)
      fetchData()
   

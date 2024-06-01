@@ -41,7 +41,7 @@ const SearchPage = () => {
      
     try {
       console.log(username)
-      const response = await api.get(`https://www.socialnetwork.somee.com/api/infor/searchuser`,
+      const response = await api.get(`https://truongnetwwork.bsite.net/api/infor/searchuser`,
       {
         params: { fullname: username }, // Use params to send data in the query string
       }

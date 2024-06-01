@@ -47,7 +47,7 @@ const Notifications = () => {
     setAuthToken(to)
     await api
       .get(
-        `https://socialnetwork.somee.com/api/Notify/getAcceptFriendNotifies`
+        `https://truongnetwwork.bsite.net/api/Notify/getAcceptFriendNotifies`
       )
       .then((response) => {
         console.log(response)
@@ -78,7 +78,7 @@ const Notifications = () => {
 
       try {
         console.log(12)
-        const response = await api.get('https://socialnetwork.somee.com/api/infor/myinfor');
+        const response = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
 
         setDataInfo(response.data.data);
        
@@ -112,7 +112,7 @@ const Notifications = () => {
     setAuthToken(to);
     try {
       // const data =;
-      const res = await api.post("https://socialnetwork.somee.com/api/cmt/create", {
+      const res = await api.post("https://truongnetwwork.bsite.net/api/cmt/create", {
         Content: text,
         postId: idPostR,
         userId: dataInfo.id,
@@ -136,7 +136,7 @@ const Notifications = () => {
     console.log("Ss",parentId)
     return api
       .post(
-        `https://socialnetwork.somee.com/api/cmt/deleteOrUndo/${parentId}`
+        `https://truongnetwwork.bsite.net/api/cmt/deleteOrUndo/${parentId}`
       )
       .then((res) => {
         console.log(res)
