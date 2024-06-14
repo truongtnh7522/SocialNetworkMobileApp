@@ -23,6 +23,7 @@ import {
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
 import Background from './../../components/LoginAndSignUp/Background';
+import { color } from "react-native-elements/dist/helpers";
 
 // console.log("data",photos.data?.[0].images?.[0].linkImage)
 const PhotosRoutes = ({ navigation }) => {
@@ -255,7 +256,7 @@ const Profile = ({ navigation }) => {
         height: 44,
       }}
       renderLabel={({ focused, route }) => (
-        <Text style={[{ color: focused ? COLORS.black : COLORS.gray }]}>
+        <Text style={[{ color: focused ? COLORS.black : COLORS.black }]}>
           {route.title}
         </Text>
       )}
@@ -444,7 +445,7 @@ const Profile = ({ navigation }) => {
         </View>
       </View>
 
-      <View style={{ flex: 1, marginHorizontal: 22, marginTop: 20 }}>
+      <View style={{ flex: 1, marginHorizontal: 22, marginTop: 20 , color:'black'}}>
         <TabView
           navigationState={{ index, routes }}
           renderScene={renderScene}
