@@ -349,7 +349,7 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
 };
 const VideoPlayer = (data) => {
-  const [paused, setPaused] = useState(true);
+  const [paused, setPaused] = useState(false);
   const [muted, setMuted] = useState(false);
   const videoRef = useRef(null);
   const [videos, setVideos] = useState(data.videos);

@@ -27,6 +27,7 @@ import UpdateInfoScreen from './src/containers/UpdateInfo/UpdateInfo';
 import ChatMessagesScreen from "./src/components/ChatMessagesScreen/ChatMessagesScreen";
 import Comment from "./src/containers/Comment/Comment"
 import Notifications from "./src/containers/Notifications/Notifications"
+import MessagesSearch from './src/containers/Test/MessagesSearch';
 import Toast from 'react-native-toast-message';
 import * as ZIM from 'zego-zim-react-native';
 import * as ZPNs from 'zego-zpns-react-native';
@@ -88,6 +89,7 @@ const App = () => {
             <Stack.Screen name="VertifyPinPwScreen" component={VertifyPinPwScreen} options={{ headerShown: false }} />
             <Stack.Screen name="UpdateInfo" component={UpdateInfoScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Search" component={SearchPage} options={{ headerShown: false }} />
+            <Stack.Screen name="MessagesSearch" component={MessagesSearch} options={{ headerShown: false }} />
             <Stack.Screen
               options={{ headerShown: false }}
               // DO NOT change the name 

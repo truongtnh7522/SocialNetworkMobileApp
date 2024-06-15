@@ -3,8 +3,8 @@ import { createContext, useContext, useReducer,useEffect ,useState} from "react"
 import { useRecoilState, useRecoilValue } from "recoil";
 import {   tokenState,likeR,loadUpdateInfo
 } from "../../recoil/initState";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
 import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
+import EvilIcons from "react-native-vector-icons/EvilIcons";
 import {
   collection,
   query,
@@ -23,7 +23,7 @@ import { ChatContext } from "../../context/ChatContext";
 import  MaterialIcons  from "react-native-vector-icons/MaterialIcons";
 import { COLORS, FONTS } from "../../constants";
 import { useNavigation, useRoute } from "@react-navigation/native";
-const Messages = () => {
+const MessagesSearch = () => {
   const [currentUser, setDataInfo] = useState([]);
   const navigation = useNavigation();
   const [to, setToken] = useRecoilState(tokenState);
@@ -126,6 +126,7 @@ const Messages = () => {
  
      setUser(null);
      setUsername("");
+     navigation.navigate('Messages')
    };
    const [chats, setChats] = useState([]);
  
@@ -147,89 +148,78 @@ const Messages = () => {
  
      currentUser.uid && getChats();
    }, [currentUser.uid]);
+   console.log(chats)
    const handleSelect1 = (u) => {
      console.log(u);
      dispatch({ type: "CHANGE_USER", payload: u });
      navigation.navigate('ChatMessagesScreen')
    };
   return (
-    <ScrollView style={{backgroundColor:"white"}}>
+    <ScrollView>
        <View
         style={{
           marginHorizontal: 12,
           flexDirection: "row",
           justifyContent: "center",
           marginTop:10,
-          paddingBottom:10,
-          
+          paddingBottom:10
         }}
       >
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{
-            position: "absolute",
-            left: 0,
-            borderRadius:9999,
-            backgroundColor:colors.gray1
-          
-          }}
-        >
-          <MaterialIcons
-            name="keyboard-arrow-left"
-            size={24}
-            color={COLORS.black}
-          />
-        </TouchableOpacity>
-
-        <Text style={{ ...FONTS.h2,color:colors.black}} >Chat</Text>
+      <TouchableOpacity
+      onPress={() => navigation.goBack()}
+      style={{
+        position: "absolute",
+        left: 0,
+        borderRadius:9999,
+        backgroundColor:colors.gray1
       
-      </View>
-      <TouchableOpacity style={styles.container1} onPress={() =>  navigation.navigate('MessagesSearch')}>
-      <View
-        style={styles.input}
-       
-      
-      >
-      <EvilIcons name="search" size={20} color="black" />
-      <Text style={{ fontSize:15,color:colors.gray, marginLeft:5}} >Enter search term</Text></View>
-    
+      }}
+    >
+      <MaterialIcons
+        name="keyboard-arrow-left"
+        size={24}
+        color={COLORS.black}
+      />
     </TouchableOpacity>
 
-       {Object.entries(chats)
-                ?.sort((a, b) => b[1].date - a[1].date)
-                .map((chat) => {
-                  if (
-                    chat[1].userInfo &&
-                    chat[1].userInfo.displayName &&
-                    chat[1].userInfo.photoURL
-                  ) {
-                    return (
-                      <TouchableOpacity
+        <Text style={{ ...FONTS.h3,color:colors.black}} ></Text>
+      
+      </View>
+      <View style={styles.container1}>
+      <View    style={styles.input}>
+      <TextInput
+          style={{width:"90%",height:"100%",fontSize:12}}
+        placeholder="Enter search term"
+        placeholderTextColor="gray"
+        value={username}
+        onChangeText={(text) => setUsername(text)}
+      
+      />
+      <TouchableOpacity style={styles.button} onPress={handleSearch}>
+      <EvilIcons name="search" size={30} color="black" />
+      </TouchableOpacity></View>
+    </View>
+    {user && user.PhotoUrl && ( // Kiểm tra xem user và user.PhotoUrl có tồn tại không
+      <TouchableOpacity
                       style={styles.container}
-                      onPress={() => handleSelect1(chat[1].userInfo)}
-               
+                      onPress={handleSelect}
                     >
                       <View style={styles.avatarContainer}>
-                        <Image
-                          style={styles.avatar}
-                          source={{ uri: chat[1].userInfo.photoURL }}
-                        />
-                      </View>
-                      <View style={styles.contentContainer}>
-                        <Text style={styles.displayName}>{chat[1].userInfo.displayName}</Text>
-                        <View style={styles.messageContainer}>
-                          <Text style={styles.messageText}>
-                            {chat[1].lastMessage?.text == "" ? "Hãy nhắn để kết nối nhau" : chat[1].lastMessage?.text }
-                          </Text>
-                          <Text style={styles.timestamp}>Just now</Text>
-                        </View>
-                      </View>
+    {user && user.PhotoUrl && ( // Kiểm tra xem user và user.PhotoUrl có tồn tại không
+      <Image
+        style={styles.avatar}
+        source={{ uri: user.PhotoUrl }}
+      />
+    )}
+  </View>
+  <View style={styles.contentContainer}>
+    <Text style={styles.displayName}>
+      {user.DisplayName} 
+    </Text>
+  </View>
                     </TouchableOpacity>
-                    );
-                  } else {
-                    return null; // or render a placeholder if necessary
-                  }
-                })}
+    )}
+   
 
     </ScrollView>
   )
@@ -243,21 +233,22 @@ const styles = StyleSheet.create({
 },
 input: {
   flex: 1,
+  borderWidth: 1,
+  borderColor: '#ccc',
   borderRadius: 30,
   paddingHorizontal: 10,
   height:35,
   color:'black',
+  backgroundColor:"#fff",
   flexDirection:"row",
   justifyContent:"start",
-  alignItems:"center",
-
-  backgroundColor:colors.gray2
+  alignItems:"center"
 
 },
 button: {
-  backgroundColor: '#456fe6',
+  backgroundColor: 'transparent',
   paddingVertical: 5,
-  paddingHorizontal: 20,
+  paddingHorizontal: 5,
   borderRadius: 5,
 },
 buttonText: {
@@ -269,11 +260,13 @@ buttonText: {
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 10,
+    backgroundColor: colors.gray1,
+
     marginBottom: 10,
   },
   avatarContainer: {
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
     borderRadius: 30,
     overflow: 'hidden',
   },
@@ -284,7 +277,7 @@ buttonText: {
   },
   contentContainer: {
     flex: 1,
-    marginLeft: 15,
+    marginLeft: 10,
   },
   displayName: {
     fontSize: 16,
@@ -308,4 +301,4 @@ buttonText: {
 });
 
 
-export default Messages
+export default MessagesSearch

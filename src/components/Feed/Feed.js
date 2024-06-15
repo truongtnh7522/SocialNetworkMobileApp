@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Dimensions } from 'react-native';
 import { colors } from '../../utils/configs/Colors';
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -108,7 +108,7 @@ const Feed = ({ data }) => {
     return api
       .delete(`https://truongnetwwork.bsite.net/api/post/${data.id}`)
       .then((res) => {
-        console.log("Delete 1", res);
+  
         if (res.status === 204) {
           setSsUpdatePost(false);
         }
@@ -165,7 +165,16 @@ const Feed = ({ data }) => {
     console.log("Id",data.id)
      setIsOpenUpdatePost(true)
   }
-  console.log("s",IdEdit)
+  const [paused, setPaused] = useState(true);
+  const [muted, setMuted] = useState(false);
+  const videoRef = useRef(null);
+  const togglePlayPause = () => {
+    setPaused(!paused);
+  };
+
+  const toggleMute = () => {
+    setMuted(!muted);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.headerWrapper}>
@@ -295,6 +304,27 @@ const Feed = ({ data }) => {
             </View>
            
           </View>
+          )
+          : data.videos.length !== 0 ? ( 
+            <View style={[styles.containerBodyVideo,{display:"flex", flex:1,justifyContent:"center", alignItems:"center", backgroundColor:"#000000", borderBottomColor:"#fff",borderBottomWidth:1}]}>
+            <Video
+            paused={paused}
+        muted={muted}
+            ref={videoRef}
+            source={{ uri: data.videos[0].link }}
+            style={{ flex: 1, aspectRatio: 1 }}
+            resizeMode="contain"
+          />
+          <View style={styles.controls}>
+        <TouchableOpacity onPress={togglePlayPause} style={styles.controlButton}>
+          <Ionicons name={paused ? 'play' : 'pause'} size={30} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={toggleMute} style={styles.controlButton}>
+          <Ionicons name={muted ? 'volume-mute' : 'volume-high'} size={30} color="#fff" />
+        </TouchableOpacity>
+       
+      </View>
+      </View>
           )
           : 
           <View>
@@ -454,6 +484,19 @@ const Feed = ({ data }) => {
 export default Feed;
 
 export const styles = StyleSheet.create({
+  controlButton: {
+    padding: 10,
+    backgroundColor:"#676767",
+    borderRadius: 99999,
+    marginLeft:20
+  },
+  controls: {
+    position: 'absolute',
+    top: 10,
+    flexDirection: 'row',
+    justifyContent: 'start',
+    width: '100%',
+  },
   container: {
     display: 'flex',
   },
@@ -586,5 +629,7 @@ export const styles = StyleSheet.create({
     padding: 0,
 
   },
-
+  containerBodyVideo: {
+    height: windowHeight * 0.82
+  },
 });

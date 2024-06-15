@@ -183,7 +183,9 @@ const ChatMessagesScreen = () => {
   }, [recepientData, selectedMessages]);
 
 
-
+  const removeSpaces = (str: string) => {
+    return str.replace(/\s+/g, "");
+  };
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -217,13 +219,13 @@ const ChatMessagesScreen = () => {
           }
         );
         const firstUserFullName = responseInfo.data.data?.[0]?.fullName;
-        const fullNameWithoutDiacriticsAndSpaces = removeDiacriticsAndSpaces(firstUserFullName);
+        const fullNameWithoutDiacriticsAndSpaces = removeSpaces(removeDiacriticsAndSpaces(firstUserFullName));
         if (fullNameWithoutDiacriticsAndSpaces) {
           setInvitees([fullNameWithoutDiacriticsAndSpaces]);
         }
-
+   
         const response = await api.get('https://truongnetwwork.bsite.net/api/infor/myinfor');
-        //  console.log(response.data)
+   
         if(loadUpdateInfoR=== false) {
           setloadUpdateInfoR(true)
          
@@ -232,7 +234,7 @@ const ChatMessagesScreen = () => {
         setDataInfo(response.data.data.firebaseData);
         setLoad(true)
       } catch (error) {
-        console.log(error)
+
         setStatus('error');
       }
     }
@@ -272,12 +274,7 @@ const ChatMessagesScreen = () => {
         }
       );
     } else {
-      console.log(
-        currentUser.uid,
-        uuid(),
-        text,
-        data.user.uid
-      );
+    
       await updateDoc(doc(db, "chats", data.chatId), {
         messages: arrayUnion({
           id: uuid(),
@@ -287,14 +284,14 @@ const ChatMessagesScreen = () => {
         }),
       });
     }
-    console.log(data.chatId);
+
     await updateDoc(doc(db, "userChats", currentUser.uid), {
       [data.chatId + ".lastMessage"]: {
         text,
       },
       [data.chatId + ".date"]: serverTimestamp(),
     });
-    console.log(data.user);
+   
 
     await updateDoc(doc(db, "userChats", data.user.uid), {
       [data.chatId + ".lastMessage"]: {
@@ -310,7 +307,7 @@ const ChatMessagesScreen = () => {
 
 
   useEffect(() => {
-    console.log(data.chatId);
+
     const unSub = onSnapshot(doc(db, "chats", data.chatId), (doc) => {
       doc.exists() && setMessages(doc.data().messages);
     });
@@ -319,7 +316,6 @@ const ChatMessagesScreen = () => {
       unSub();
     };
   }, [data.chatId]);
-  console.log(messages)
   return (
     <KeyboardAvoidingView style={{ flex: 1,}}>
       <View style={{ display: "flex", flexDirection: "row",backgroundColor:"white" , justifyContent: "space-between",  paddingLeft: 10, paddingRight: 10 , paddingTop:10, paddingBottom:10}}>

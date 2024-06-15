@@ -48,7 +48,7 @@ const Comment = () => {
         `https://truongnetwwork.bsite.net/api/cmt/getcmtPost/${idPostR}`
       )
       .then((response) => {
-        console.log(response)
+       
         // Cập nhật dữ liệu vào state
         if (response.status === 200) {
           

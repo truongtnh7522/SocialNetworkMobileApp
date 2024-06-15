@@ -104,7 +104,7 @@ const FeedShare = ({ data }, ref) => {
   const hanldDltShare = async () => {
     setAuthToken(to);
     return api.delete(`https://truongnetwwork.bsite.net/api/post/share/delete?shareId=${data.idShare}`).then((res) => {
-      console.log(res)
+
       if (res.status === 200) {
         setSsUpdatePost(false);
         Toast.show({

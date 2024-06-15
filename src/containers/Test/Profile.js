@@ -23,8 +23,7 @@ import {
 import { setAuthToken, api } from "../../utils/helpers/setAuthToken"
 import Spinner from "../../components/Spinner"
 import Background from './../../components/LoginAndSignUp/Background';
-import { color } from "react-native-elements/dist/helpers";
-
+import Video from 'react-native-video';
 // console.log("data",photos.data?.[0].images?.[0].linkImage)
 const PhotosRoutes = ({ navigation }) => {
   const navigation1 = useNavigation();
@@ -51,11 +50,20 @@ const PhotosRoutes = ({ navigation }) => {
           }}
           onPress={() => {handleGetPost(photos.data?.[index].id)}}
         >
-          <Image
+        {
+       ( photos.data?.[index].images[0]  == undefined && photos.data?.[index].videos[0] != undefined ) ? 
+            <View><Video
+            source={{ uri:photos.data?.[index].videos[0].link }}
+            style={{ width: "100%", height: "100%", borderRadius: 12 }}
+            resizeMode="contain"
+          /></View> :
+            <Image
             key={index}
             source={{ uri: photos.data?.[index].images[0].linkImage }} 
             style={{ width: "100%", height: "100%", borderRadius: 12 }}
           />
+        }
+       
         </TouchableOpacity>
       )}
     />
@@ -244,7 +252,7 @@ const Profile = ({ navigation }) => {
   useEffect(() => {
     loadDataFriend();
   }, []);
-  console.log("data",photos.data)
+  console.log("data Img",photos.data)
   const renderTabBar = (props) => (
     <TabBar
       {...props}
@@ -256,7 +264,7 @@ const Profile = ({ navigation }) => {
         height: 44,
       }}
       renderLabel={({ focused, route }) => (
-        <Text style={[{ color: focused ? COLORS.black : COLORS.black }]}>
+        <Text style={[{ color: focused ? COLORS.black : COLORS.gray }]}>
           {route.title}
         </Text>
       )}
@@ -445,7 +453,7 @@ const Profile = ({ navigation }) => {
         </View>
       </View>
 
-      <View style={{ flex: 1, marginHorizontal: 22, marginTop: 20 , color:'black'}}>
+      <View style={{ flex: 1, marginHorizontal: 22, marginTop: 20 }}>
         <TabView
           navigationState={{ index, routes }}
           renderScene={renderScene}
