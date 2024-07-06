@@ -50,8 +50,8 @@ export const FeedScreen = ({ navigation}) => {
   const onUserLogin = async (userID, userName, props) => {
   
     return ZegoUIKitPrebuiltCallService.init(
-      67139489, // You can get it from ZEGOCLOUD's 
-      "9deb90808df9aa343a7c4c982b3b51527759169f15b93d3c1830872c01b4c6db", // You can get it from ZEGOCLOUD's console
+      2143691367, // You can get it from ZEGOCLOUD's 
+      "169816a341799c8e91140af8b90e08e6bc260084f83f60f81697c85955a8d642", // You can get it from ZEGOCLOUD's console
       userID, // It can be any valid characters, but we recommend using a phone number.
       userName,
       [ZIM, ZPNs],
