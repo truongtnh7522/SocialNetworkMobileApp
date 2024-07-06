@@ -4,7 +4,7 @@ import {
   Image,
   TouchableOpacity,
   useWindowDimensions,
-  FlatList,
+  FlatList,Dimensions
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
@@ -25,6 +25,7 @@ import Spinner from "../../components/Spinner"
 import Background from './../../components/LoginAndSignUp/Background';
 import Video from 'react-native-video';
 // console.log("data",photos.data?.[0].images?.[0].linkImage)
+const { width: windowWidth } = Dimensions.get('window');
 const PhotosRoutes = ({ navigation }) => {
   const navigation1 = useNavigation();
   const [photos,setPhotos] = useRecoilState(photosR)
@@ -327,13 +328,14 @@ const Profile = ({ navigation }) => {
             flexDirection: "row",
             marginVertical: 6,
             alignItems: "center",
+            maxWidth:windowWidth * 0.8,
           }}
         >
           <MaterialIcons name="location-on" size={24} color="black" />
           <Text
             style={{
               ...FONTS.body4,
-              marginLeft: 4,
+        
               color:"#333"
             }}
           >
@@ -368,7 +370,7 @@ const Profile = ({ navigation }) => {
                 color: COLORS.primary,
               }}
             >
-              Followers
+              Friends
             </Text>
           </View>
 

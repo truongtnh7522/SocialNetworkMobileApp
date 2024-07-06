@@ -10,5 +10,6 @@ export const photos1 = [
 ]
 
 export const imagesDataURL = [
-    'https://ung-dung.com/images/upanh_online/upanh.png'
+    'https://ung-dung.com/images/upanh_online/upanh.png',
+    'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png'
 ]

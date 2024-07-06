@@ -6,7 +6,9 @@ import {
   Image,
   TextInput,
   Modal,
-  StyleSheet
+  StyleSheet,
+  Dimensions,
+  FlatList
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,9 +23,13 @@ import { setAuthToken, api} from "../../utils/helpers/setAuthToken"
 import { useRecoilState, useRecoilValue } from "recoil";
 import {   tokenState,likeR
 } from "../../recoil/initState";
+import Spinner from "../../components/Spinner";
+const { height: windowHeight } = Dimensions.get('window');
+const { width: windowWidth } = Dimensions.get('window');
 const CreateInfoScreen = ({ navigation }) => {
   //
-  const [selectedImage, setSelectedImage] = useState(imagesDataURL[0]);
+  const [selectedImage, setSelectedImage] = useState(imagesDataURL[1]);
+  const [selectedImageBg, setSelectedImageBg] = useState(imagesDataURL[0]);
   const [to, setToken] = useRecoilState(tokenState);
   const [name, setName] = useState("Melissa Peters");
 
@@ -34,18 +40,99 @@ const [Career, setCareer] = useState("");
 const [WorkPlace, setWorkPlace] = useState("");
 const [PhoneNumber, setPhoneNumber] = useState("");
 const [Address, setAddress] = useState("");
+
   const [openStartDatePicker, setOpenStartDatePicker] = useState(false);
   const today = new Date();
   
-const [nameCi, setNameCi] = useState("Ho Chi Minh");
-const [nameDi, setNameDi] = useState("Thu Duc");
-const [nameWa, setNameWa] = useState("Linh Chieu");
+  const [dataProvide, setDataProvide] = useState([]);
+  const [dataDistrict, setDataDistrict] =  useState([]);
+  const [dataWard, setDataWard] =  useState([]);
+
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedDistrict1, setSelectedDistrict1] = useState("01");
+  const [selectedWard, setSelectedWard] = useState("01");
+
+  const [nameCi, setNameCi] = useState("");
+  const [nameDi, setNameDi] = useState("");
+  const [nameWa, setNameWa] = useState("");
+  const [visibleC, setVisibleC] = useState(false);
+  const [visibleD, setVisibleD] = useState(false);
+  const [visibleW, setVisibleW] = useState(false);
+  const loadDataProvide = async () => {
+    // Gọi API để lấy dữ liệu
+    setAuthToken(to);
+    await api
+      .get(`https://truongnetwwork.bsite.net/api/Provinces/getAllProvinces`)
+      .then((response) => {
+        // Cập nhật dữ liệu vào state
+        if (response.status === 200) {
+       
+          setSelectedCity(response.data.data[0].fullName)
+          setDataProvide(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log("Error fetching data:", error);
+      });
+  };
+  const loadDataDistrict = async () => {
+    // Gọi API để lấy dữ liệu
+
+    await api
+      .get(
+        `https://truongnetwwork.bsite.net/api/Provinces/getDistrictsByProvinceId/${selectedCity}`
+      )
+      .then((response) => {
+        // Cập nhật dữ liệu vào state
+        if (response.status === 200) {
+          console.log(response.data);
+          setDataDistrict(response.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  useEffect(() => {
+    loadDataDistrict();
+    // loadDataUserCmt();
+  }, [selectedCity]);
+  const loadDataWard = async () => {
+    // Gọi API để lấy dữ liệu
+
+    await api
+      .get(
+        `https://truongnetwwork.bsite.net/api/Provinces/getWardsByDistrictId/${selectedDistrict1}`
+      )
+      .then((response) => {
+        // Cập nhật dữ liệu vào state
+        if (response.status === 200) {
+          console.log(response.data);
+          setDataWard(response.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  useEffect(() => {
+    loadDataWard();
+  }, [selectedDistrict1]);
+  useEffect(() => {
+    loadDataProvide();
+    // loadDataUserCmt();
+  }, []);
   const startDate = getFormatedDate(
     today.setDate(today.getDate() + 1),
     "YYYY/MM/DD"
   );
-  const [selectedStartDate, setSelectedStartDate] = useState("01/01/1990");
-  const [startedDate, setStartedDate] = useState("12/12/2023");
+
+const date = new Date();
+const formattedDate = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
+
+console.log(formattedDate); // Output: "2024/06/29"
+  const [selectedStartDate, setSelectedStartDate] = useState(formattedDate);
+  const [startedDate, setStartedDate] = useState(formattedDate);
     //
   const handleChangeStartDate = (propDate) => {
     setStartedDate(propDate);
@@ -67,10 +154,25 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
       quality: 1,
     });
 
-    console.log(result);
+   
 
     if (!result.canceled) {
       setSelectedImage(result.assets[0].uri);
+    }
+  };
+  const handleImageBgSelection = async () => {
+    let result = await ImagePicker.launchImageLibrary({
+
+      mediaType: 'photo',
+
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+
+    if (!result.canceled) {
+      setSelectedImageBg(result.assets[0].uri);
     }
   };
   const handlePost = async () => {
@@ -125,7 +227,7 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
           Wards: nameWa,
           Districts: nameDi,
           Provinces: nameCi,
-          FileBackground: selectedImage,
+          FileBackground: selectedImageBg,
           Career: Career,
           Nickname: NickName,
         };
@@ -143,6 +245,7 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
       console.log("Add sai!", error);
     }
   };
+  const [dayCurrent, setDayCurrent] = useState(formattedDate);
   function renderDatePicker() {
     return (
       <Modal
@@ -178,7 +281,8 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
           >
             <DatePicker
               mode="calendar"
-              minimumDate={startDate}
+              minimumDate={null}
+              maximumDate={dayCurrent}
               selected={startedDate}
               onDateChanged={handleChangeStartDate}
               onSelectedChange={(date) => setSelectedStartDate(date)}
@@ -206,6 +310,342 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
     setGender(g)
   setSelectedMode(mode);
   // Thực hiện hành động tương ứng với việc chọn chế độ
+};
+const renderItem = ({ item }) => (
+  <TouchableOpacity
+    style={styles.item}
+    onPress={() => {
+      setSelectedCity(item.code);
+      setNameCi(item.fullName);
+      setVisibleC(false);
+    }}
+  >
+    <Text style={{ color: "white", textAlign: "center" }}>{item.fullName}</Text>
+  </TouchableOpacity>
+);
+  console.log(selectedCity,nameCi)
+const renderCitySelection = () => {
+  return (
+    <View>
+      <TouchableOpacity
+        onPress={() => setVisibleC(true)}
+        style={{
+          borderWidth: 1,
+          borderColor: COLORS.secondaryGray,
+          borderRadius: 5,
+          paddingVertical: 10,
+          paddingHorizontal: 10,
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 15,
+        }}
+      >
+      <Text style={{ color: COLORS.black }}>
+          {nameCi === "" ? "Provide" : nameCi}
+        </Text>
+        <MaterialIcons name="keyboard-arrow-down" size={25} color={COLORS.white} />
+      </TouchableOpacity>
+
+      <Modal animationType="slide" transparent={true} visible={visibleC}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <View
+            style={{
+              margin: 20,
+              backgroundColor: COLORS.primary,
+              borderRadius: 20,
+              padding: 35,
+              alignItems: "center",
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 4,
+              elevation: 5,
+              width: "90%",
+              maxHeight: "80%",
+            }}
+          >
+            <Text
+              style={{
+                marginBottom: 15,
+                textAlign: "center",
+                color: COLORS.white,
+              }}
+            >
+              Select City
+            </Text>
+
+            <FlatList
+              data={dataProvide.data}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+              style={{ width: "100%" }}
+            />
+
+            <TouchableOpacity
+              onPress={() => setVisibleC(false)}
+              style={{
+                marginTop: 20,
+                borderRadius: 20,
+                padding: 10,
+                elevation: 2,
+                backgroundColor: COLORS.primary,
+                borderColor: COLORS.primary,
+                borderWidth: 1,
+                width: 100,
+                height: 50,
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: COLORS.white,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                Close
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </View>
+  );
+};
+const renderItemD = ({ item }) => (
+  
+  <TouchableOpacity
+    style={styles.item}
+    onPress={() => {
+      setSelectedDistrict1(item.code);
+      setNameDi(item.fullName);
+      setVisibleD(false);
+    }}
+  >
+    <Text style={{ color: "white", textAlign: "center" }}>{item.fullName}</Text>
+  </TouchableOpacity>
+);
+const renderCitySelectionD = () => {
+  return (
+    <View>
+      <TouchableOpacity
+        onPress={() => setVisibleD(true)}
+        style={{
+          borderWidth: 1,
+          borderColor: COLORS.secondaryGray,
+          borderRadius: 5,
+          paddingVertical: 10,
+          paddingHorizontal: 10,
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 15,
+        }}
+      >
+      <Text style={{ color: COLORS.black }}>
+          {nameDi === "" ? "District" : nameDi}
+        </Text>
+        <MaterialIcons name="keyboard-arrow-down" size={25} color={COLORS.white} />
+      </TouchableOpacity>
+
+      <Modal animationType="slide" transparent={true} visible={visibleD}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <View
+            style={{
+              margin: 20,
+              backgroundColor: COLORS.primary,
+              borderRadius: 20,
+              padding: 35,
+              alignItems: "center",
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 4,
+              elevation: 5,
+              width: "90%",
+              maxHeight: "80%",
+            }}
+          >
+            <Text
+              style={{
+                marginBottom: 15,
+                textAlign: "center",
+                color: COLORS.white,
+              }}
+            >
+              Select District
+            </Text>
+              
+            <FlatList
+              data={dataDistrict.data}
+              renderItem={renderItemD}
+              keyExtractor={(item, index) => index.toString()}
+              style={{ width: "100%" }}
+            />
+
+            <TouchableOpacity
+              onPress={() => setVisibleD(false)}
+              style={{
+                marginTop: 20,
+                borderRadius: 20,
+                padding: 10,
+                elevation: 2,
+                backgroundColor: COLORS.primary,
+                borderColor: COLORS.primary,
+                borderWidth: 1,
+                width: 100,
+                height: 50,
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: COLORS.white,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                Close
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </View>
+  );
+};
+const renderItemW = ({ item }) => (
+  
+  <TouchableOpacity
+    style={styles.item}
+    onPress={() => {
+      setSelectedWard(item.code);
+      setNameWa(item.fullName);
+      setVisibleW(false);
+    }}
+  >
+    <Text style={{ color: "white", textAlign: "center" }}>{item.fullName}</Text>
+  </TouchableOpacity>
+);
+const renderCitySelectionW = () => {
+  return (
+    <View>
+      <TouchableOpacity
+        onPress={() => setVisibleW(true)}
+        style={{
+          borderWidth: 1,
+          borderColor: COLORS.secondaryGray,
+          borderRadius: 5,
+          paddingVertical: 10,
+          paddingHorizontal: 10,
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 15,
+        }}
+      >
+        <Text style={{ color: COLORS.black }}>
+          {nameWa === "" ? "District" : nameWa}
+        </Text>
+        <MaterialIcons name="keyboard-arrow-down" size={25} color={COLORS.white} />
+      </TouchableOpacity>
+
+      <Modal animationType="slide" transparent={true} visible={visibleW}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <View
+            style={{
+              margin: 20,
+              backgroundColor: COLORS.primary,
+              borderRadius: 20,
+              padding: 35,
+              alignItems: "center",
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 4,
+              elevation: 5,
+              width: "90%",
+              maxHeight: "80%",
+            }}
+          >
+            <Text
+              style={{
+                marginBottom: 15,
+                textAlign: "center",
+                color: COLORS.white,
+              }}
+            >
+              Select Ward
+            </Text>
+              
+            <FlatList
+              data={dataWard.data}
+              renderItem={renderItemW}
+              keyExtractor={(item, index) => index.toString()}
+              style={{ width: "100%" }}
+            />
+
+            <TouchableOpacity
+              onPress={() => setVisibleW(false)}
+              style={{
+                marginTop: 20,
+                borderRadius: 20,
+                padding: 10,
+                elevation: 2,
+                backgroundColor: COLORS.primary,
+                borderColor: COLORS.primary,
+                borderWidth: 1,
+                width: 100,
+                height: 50,
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: COLORS.white,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                Close
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </View>
+  );
 };
   return (
     <SafeAreaView
@@ -236,7 +676,7 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
           />
         </TouchableOpacity> */}
 
-        <Text style={{ ...FONTS.h3 }} >Add Profile</Text>
+        <Text style={{ ...FONTS.h3 ,color:COLORS.black}} >Add Profile</Text>
       </View>
 
       <ScrollView style={{
@@ -286,7 +726,7 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
               marginBottom: 6,
             }}
           >
-            <Text style={{ ...FONTS.h4 }}>Name</Text>
+            <Text style={{ ...FONTS.h4,color:COLORS.black }}>Name</Text>
             <View
               style={{
                 height: 44,
@@ -303,6 +743,7 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
                 value={FullName}
                 onChangeText={(value) => setFullName(value)}
                 editable={true}
+                style={{color:COLORS.black}}
               />
             </View>
           </View>
@@ -313,7 +754,7 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
               marginBottom: 6,
             }}
           >
-            <Text style={{ ...FONTS.h4 }}>Nick name</Text>
+            <Text style={{ ...FONTS.h4,color:COLORS.black }}>Nick name</Text>
             <View
               style={{
                 height: 44,
@@ -330,6 +771,7 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
                 value={NickName}
                 onChangeText={(value) => setNickName(value)}
                 editable={true}
+                style={{color:COLORS.black}}
               />
             </View>
           </View>
@@ -361,40 +803,14 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
         <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#fff',  textAlign: 'center'}}>Nữ</Text>
       </TouchableOpacity>
     </View>
+        
           <View
             style={{
               flexDirection: "column",
               marginBottom: 6,
             }}
           >
-            <Text style={{ ...FONTS.h4 }}>Address</Text>
-            <View
-              style={{
-                height: 44,
-                width: "100%",
-                borderColor: COLORS.secondaryGray,
-                borderWidth: 1,
-                borderRadius: 4,
-                marginVertical: 6,
-                justifyContent: "center",
-                paddingLeft: 8,
-              }}
-            >
-              <TextInput
-                value={Address}
-                onChangeText={(value) => setAddress(value)}
-                editable={true}
-              
-              />
-            </View>
-          </View>
-          <View
-            style={{
-              flexDirection: "column",
-              marginBottom: 6,
-            }}
-          >
-            <Text style={{ ...FONTS.h4 }}>Phone</Text>
+            <Text style={{ ...FONTS.h4,color:COLORS.black }}>Phone</Text>
             <View
               style={{
                 height: 44,
@@ -411,6 +827,7 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
                 value={PhoneNumber}
                 onChangeText={(value) => setPhoneNumber(value)}
                 editable={true}
+                style={{color:COLORS.black}}
               
               />
             </View>
@@ -421,7 +838,7 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
               marginBottom: 6,
             }}
           >
-            <Text style={{ ...FONTS.h4 }}>Career</Text>
+            <Text style={{ ...FONTS.h4,color:COLORS.black }}>Career</Text>
             <View
               style={{
                 height: 44,
@@ -438,7 +855,7 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
                 value={Career}
                 onChangeText={(value) => setCareer(value)}
                 editable={true}
-
+                style={{color:COLORS.black}}
               />
             </View>
           </View>
@@ -448,7 +865,7 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
               marginBottom: 6,
             }}
           >
-            <Text style={{ ...FONTS.h4 }}>Date or Birth</Text>
+            <Text style={{ ...FONTS.h4,color:COLORS.black }}>Date or Birth</Text>
             <TouchableOpacity
               onPress={handleOnPressStartDate}
               style={{
@@ -462,7 +879,7 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
                 paddingLeft: 8,
               }}
             >
-              <Text>{selectedStartDate}</Text>
+            <Text style={{ color: COLORS.black }}>{selectedStartDate}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -473,7 +890,7 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
             marginBottom: 6,
           }}
         >
-          <Text style={{ ...FONTS.h4 }}>WorkPlace</Text>
+          <Text style={{ ...FONTS.h4,color:COLORS.black }}>WorkPlace</Text>
           <View
             style={{
               height: 44,
@@ -490,10 +907,75 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
               value={WorkPlace}
               onChangeText={(value) => setWorkPlace(value)}
               editable={true}
+              style={{color:COLORS.black}}
             />
           </View>
         </View>
+        {renderCitySelection()}
+        {renderCitySelectionD()}
+        {renderCitySelectionW()}
+        <View
+        style={{
+          flexDirection: "column",
+          marginBottom: 6,
+        }}
+      >
+        <Text style={{ ...FONTS.h4,color:COLORS.black }}>Address</Text>
+        <View
+          style={{
+            height: 44,
+            width: "100%",
+            borderColor: COLORS.secondaryGray,
+            borderWidth: 1,
+            borderRadius: 4,
+            marginVertical: 6,
+            justifyContent: "center",
+            paddingLeft: 8,
+          }}
+        >
+          <TextInput
+            value={Address}
+            onChangeText={(value) => setAddress(value)}
+            editable={true}
+            style={{color:COLORS.black}}
+          
+          />
+        </View>
+      </View>
+        <View
+        style={{
+          alignItems: "center",
+          marginVertical: 22,
+         
+        }}
+      >
+     
+        <TouchableOpacity onPress={handleImageBgSelection}>
+        <View  style={{
+          height: 150,
+         width: windowWidth * 0.85,
+          borderRadius:10,
+          borderWidth: 1,
+          borderColor: COLORS.primary,
+          display:"flex",
+          justifyContent:"center",
+          alignItems:"center"
+        }}>
+        <Image
+        source={{ uri: selectedImageBg }}
+        style={{
+          height: 150,
+         width: 100,
+       
+  
+        }}
+         resizeMode="contain"
+      />
+        </View>
 
+         
+        </TouchableOpacity>
+      </View>
         <TouchableOpacity
           style={{
             backgroundColor: COLORS.primary,
@@ -511,7 +993,7 @@ const [nameWa, setNameWa] = useState("Linh Chieu");
               color: COLORS.white,
             }}
           >
-            Save Change
+           Add Info
           </Text>
         </TouchableOpacity>
 
@@ -525,7 +1007,27 @@ export const styles = StyleSheet.create({
   feedContainer: {
     display: 'flex',
   },
-
+  selectedText: {
+    
+    fontSize: 18,
+    color:"black",
+    textAlign:"center"
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: COLORS.gray,
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    width: "100%",
+    color: COLORS.white,
+    marginBottom: 15,
+  },
+  item: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.gray,
+  },
 });
 
 export default CreateInfoScreen;

@@ -6,7 +6,7 @@ import {
   Image,
   TextInput,
   Modal,
-  StyleSheet
+  StyleSheet,Dimensions
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -23,9 +23,11 @@ import { tokenState, likeR,loadUpdateInfo } from "../../recoil/initState";
 import { colors } from "react-native-elements";
 import Toast from 'react-native-toast-message';
 import Spinner from "../../components/Spinner";
+const { width: windowWidth } = Dimensions.get('window');
 const UpdateInfoScreen = ({ navigation },ref) => {
   const [myInfo, setMyInfo] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(imagesDataURL[0]);
+  const [selectedImage, setSelectedImage] = useState(imagesDataURL[1]);
+  const [selectedImageBg, setSelectedImageBg] = useState(imagesDataURL[0]);
   const [to, setToken] = useRecoilState(tokenState);
   const [load, setLoad] = useState(false);
   // State để lưu thông tin người dùng
@@ -66,6 +68,7 @@ const UpdateInfoScreen = ({ navigation },ref) => {
 
         if (response.status === 200) {
           const info = response.data.data;
+          console.log(info)
           setMyInfo(info);
           // Set thông tin cũ vào các trường dữ liệu
           setFullName(info.fullName);
@@ -79,8 +82,9 @@ const UpdateInfoScreen = ({ navigation },ref) => {
           setCareer(info.career);
           setWorkPlace(info.workPlace);
           setPhoneNumber(info.phoneNumber);
-          setAddress(info.direction);
+          setAddress(info.address);
           setSelectedStartDate(info.dateOfBirth);
+          setSelectedImageBg(info.background); 
           setSelectedImage(info.image); 
           if(loadUpdateInfoR=== false) {
             setloadUpdateInfoR(true)
@@ -102,7 +106,8 @@ const UpdateInfoScreen = ({ navigation },ref) => {
 
     fetchMyInfo();
   }, [loadUpdateInfoR]);
-
+  const date = new Date(selectedStartDate);
+const formattedDate = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
   const handleImageSelection = async () => {
     let result = await ImagePicker.launchImageLibrary({
       mediaType: 'photo',
@@ -113,6 +118,18 @@ const UpdateInfoScreen = ({ navigation },ref) => {
 
     if (!result.canceled) {
       setSelectedImage(result.assets[0].uri);
+    }
+  };
+  const handleImageBgSelection = async () => {
+    let result = await ImagePicker.launchImageLibrary({
+      mediaType: 'photo',
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setSelectedImageBg(result.assets[0].uri);
     }
   };
 
@@ -136,6 +153,7 @@ const UpdateInfoScreen = ({ navigation },ref) => {
 
       if (selectedImage) {
         const localUri = selectedImage;
+        const localUriBg = selectedImageBg;
         const filename = localUri.split('/').pop();
         formData.append('File', {
           uri: localUri,
@@ -143,7 +161,7 @@ const UpdateInfoScreen = ({ navigation },ref) => {
           type: 'image/jpeg',
         });
         formData.append('FileBackground', {
-          uri: localUri,
+          uri: localUriBg,
           name: filename,
           type: 'image/jpeg',
         });
@@ -172,7 +190,11 @@ const UpdateInfoScreen = ({ navigation },ref) => {
     setGender(g);
     setSelectedMode(mode);
   };
+  const date1 = new Date();
+  const formattedDate1 = `${date1.getFullYear()}/${String(date1.getMonth() + 1).padStart(2, '0')}/${String(date1.getDate()).padStart(2, '0')}`;
+  const [dayCurrent, setDayCurrent] = useState(formattedDate1);
 
+  
   function renderDatePicker() {
     return (
       <Modal
@@ -184,8 +206,9 @@ const UpdateInfoScreen = ({ navigation },ref) => {
           <View style={styles.datePickerContainer}>
             <DatePicker
               mode="calendar"
-              minimumDate={startDate}
-              selected={startedDate}
+              minimumDate={null}
+              selected={formattedDate}
+              maximumDate={dayCurrent}
               onDateChanged={handleChangeStartDate}
               onSelectedChange={(date) => setSelectedStartDate(date)}
               options={{
@@ -257,7 +280,40 @@ const UpdateInfoScreen = ({ navigation },ref) => {
 />
 
           <InputField label="WorkPlace" value={WorkPlace} onChangeText={setWorkPlace} />
+          <View
+          style={{
+            alignItems: "center",
+            marginVertical: 22,
+           
+          }}
+        >
+       
+          <TouchableOpacity onPress={handleImageBgSelection}>
+          <View  style={{
+            height: 150,
+           width: windowWidth * 0.85,
+            borderRadius:10,
+            borderWidth: 1,
+            borderColor: COLORS.primary,
+            display:"flex",
+            justifyContent:"center",
+            alignItems:"center"
+          }}>
+          <Image
+          source={{ uri: selectedImageBg }}
+          style={{
+            height: 150,
+           width: 100,
+         
+    
+          }}
+           resizeMode="contain"
+        />
+          </View>
   
+           
+          </TouchableOpacity>
+        </View>
           <TouchableOpacity style={styles.saveButton} onPress={handlePost}>
            {
             load == true ? <Spinner/> :  <Text style={{ ...FONTS.body3, color: COLORS.white }}>Save Change</Text>

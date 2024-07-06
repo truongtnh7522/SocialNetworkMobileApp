@@ -204,16 +204,13 @@ const Feed = ({ data }) => {
       </Text>
       <View>
         {
-          data.images.length === 2 ? 
+          data.images.length === 2 &&  data.videos.length === 0 ? 
           <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
             {
               data.images.map((item, index) => (
 
 
-
-
-
-                <TouchableOpacity onPress={() => handleImage(item)} key={index} >
+                <TouchableOpacity onPress={() => handleImage(data.images[0].linkImage)} >
                   <Image
                     style={{ height: 300, width: 200, flex: 1 }}
                     resizeMode="cover"
@@ -304,6 +301,65 @@ const Feed = ({ data }) => {
             </View>
            
           </View>
+          ) :         data.images.length === 2 &&  data.videos.length !== 0 ? (
+            <View>
+            <View >
+            {
+              data.videos.map((item, index) => ( 
+                <View style={[styles.containerBodyVideo2,{display:"flex", flex:1,justifyContent:"center", alignItems:"center", backgroundColor:"#000000", borderBottomColor:"#fff",borderBottomWidth:1}]}>
+                <Video
+                paused={paused}
+            muted={muted}
+                ref={videoRef}
+                source={{ uri: data.videos[index].link }}
+                style={{ flex: 1, aspectRatio: 1 }}
+                resizeMode="contain"
+              />
+              <View style={styles.controls}>
+            <TouchableOpacity onPress={togglePlayPause} style={styles.controlButton}>
+              <Ionicons name={paused ? 'play' : 'pause'} size={30} color="#fff" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={toggleMute} style={styles.controlButton}>
+              <Ionicons name={muted ? 'volume-mute' : 'volume-high'} size={30} color="#fff" />
+            </TouchableOpacity>
+           
+          </View>
+          </View>
+              ))
+            }
+           
+          </View>
+            <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+            {
+              data.images.map((item, index) => (
+
+
+
+
+
+                <TouchableOpacity onPress={() => handleImage(item)} key={index} >
+                  <Image
+                    style={{ height: 300, width: 200, flex: 1 }}
+                    resizeMode="cover"
+                    source={{ uri: item.linkImage }}
+                  />
+                  <Modal
+                    transparent={true}
+                    visible={visible}
+                    onRequestClose={() => setVisible(false)}
+                  >
+                    <TouchableOpacity style={styles.modalBackground} onPress={() => setVisible(false)}>
+                      <Image
+                        style={{ width: windowWidth * 0.8, height: "auto", aspectRatio: 1 }}
+                        resizeMode="contain"
+                        source={{ uri: imageBig }}
+                      />
+                    </TouchableOpacity>
+                  </Modal>
+                </TouchableOpacity>
+              ))
+            }
+          </View></View>
           )
           : data.videos.length !== 0 ? ( 
             <View style={[styles.containerBodyVideo,{display:"flex", flex:1,justifyContent:"center", alignItems:"center", backgroundColor:"#000000", borderBottomColor:"#fff",borderBottomWidth:1}]}>
@@ -631,5 +687,8 @@ export const styles = StyleSheet.create({
   },
   containerBodyVideo: {
     height: windowHeight * 0.82
+  },
+  containerBodyVideo2: {
+    height: windowHeight * 0.42
   },
 });

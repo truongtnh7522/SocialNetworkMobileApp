@@ -10,7 +10,7 @@ import BackButton from '../../components/LoginAndSignUp/BackButton'
 import { theme } from '../../theme/LoginAndSignUp/theme'
 import { emailValidator } from '../../utils/helpers/emailValidator'
 import { passwordValidator } from '../../utils/helpers/passwordValidator'
-
+import Toast from 'react-native-toast-message';
 export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
@@ -37,8 +37,23 @@ export default function RegisterScreen({ navigation }) {
     if (response.ok) {
       navigation.navigate('VertifyPinScreen', { email: email })
     } else {
-      const error = await response.text()
-      console.error('Registration failed:', error)
+      const errorText = await response.text();
+      try {
+        const errorObj = JSON.parse(errorText);
+        if (errorObj.message) {
+          Toast.show({
+            type: 'error',
+            text1: errorObj.message,
+            visibilityTime: 2000,
+        });
+        
+        } else {
+          console.log("An error occurred, but no message was found");
+        }
+      } catch (e) {
+        console.log("Error parsing JSON:", e);
+      }
+     
     }
   }
   
@@ -81,6 +96,7 @@ export default function RegisterScreen({ navigation }) {
           <Text style={styles.link}>Login</Text>
         </TouchableOpacity>
       </View>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
     </Background>
   )
 }

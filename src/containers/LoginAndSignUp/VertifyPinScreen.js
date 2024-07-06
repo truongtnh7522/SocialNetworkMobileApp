@@ -46,6 +46,7 @@ export default function VertifyPinScreen({ navigation }) {
       .then(response => {
         if (response.ok) {
           console.log('Verification successful');
+          navigation.navigate('LoginScreen', { email: email });
         } else {
           console.log('Verification failed');
         }
