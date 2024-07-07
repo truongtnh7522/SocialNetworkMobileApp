@@ -232,17 +232,17 @@ console.log(formattedDate); // Output: "2024/06/29"
           Nickname: NickName,
         };
         console.log(data)
-      const res = await api.post("https://truongnetwwork.bsite.net/api/infor/create", data,   {
+      const res = await api.post("https://truongnetwwork.bsite.net/api/infor/create", formData,   {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      if(res.status == 200) {
+     
         navigation.navigate('BottomTabNavigation')
-      }
+     
       console.log("het qua: ", res)
     } catch (error) {
-      console.log("Add sai!", error);
+      navigation.navigate('BottomTabNavigation')
     }
   };
   const [dayCurrent, setDayCurrent] = useState(formattedDate);
