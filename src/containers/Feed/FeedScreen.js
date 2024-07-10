@@ -51,7 +51,7 @@ export const FeedScreen = ({ navigation}) => {
   
     return ZegoUIKitPrebuiltCallService.init(
       2143691367, // You can get it from ZEGOCLOUD's 
-      "9864561fa146539fe74aebc33693f11e", // You can get it from ZEGOCLOUD's console
+      "169816a341799c8e91140af8b90e08e6bc260084f83f60f81697c85955a8d642", // You can get it from ZEGOCLOUD's console
       userID, // It can be any valid characters, but we recommend using a phone number.
       userName,
       [ZIM, ZPNs],
