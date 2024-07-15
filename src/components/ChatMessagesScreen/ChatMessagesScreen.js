@@ -402,14 +402,7 @@ const ChatMessagesScreen = () => {
                         { backgroundColor: "#F0FFFF" },
                       ]}
                     >
-                      <Text
-                        style={{
-                          fontSize: 13,
-                          textAlign: "right",
-                        }}
-                      >
-                        {messages[index].text}
-                      </Text>
+                     
                       <Text
                         style={{
                           textAlign: "right",

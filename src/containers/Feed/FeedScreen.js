@@ -51,7 +51,7 @@ export const FeedScreen = ({ navigation}) => {
   
     return ZegoUIKitPrebuiltCallService.init(
       2143691367, // You can get it from ZEGOCLOUD's 
-      "169816a341799c8e91140af8b90e08e6bc260084f83f60f81697c85955a8d642", // You can get it from ZEGOCLOUD's console
+     "169816a341799c8e91140af8b90e08e6bc260084f83f60f81697c85955a8d642", // You can get it from ZEGOCLOUD's console
       userID, // It can be any valid characters, but we recommend using a phone number.
       userName,
       [ZIM, ZPNs],
@@ -349,7 +349,7 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
 };
 const VideoPlayer = (data) => {
-  const [paused, setPaused] = useState(false);
+  const [paused, setPaused] = useState(true);
   const [muted, setMuted] = useState(false);
   const videoRef = useRef(null);
   const [videos, setVideos] = useState(data.videos);
@@ -389,11 +389,7 @@ const VideoPlayer = (data) => {
          
         }
     
-        const video = videoRef.current;
-        if (video) {
-          console.log(data.data.content);
-          setPaused(false);
-        }
+       
         console.log(data.data.userId, "and", userId);
       } catch (error) {
         console.error('Error fetching user information:', error);
@@ -402,11 +398,7 @@ const VideoPlayer = (data) => {
 
     fetchData();
 
-    return () => {
-      if (videoRef.current) {
-        setPaused(true);
-      }
-    };
+ 
   }, [data,loadUpdateInfoR]); // Ensure the effect runs when `data` changes
  
 

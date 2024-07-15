@@ -23,6 +23,7 @@ import { ChatContext } from "../../context/ChatContext";
 import  MaterialIcons  from "react-native-vector-icons/MaterialIcons";
 import { COLORS, FONTS } from "../../constants";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import Spinner from "../../components/Spinner"
 const Messages = () => {
   const [currentUser, setDataInfo] = useState([]);
   const navigation = useNavigation();
@@ -128,15 +129,17 @@ const Messages = () => {
      setUsername("");
    };
    const [chats, setChats] = useState([]);
- 
+   const [load, setLoad] = useState(true);
    const { dispatch } = useContext(ChatContext);
- 
+   
    useEffect(() => {
      const getChats = () => {
        const unsub = onSnapshot(
          doc(db, "userChats", currentUser.uid),
          (doc) => {
-           setChats(doc.data());
+         
+           setChats(doc.data()); 
+           setLoad(false)
          }
        );
  
@@ -194,42 +197,46 @@ const Messages = () => {
       <Text style={{ fontSize:15,color:colors.gray, marginLeft:5}} >Enter search term</Text></View>
     
     </TouchableOpacity>
-
-       {Object.entries(chats)
-                ?.sort((a, b) => b[1].date - a[1].date)
-                .map((chat) => {
-                  if (
-                    chat[1].userInfo &&
-                    chat[1].userInfo.displayName &&
-                    chat[1].userInfo.photoURL
-                  ) {
-                    return (
-                      <TouchableOpacity
-                      style={styles.container}
-                      onPress={() => handleSelect1(chat[1].userInfo)}
-               
-                    >
-                      <View style={styles.avatarContainer}>
-                        <Image
-                          style={styles.avatar}
-                          source={{ uri: chat[1].userInfo.photoURL }}
-                        />
+          {
+            load === true ? <Spinner/> : <View>
+            {Object.entries(chats)
+              ?.sort((a, b) => b[1].date - a[1].date)
+              .map((chat) => {
+                if (
+                  chat[1].userInfo &&
+                  chat[1].userInfo.displayName &&
+                  chat[1].userInfo.photoURL
+                ) {
+                  return (
+                    <TouchableOpacity
+                    style={styles.container}
+                    onPress={() => handleSelect1(chat[1].userInfo)}
+             
+                  >
+                    <View style={styles.avatarContainer}>
+                      <Image
+                        style={styles.avatar}
+                        source={{ uri: chat[1].userInfo.photoURL }}
+                      />
+                    </View>
+                    <View style={styles.contentContainer}>
+                      <Text style={styles.displayName}>{chat[1].userInfo.displayName}</Text>
+                      <View style={styles.messageContainer}>
+                        <Text style={styles.messageText}>
+                          {chat[1].lastMessage?.text == "" ? "Hãy nhắn để kết nối nhau" : chat[1].lastMessage?.text }
+                        </Text>
+                        <Text style={styles.timestamp}>Just now</Text>
                       </View>
-                      <View style={styles.contentContainer}>
-                        <Text style={styles.displayName}>{chat[1].userInfo.displayName}</Text>
-                        <View style={styles.messageContainer}>
-                          <Text style={styles.messageText}>
-                            {chat[1].lastMessage?.text == "" ? "Hãy nhắn để kết nối nhau" : chat[1].lastMessage?.text }
-                          </Text>
-                          <Text style={styles.timestamp}>Just now</Text>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                    );
-                  } else {
-                    return null; // or render a placeholder if necessary
-                  }
-                })}
+                    </View>
+                  </TouchableOpacity>
+                  );
+                } else {
+                  return null; // or render a placeholder if necessary
+                }
+              })}
+            </View>
+          }
+      
 
     </ScrollView>
   )
